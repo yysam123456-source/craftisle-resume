@@ -7,7 +7,8 @@ import { DashboardSidebar } from "./-components/sidebar";
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
 	beforeLoad: async ({ context }) => {
-		if (!context.session) throw redirect({ to: "/auth/login", replace: true });
+		// Local-only mode: skip auth redirect
+		// if (!context.session) throw redirect({ to: "/auth/login", replace: true });
 		return { session: context.session };
 	},
 	loader: async () => {
