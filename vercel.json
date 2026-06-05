@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "pnpm --filter web build",
-  "outputDirectory": "apps/web/dist",
+  "buildCommand": "pnpm --filter web build && pnpm --filter server build",
   "installCommand": "pnpm install",
+  "outputDirectory": ".vercel/output",
   "framework": null
 }
