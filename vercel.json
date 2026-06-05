@@ -1,6 +1,5 @@
 {
   "buildCommand": "pnpm --filter @reactive-resume/web build",
-  "outputDirectory": "apps/web/dist",
-  "installCommand": "pnpm install",
-  "devCommand": "pnpm --filter @reactive-resume/web dev"
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install"
 }

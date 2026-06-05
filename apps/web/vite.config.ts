@@ -38,6 +38,7 @@ export default defineConfig({
 	},
 
 	build: {
+		outDir: process.env.VERCEL ? "../../dist" : "dist",
 		chunkSizeWarningLimit: 10 * 1024, // 10 MB
 		rolldownOptions: {
 			external: ["bcrypt", "sharp", "@aws-sdk/client-s3", "ioredis", "linkedom"],
