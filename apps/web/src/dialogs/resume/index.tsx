@@ -1,12 +1,9 @@
-import type { RouterInput } from "@/libs/orpc/client";
-import type { DialogProps } from "../store";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { CaretDownIcon, MagicWandIcon, PencilSimpleLineIcon, PlusIcon, TestTubeIcon } from "@phosphor-icons/react";
 import { useStore } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@reactive-resume/ui/components/button";
@@ -36,9 +33,8 @@ import { generateId, generateRandomName, slugify } from "@reactive-resume/utils/
 import { ChipInput } from "@/components/input/chip-input";
 import { usePatchResume } from "@/features/resume/builder/draft";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { authClient } from "@/libs/auth/client";
 import { getResumeErrorMessage } from "@/libs/error-message";
-import { orpc } from "@/libs/orpc/client";
+import { createResume, updateResumeMetadata, getResume, saveResume } from "@/libs/local-resume";
 import { useAppForm, withForm } from "@/libs/tanstack-form";
 import { useDialogStore } from "../store";
 
@@ -60,9 +56,6 @@ const defaultValues: FormValues = {
 
 export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 	const closeDialog = useDialogStore((state) => state.closeDialog);
-
-	const { mutate: createResume, isPending } = useMutation(orpc.resume.create.mutationOptions());
-
 	const form = useAppForm({
 		defaultValues: {
 			id: generateId(),
@@ -71,18 +64,17 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 			tags: [] as string[],
 		},
 		validators: { onSubmit: formSchema },
-		onSubmit: ({ value }) => {
+		onSubmit: async ({ value }) => {
 			const toastId = toast.loading(t`Creating your resume...`);
-
-			createResume(value, {
-				onSuccess: () => {
-					toast.success(t`Your resume has been created successfully.`, { id: toastId });
-					closeDialog();
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error), { id: toastId });
-				},
-			});
+			try {
+				const withSample = (document.activeElement as HTMLElement)?.closest("[data-sample]") !== null;
+				const created = createResume(value.name, withSample);
+				saveResume(created);
+				toast.success(t`Your resume has been created successfully.`, { id: toastId });
+				closeDialog();
+			} catch (error) {
+				toast.error(getResumeErrorMessage(error), { id: toastId });
+			}
 		},
 	});
 
@@ -94,28 +86,24 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 
 	useFormBlocker(form);
 
-	const onCreateSampleResume = () => {
+	const onCreateSampleResume = async () => {
 		const values = form.state.values;
 		const randomName = generateRandomName();
 
-		const data = {
-			name: values.name || randomName,
-			slug: values.slug || slugify(randomName),
-			tags: values.tags,
-			withSampleData: true,
-		} satisfies RouterInput["resume"]["create"];
+		const name = values.name || randomName;
+		const slug = values.slug || slugify(randomName);
+		const tags = values.tags;
 
 		const toastId = toast.loading(t`Creating your resume...`);
 
-		createResume(data, {
-			onSuccess: () => {
-				toast.success(t`Your resume has been created successfully.`, { id: toastId });
-				closeDialog();
-			},
-			onError: (error) => {
-				toast.error(getResumeErrorMessage(error), { id: toastId });
-			},
-		});
+		try {
+			const { createResume: createFn } = await import("@/libs/local-resume");
+			createFn(name, true);
+			toast.success(t`Your resume has been created successfully.`, { id: toastId });
+			closeDialog();
+		} catch (error) {
+			toast.error(getResumeErrorMessage(error), { id: toastId });
+		}
 	};
 
 	return (
@@ -148,14 +136,14 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 						})}
 						className="gap-x-px rtl:flex-row-reverse"
 					>
-						<Button type="submit" disabled={isPending}>
+						<Button type="submit" disabled={form.state.isSubmitting}>
 							<Trans>Create</Trans>
 						</Button>
 
 						<DropdownMenu>
 							<DropdownMenuTrigger
 								render={
-									<Button size="icon" disabled={isPending}>
+									<Button size="icon" disabled={form.state.isSubmitting}>
 										<CaretDownIcon />
 									</Button>
 								}
@@ -178,9 +166,6 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 export function UpdateResumeDialog({ data }: DialogProps<"resume.update">) {
 	const closeDialog = useDialogStore((state) => state.closeDialog);
 	const patchResume = usePatchResume();
-	const params = useParams({ strict: false }) as { resumeId?: string };
-
-	const { mutate: updateResume, isPending } = useMutation(orpc.resume.update.mutationOptions());
 
 	const form = useAppForm({
 		defaultValues: {
@@ -193,26 +178,22 @@ export function UpdateResumeDialog({ data }: DialogProps<"resume.update">) {
 		onSubmit: ({ value }) => {
 			const toastId = toast.loading(t`Updating your resume...`);
 
-			updateResume(value, {
-				onSuccess: (updated) => {
-					if (params.resumeId === updated.id) {
-						patchResume((draft) => {
-							draft.name = updated.name;
-							draft.slug = updated.slug;
-							draft.tags = updated.tags;
-							draft.isLocked = updated.isLocked;
-							draft.isPublic = updated.isPublic;
-							draft.hasPassword = updated.hasPassword;
-						});
-					}
+			try {
+				const updated = updateResumeMetadata(value.id, value);
 
-					toast.success(t`Your resume has been updated successfully.`, { id: toastId });
-					closeDialog();
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error), { id: toastId });
-				},
-			});
+				if (updated) {
+					patchResume((draft) => {
+						draft.name = updated.name;
+						draft.slug = updated.slug;
+						draft.tags = updated.tags;
+					});
+				}
+
+				toast.success(t`Your resume has been updated successfully.`, { id: toastId });
+				closeDialog();
+			} catch (error) {
+				toast.error(getResumeErrorMessage(error), { id: toastId });
+			}
 		},
 	});
 
@@ -248,7 +229,7 @@ export function UpdateResumeDialog({ data }: DialogProps<"resume.update">) {
 				<ResumeForm form={form} />
 
 				<DialogFooter>
-					<Button type="submit" disabled={isPending}>
+					<Button type="submit" disabled={form.state.isSubmitting}>
 						<Trans>Save Changes</Trans>
 					</Button>
 				</DialogFooter>
@@ -261,8 +242,6 @@ export function DuplicateResumeDialog({ data }: DialogProps<"resume.duplicate">)
 	const navigate = useNavigate();
 	const closeDialog = useDialogStore((state) => state.closeDialog);
 
-	const { mutate: duplicateResume, isPending } = useMutation(orpc.resume.duplicate.mutationOptions());
-
 	const form = useAppForm({
 		defaultValues: {
 			id: data.id,
@@ -271,21 +250,29 @@ export function DuplicateResumeDialog({ data }: DialogProps<"resume.duplicate">)
 			tags: data.tags,
 		},
 		validators: { onSubmit: formSchema },
-		onSubmit: ({ value }) => {
+		onSubmit: async ({ value }) => {
 			const toastId = toast.loading(t`Duplicating your resume...`);
 
-			duplicateResume(value, {
-				onSuccess: async (id) => {
-					toast.success(t`Your resume has been duplicated successfully.`, { id: toastId });
-					closeDialog();
+			try {
+				const { getResume, saveResume, createResume } = await import("@/libs/local-resume");
+				const existing = getResume(data.id);
+				if (!existing) throw new Error("Resume not found");
 
-					if (!data.shouldRedirect) return;
-					void navigate({ to: "/builder/$resumeId", params: { resumeId: id } });
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error), { id: toastId });
-				},
-			});
+				// 用 formData 创建新简历，再覆盖 data
+				const created = createResume(value.name, false);
+				created.slug = value.slug;
+				created.tags = value.tags;
+				created.data = structuredClone(existing.data) as any;
+				saveResume(created);
+
+				toast.success(t`Your resume has been duplicated successfully.`, { id: toastId });
+				closeDialog();
+
+				if (!data.shouldRedirect) return;
+				void navigate({ to: "/builder/$resumeId", params: { resumeId: created.id } });
+			} catch (error) {
+				toast.error(getResumeErrorMessage(error), { id: toastId });
+			}
 		},
 	});
 
@@ -321,7 +308,7 @@ export function DuplicateResumeDialog({ data }: DialogProps<"resume.duplicate">)
 				<ResumeForm form={form} />
 
 				<DialogFooter>
-					<Button type="submit" disabled={isPending}>
+					<Button type="submit" disabled={form.state.isSubmitting}>
 						<Trans>Duplicate</Trans>
 					</Button>
 				</DialogFooter>
@@ -333,9 +320,7 @@ export function DuplicateResumeDialog({ data }: DialogProps<"resume.duplicate">)
 const ResumeForm = withForm({
 	defaultValues,
 	render: function ResumeFormRenderer({ form }) {
-		const { data: session } = authClient.useSession();
-
-		const slugPrefix = `${window.location.origin}/${session?.user.username ?? ""}/`;
+		const slugPrefix = `${window.location.origin}/`;
 
 		const onGenerateName = () => {
 			form.setFieldValue("name", generateRandomName());
