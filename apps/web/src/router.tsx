@@ -15,8 +15,8 @@ export const getRouter = async () => {
 	const [theme, locale, session, flags] = await Promise.all([
 		getTheme(),
 		getLocale(),
-		getSession(),
-		client.flags.get(),
+		getSession().catch(() => null),
+		client.flags.get().catch(() => ({} as Record<string, unknown>)),
 	]);
 
 	await loadLocale(locale);
