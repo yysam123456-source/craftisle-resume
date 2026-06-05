@@ -1,7 +1,6 @@
 {
-  "version": 2,
-  "buildCommand": "pnpm --filter web build && pnpm --filter server build",
+  "buildCommand": "pnpm --filter @reactive-resume/web build",
+  "outputDirectory": "apps/web/dist",
   "installCommand": "pnpm install",
-  "outputDirectory": ".vercel/output",
-  "framework": null
+  "devCommand": "pnpm --filter @reactive-resume/web dev"
 }
