@@ -309,7 +309,6 @@ export function useResumeData(): ResumeData | undefined {
 }
 
 export function useUpdateResumeData() {
-	const queryClient = useQueryClient();
 	const params = useParams({ strict: false }) as { resumeId?: string };
 	const resumeId = params.resumeId;
 	const updateResumeData = useResumeStore((state) => state.updateResumeData);
