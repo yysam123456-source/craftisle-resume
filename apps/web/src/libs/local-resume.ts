@@ -34,13 +34,24 @@ function slugify(name: string): string {
 // ---- Public API ----
 
 export function getResumes(): Resume[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+	if (typeof window === "undefined") return [];
+	try {
+		const raw = localStorage.getItem(STORAGE_KEY);
+		if (!raw) return [];
+		const resumes: Resume[] = JSON.parse(raw);
+		// 防御：补全缺失或无效的 updatedAt
+		let changed = false;
+		for (const r of resumes) {
+			if (!r.updatedAt || isNaN(new Date(r.updatedAt).getTime())) {
+				r.updatedAt = now();
+				changed = true;
+			}
+		}
+		if (changed) localStorage.setItem(STORAGE_KEY, JSON.stringify(resumes));
+		return resumes;
+	} catch {
+		return [];
+	}
 }
 
 export function getResumeMetadata(): ResumeMetadata[] {
