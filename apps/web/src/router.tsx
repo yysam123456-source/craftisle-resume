@@ -9,14 +9,20 @@ import { getQueryClient } from "./libs/query/client";
 import { getTheme } from "./libs/theme";
 import { routeTree } from "./routeTree.gen";
 
+const withTimeout = <T,>(promise: Promise<T>, ms: number, fallback: T): Promise<T> =>
+	Promise.race([
+		promise,
+		new Promise<T>((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms)),
+	]).catch(() => fallback);
+
 export const getRouter = async () => {
 	const queryClient = getQueryClient();
 
 	const [theme, locale, session, flags] = await Promise.all([
 		getTheme(),
 		getLocale(),
-		getSession().catch(() => null),
-		client.flags.get().catch(() => ({} as Record<string, unknown>)),
+		withTimeout(getSession(), 2000, null),
+		withTimeout(client.flags.get(), 2000, {} as Record<string, unknown>),
 	]);
 
 	await loadLocale(locale);
