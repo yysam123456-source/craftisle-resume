@@ -3,7 +3,7 @@ import type { Layout } from "react-resizable-panels";
 import type { BuilderLayout } from "./-store/sidebar";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Cookies from "js-cookie";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { usePanelRef } from "react-resizable-panels";
 import { ResizableGroup, ResizablePanel, ResizableSeparator } from "@reactive-resume/ui/components/resizable";
 import {
