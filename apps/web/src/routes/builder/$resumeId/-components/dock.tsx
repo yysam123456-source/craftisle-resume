@@ -45,9 +45,9 @@ export function BuilderDock({ pageLayout, onTogglePageLayout }: BuilderDockProps
 	const [isPrinting, setIsPrinting] = useState(false);
 
 	const publicUrl = useMemo(() => {
-		if (!session?.user.username || !resume?.slug) return "";
+		if (!session?.user?.username || !resume?.slug) return "";
 		return `${window.location.origin}/${session.user.username}/${resume.slug}`;
-	}, [session?.user.username, resume?.slug]);
+	}, [session?.user?.username, resume?.slug]);
 
 	const onCopyUrl = useCallback(async () => {
 		await copyToClipboard(publicUrl);

@@ -30,7 +30,7 @@ export function SharingSectionBuilder() {
 	const { mutateAsync: removePassword } = useMutation(orpc.resume.removePassword.mutationOptions());
 
 	const publicUrl = useMemo(() => {
-		if (!session) return "";
+		if (!session?.user?.username) return "";
 		return `${window.location.origin}/${session.user.username}/${resume.slug}`;
 	}, [session, resume]);
 
