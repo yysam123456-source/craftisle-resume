@@ -6,8 +6,9 @@ type PageSize = {
 export const RESUME_THUMBNAIL_TARGET_WIDTH = 420;
 const MAX_THUMBNAIL_PIXEL_RATIO = 2;
 
-export const getResumeThumbnailCacheKey = (resumeId: string, updatedAt: Date) => {
-	return `${resumeId}:${updatedAt.getTime()}`;
+export const getResumeThumbnailCacheKey = (resumeId: string, updatedAt: Date | string) => {
+	const date = typeof updatedAt === "string" ? new Date(updatedAt) : updatedAt;
+	return `${resumeId}:${date.getTime()}`;
 };
 
 export const getResumeThumbnailRenderSize = (
