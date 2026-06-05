@@ -1,10 +1,9 @@
 import type React from "react";
 import type { Layout } from "react-resizable-panels";
 import type { BuilderLayout } from "./-store/sidebar";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Cookies from "js-cookie";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { usePanelRef } from "react-resizable-panels";
 import { ResizableGroup, ResizablePanel, ResizableSeparator } from "@reactive-resume/ui/components/resizable";
 import {
@@ -15,7 +14,7 @@ import {
 	useResumeStore,
 } from "@/features/resume/builder/draft";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { orpc } from "@/libs/orpc/client";
+import { getResume } from "@/libs/local-resume";
 import { createNoindexFollowMeta } from "@/libs/seo";
 import { BuilderHeader } from "./-components/header";
 import { BuilderSidebarLeft } from "./-sidebar/left";
@@ -32,16 +31,17 @@ import {
 export const Route = createFileRoute("/builder/$resumeId")({
 	component: RouteComponent,
 	beforeLoad: async ({ context }) => {
-		if (!context.session) throw redirect({ to: "/auth/login", replace: true });
+		// Local-only mode: skip auth redirect
+		// if (!context.session) throw redirect({ to: "/auth/login", replace: true });
 		return { session: context.session };
 	},
-	loader: async ({ params, context }) => {
+	loader: async ({ params }) => {
 		const [layout, resume] = await Promise.all([
 			getBuilderLayout(),
-			context.queryClient.ensureQueryData(orpc.resume.getById.queryOptions({ input: { id: params.resumeId } })),
+			getResume(params.resumeId),
 		]);
 
-		return { layout, name: resume.name };
+		return { layout, name: resume?.name ?? "Untitled" };
 	},
 	head: ({ loaderData }) => ({
 		meta: loaderData
@@ -54,7 +54,7 @@ function RouteComponent() {
 	const { layout: initialLayout } = Route.useLoaderData();
 
 	const { resumeId } = Route.useParams();
-	const { data: resume } = useSuspenseQuery(orpc.resume.getById.queryOptions({ input: { id: resumeId } }));
+	const resume = useMemo(() => getResume(resumeId), [resumeId]);
 	const initializeResumeStore = useInitializeResumeStore();
 	const mergeResumeMetadata = useMergeResumeMetadata();
 	const isReady = useResumeStore((state) => state.isReady);
@@ -65,26 +65,27 @@ function RouteComponent() {
 	useBuilderResumeUpdateSubscription();
 
 	useEffect(() => {
-		if (isInitialized) return;
+		if (isInitialized || !resume) return;
 		initializeResumeStore(resume);
 	}, [initializeResumeStore, isInitialized, resume]);
 
 	useEffect(() => {
+		if (!resume) return;
 		mergeResumeMetadata(resume);
 	}, [
 		mergeResumeMetadata,
-		resume.id,
-		resume.name,
-		resume.slug,
-		resume.tags,
-		resume.isLocked,
-		resume.isPublic,
-		resume.hasPassword,
-		resume.updatedAt,
+		resume?.id,
+		resume?.name,
+		resume?.slug,
+		resume?.tags,
+		resume?.isLocked,
+		resume?.isPublic,
+		resume?.hasPassword,
+		resume?.updatedAt,
 		resume,
 	]);
 
-	if (!isInitialized) return null;
+	if (!resume || !isInitialized) return null;
 
 	return <BuilderLayoutShell initialLayout={initialLayout} />;
 }
