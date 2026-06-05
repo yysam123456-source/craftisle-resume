@@ -21,7 +21,13 @@ export function ResumeCard({ resume }: ResumeCardProps) {
 	const { i18n } = useLingui();
 
 	const updatedAt = useMemo(() => {
-		return Intl.DateTimeFormat(i18n.locale, { dateStyle: "long", timeStyle: "short" }).format(resume.updatedAt);
+		try {
+			const date = new Date(resume.updatedAt);
+			if (isNaN(date.getTime())) return "Unknown date";
+			return Intl.DateTimeFormat(i18n.locale, { dateStyle: "long", timeStyle: "short" }).format(date);
+		} catch {
+			return "Unknown date";
+		}
 	}, [i18n.locale, resume.updatedAt]);
 
 	return (
