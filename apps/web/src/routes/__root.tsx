@@ -87,11 +87,15 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		const [theme, locale, session, flags] = await Promise.all([
 			getTheme(),
 			getLocale(),
-			getSession(),
-			client.flags.get(),
+			getSession().catch(() => null),
+			client.flags.get().catch(() => ({} as Record<string, unknown>)),
 		]);
 
-		await loadLocale(locale);
+		try {
+			await loadLocale(locale);
+		} catch {
+			// ignore locale load errors in local-only mode
+		}
 
 		return { theme, locale, session, flags };
 	},
