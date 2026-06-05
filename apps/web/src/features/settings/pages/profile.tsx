@@ -32,6 +32,14 @@ type Props = {
 };
 
 export function ProfileSettingsPage({ session }: Props) {
+	if (!session || !session.user) {
+		return (
+			<div className="p-8 text-center text-muted-foreground">
+				Profile settings are not available in local-only mode.
+			</div>
+		);
+	}
+
 	const router = useRouter();
 
 	const form = useAppForm({

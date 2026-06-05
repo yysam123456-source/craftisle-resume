@@ -4,6 +4,7 @@ import { CaretDownIcon, MagicWandIcon, PencilSimpleLineIcon, PlusIcon, TestTubeI
 import { useStore } from "@tanstack/react-form";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@reactive-resume/ui/components/button";
@@ -55,6 +56,7 @@ const defaultValues: FormValues = {
 };
 
 export function CreateResumeDialog(_: DialogProps<"resume.create">) {
+	const navigate = useNavigate();
 	const closeDialog = useDialogStore((state) => state.closeDialog);
 	const form = useAppForm({
 		defaultValues: {
@@ -72,6 +74,7 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 				saveResume(created);
 				toast.success(t`Your resume has been created successfully.`, { id: toastId });
 				closeDialog();
+				void navigate({ to: "/builder/$resumeId", params: { resumeId: created.id } });
 			} catch (error) {
 				toast.error(getResumeErrorMessage(error), { id: toastId });
 			}
