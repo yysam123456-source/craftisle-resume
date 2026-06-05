@@ -329,16 +329,13 @@ export function useResumeData(): ResumeData | undefined {
 }
 
 export function useUpdateResumeData() {
-	const params = useParams({ strict: false }) as { resumeId?: string };
-	const resumeId = params.resumeId;
 	const updateResumeData = useResumeStore((state) => state.updateResumeData);
 
 	return useCallback(
 		(fn: (draft: WritableDraft<ResumeData>) => void) => {
-			if (!resumeId) return;
 			updateResumeData(fn);
 		},
-		[resumeId, updateResumeData],
+		[updateResumeData],
 	);
 }
 
