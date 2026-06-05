@@ -70,19 +70,33 @@ function cloneResume(resume: Resume): Resume {
 
 async function flushResumeSave(id: string) {
 	const runtime = runtimes.get(id);
-	if (!runtime || runtime.isSaving || !runtime.pendingResume) return;
+	if (!runtime || runtime.isSaving || !runtime.pendingResume) {
+		return;
+	}
 
 	const submitted = runtime.pendingResume;
 	runtime.pendingResume = undefined;
 	runtime.isSaving = true;
 
 	try {
-		const existing = getResume(submitted.id);
-		if (existing) {
-			existing.data = submitted.data;
-			existing.updatedAt = new Date();
-			saveResume(existing);
+		// 直接构造要保存的 resume 对象并写入 localStorage
+		// 这样避免 getResume() / saveResume() 之间的引用混乱
+		const raw = localStorage.getItem("craftisle-resumes");
+		const resumes: Resume[] = raw ? JSON.parse(raw) : [];
+		const idx = resumes.findIndex((r) => r.id === submitted.id);
+
+		const toSave: Resume = {
+			...submitted,
+			updatedAt: new Date(),
+		};
+
+		if (idx >= 0) {
+			resumes[idx] = toSave;
+		} else {
+			resumes.push(toSave);
 		}
+
+		localStorage.setItem("craftisle-resumes", JSON.stringify(resumes));
 
 		const currentResume = useResumeStore.getState().resume;
 		const currentDataStillMatchesSubmission =
@@ -177,6 +191,12 @@ function cleanupRuntime(id: string) {
 function syncCurrentResume(id: string) {
 	const resume = useResumeStore.getState().resume;
 	if (!resume || resume.id !== id) return;
+
+	const isLocalOnly = typeof window !== "undefined" && !!(window as any).__LOCAL_ONLY__;
+	if (isLocalOnly) {
+		queueResumeSave(resume);
+		return;
+	}
 
 	getRuntime(id).syncResume(resume);
 }

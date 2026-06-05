@@ -16,14 +16,16 @@ const withTimeout = <T,>(promise: Promise<T>, ms: number, fallback: T): Promise<
 	]).catch(() => fallback);
 
 export const getRouter = async () => {
+	const isLocalOnly = typeof window !== "undefined" && !!(window as any).__LOCAL_ONLY__;
 	const queryClient = getQueryClient();
 
-	const [theme, locale, session, flags] = await Promise.all([
+	const [theme, locale, session] = await Promise.all([
 		getTheme(),
 		getLocale(),
 		withTimeout(getSession(), 2000, null),
-		withTimeout(client.flags.get(), 2000, {} as Record<string, unknown>),
 	]);
+
+	const flags = isLocalOnly ? ({} as Record<string, unknown>) : await withTimeout(client.flags.get(), 2000, {} as Record<string, unknown>);
 
 	await loadLocale(locale);
 

@@ -46,14 +46,19 @@ function impactLabel(impact: "high" | "medium" | "low") {
 }
 
 export function ResumeAnalysisSectionBuilder() {
+	const isLocalOnly = typeof window !== "undefined" && !!(window as any).__LOCAL_ONLY__;
+	if (isLocalOnly) return null;
+
 	const queryClient = useQueryClient();
 
 	const resume = useResume();
 
 	const resumeId = resume?.id ?? "";
-	const providersQuery = useQuery(orpc.aiProviders.list.queryOptions());
-	const aiEnabled =
-		providersQuery.data?.some((provider) => provider.enabled && provider.testStatus === "success") ?? false;
+	const providersQuery = useQuery({
+		...orpc.aiProviders.list.queryOptions(),
+		enabled: false,
+	});
+	const aiEnabled = false;
 
 	const analysisQuery = useQuery({
 		...orpc.resume.analysis.getById.queryOptions({ input: { id: resumeId } }),

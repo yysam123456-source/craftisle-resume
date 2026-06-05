@@ -9,9 +9,13 @@ import { orpc } from "@/libs/orpc/client";
 import { SectionBase } from "../shared/section-base";
 
 export function StatisticsSectionBuilder() {
+	const isLocalOnly = typeof window !== "undefined" && !!(window as any).__LOCAL_ONLY__;
+	if (isLocalOnly) return null;
+
 	const params = useParams({ from: "/builder/$resumeId" });
 	const { data: statistics } = useQuery(
 		orpc.resume.statistics.getById.queryOptions({ input: { id: params.resumeId } }),
+		{ enabled: false },
 	);
 
 	if (!statistics) return null;
