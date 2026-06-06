@@ -115,9 +115,15 @@ export function ResumePreviewClient({
 					const nextPdf = createPreviewPdf(blob, pdfIdRef.current++, hasPreviewRef.current);
 
 					hasPreviewRef.current = true;
+					setPreviewError(null);
 					setPreviewLayers((current) => addPreviewLayer(current, nextPdf));
 				}
-			} catch {}
+			} catch (error: unknown) {
+				const message = error instanceof Error ? error.message : String(error);
+				console.error("[ResumePreview] PDF generation failed:", error);
+				setPreviewError(message);
+				toast.error(`简历预览生成失败: ${message}`);
+			}
 		};
 
 		const timeoutId = window.setTimeout(() => {
