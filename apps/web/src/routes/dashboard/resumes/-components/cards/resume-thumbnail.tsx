@@ -1,5 +1,5 @@
 import type { ResumeData } from "@reactive-resume/schema/resume/data";
-import type { RouterOutput } from "@/libs/orpc/client";
+
 import { FileTextIcon } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { useInView } from "motion/react";
@@ -9,15 +9,14 @@ import { cn } from "@reactive-resume/utils/style";
 import { createResumePdfBlob } from "@/features/resume/export/pdf-document";
 import { createPdfFirstPageImageUrl } from "@/features/resume/preview/pdf-thumbnail";
 import { getResumeThumbnailCacheKey } from "@/features/resume/preview/resume-thumbnail.shared";
-import { orpc } from "@/libs/orpc/client";
+import { getResume } from "@/libs/local-resume";
 
-type ResumeListItem = RouterOutput["resume"]["list"][number];
 
 type ThumbnailState = { status: "error" | "idle" | "loading" } | { status: "ready"; url: string };
 
 type ResumeThumbnailProps = {
 	isLocked: boolean;
-	resume: ResumeListItem;
+	resume: { id: string; updatedAt: string | Date };
 };
 
 const throwIfAborted = (signal: AbortSignal) => {
@@ -72,7 +71,12 @@ export function ResumeThumbnail({ isLocked, resume }: ResumeThumbnailProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isInView = useInView(containerRef, { amount: 0.1, margin: "240px", once: true });
 	const resumeQuery = useQuery({
-		...orpc.resume.getById.queryOptions({ input: { id: resume.id } }),
+		queryKey: ["resume-data-local", resume.id],
+		queryFn: () => {
+			const found = getResume(resume.id);
+			if (!found) throw new Error("Resume not found in localStorage.");
+			return found;
+		},
 		enabled: isInView,
 	});
 	const thumbnail = useResumeThumbnail(

@@ -8,9 +8,10 @@ type BaseCardProps = React.ComponentProps<"div"> & {
 	tags?: string[];
 	className?: string;
 	children?: React.ReactNode;
+	actions?: React.ReactNode;
 };
 
-export function BaseCard({ title, description, tags, className, children, ...props }: BaseCardProps) {
+export function BaseCard({ title, description, tags, className, children, actions, ...props }: BaseCardProps) {
 	return (
 		<CometCard translateDepth={3} rotateDepth={6}>
 			<div
@@ -23,6 +24,11 @@ export function BaseCard({ title, description, tags, className, children, ...pro
 				{children}
 
 				<div className="absolute inset-x-0 bottom-0 flex w-full flex-col justify-end gap-y-0.5 bg-background/40 px-4 py-3 backdrop-blur-xs">
+					{actions && (
+						<div className="mb-1 flex items-center justify-end gap-1">
+							{actions}
+						</div>
+					)}
 					<h3 className="truncate font-medium tracking-tight">{title}</h3>
 					<p className="truncate text-xs opacity-80">{description}</p>
 

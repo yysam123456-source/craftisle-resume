@@ -1,13 +1,11 @@
-import type { RouterOutput } from "@/libs/orpc/client";
+import type { ResumeMetadata } from "@/libs/local-resume";
 import { AnimatePresence, m } from "motion/react";
 import { CreateResumeCard } from "./cards/create-card";
 import { ImportResumeCard } from "./cards/import-card";
 import { ResumeCard } from "./cards/resume-card";
 
-type Resume = RouterOutput["resume"]["list"][number];
-
 type Props = {
-	resumes: Resume[];
+	resumes: ResumeMetadata[];
 };
 
 export function GridView({ resumes }: Props) {

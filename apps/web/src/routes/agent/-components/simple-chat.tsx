@@ -1,7 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { PaperPlaneRightIcon, SparkleIcon, StopIcon, XIcon } from "@phosphor-icons/react";
-import { lazy, Suspense, useCallback, useMemo, useRef, useState } from "react";
+import { useEffect, lazy, Suspense, useCallback, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { Button } from "@reactive-resume/ui/components/button";
@@ -37,6 +37,64 @@ type SimpleChatProps = {
 
 function generateId() {
 	return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+// Normalize AI-returned resume data to match the expected ResumeData schema.
+// AI may return data in various formats: wrapped in {"data":{...}}, missing metadata, etc.
+// This function does NOT trust AI output — it validates, unwraps, and merges with original.
+function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): unknown {
+	if (!rawUpdate || typeof rawUpdate !== "object") return rawUpdate;
+
+	const updateObj = rawUpdate as Record<string, unknown>;
+
+	// Step 1: Unwrap .data wrapper if AI returned {"data": {...}}
+	// Check if the wrapper's .data has resume-specific fields (not a nested basics field)
+	let resolved = updateObj;
+	if ("data" in updateObj && typeof updateObj.data === "object" && updateObj.data !== null) {
+		const innerData = updateObj.data as Record<string, unknown>;
+		if ("basics" in innerData || "sections" in innerData || "metadata" in innerData) {
+			resolved = innerData;
+		}
+	}
+
+	// Step 2: If we have original data, merge missing structural fields
+	if (originalData && typeof originalData === "object") {
+		const orig = originalData as Record<string, unknown>;
+
+		// Unwrap original if also wrapped in .data (as stored in localStorage)
+		const origData =
+			"data" in orig && typeof orig.data === "object" && orig.data !== null
+				? (orig.data as Record<string, unknown>)
+				: orig;
+
+		// Merge critical missing top-level keys from original
+		const criticalKeys = ["metadata", "picture", "customSections", "summary"];
+		for (const key of criticalKeys) {
+			if (!(key in resolved) && key in origData) {
+				(resolved as Record<string, unknown>)[key] = origData[key];
+			}
+		}
+
+		// Merge missing section types from original's sections
+		const origSections =
+			"sections" in origData ? (origData.sections as Record<string, unknown> | undefined) : undefined;
+		const resolvedSections = (resolved as Record<string, unknown>).sections as
+			| Record<string, unknown>
+			| undefined;
+
+		if (origSections && resolvedSections) {
+			for (const key of Object.keys(origSections)) {
+				if (!(key in resolvedSections)) {
+					resolvedSections[key] = origSections[key];
+				}
+			}
+			(resolved as Record<string, unknown>).sections = resolvedSections;
+		} else if (origSections) {
+			(resolved as Record<string, unknown>).sections = origSections;
+		}
+	}
+
+	return resolved;
 }
 
 // Extract hidden resume data marker from AI response
@@ -113,6 +171,39 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	const [input, setInput] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const abortRef = useRef<AbortController | null>(null);
+	const RATE_LIMIT_MS = 60_000; // 60 seconds between AI calls
+	const RATE_LIMIT_KEY = "craftisle-ai-last-request";
+	const [cooldownRemaining, setCooldownRemaining] = useState(0);
+
+	// On mount: read last request time from localStorage and compute remaining cooldown
+	useEffect(() => {
+		const last = localStorage.getItem(RATE_LIMIT_KEY);
+		if (!last) return;
+		const remaining = Math.ceil((RATE_LIMIT_MS - (Date.now() - Number(last))) / 1000);
+		if (remaining > 0) setCooldownRemaining(remaining);
+	}, []);
+
+	// Live countdown timer for rate limit
+	useEffect(() => {
+		if (cooldownRemaining <= 0) return;
+		const interval = setInterval(() => {
+			setCooldownRemaining((prev) => {
+				if (prev <= 1) { clearInterval(interval); return 0; }
+				return prev - 1;
+			});
+		}, 1000);
+		return () => clearInterval(interval);
+	}, [cooldownRemaining]);
+
+	// Returns remaining seconds if rate-limited, or 0 if allowed
+	const getRateLimitRemaining = useCallback(() => {
+		if (cooldownRemaining > 0) return cooldownRemaining;
+		const last = localStorage.getItem(RATE_LIMIT_KEY);
+		if (!last) return 0;
+		const elapsed = Date.now() - Number(last);
+		if (elapsed >= RATE_LIMIT_MS) return 0;
+		return Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
+	}, [cooldownRemaining]);
 
 	// Preview dialog state
 	const [previewUpdate, setPreviewUpdate] = useState<unknown>(undefined);
@@ -152,19 +243,20 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 				const idx = resumes.findIndex((r) => r.id === resumeId);
 				if (idx === -1) return;
 
-				const originalData = resumes[idx].data;
+				// Normalize: unwrap .data, merge missing fields from original
+				const normalizedData = normalizeResumeData(update, resumes[idx]) as Record<string, unknown>;
 
-				const updateObj = typeof update === "object" && update !== null ? (update as Record<string, unknown>) : {};
-				let newData = (updateObj.data as Record<string, unknown>) ?? updateObj;
-
-				const typedNewData = newData as Record<string, unknown> & { picture?: { url?: string } };
-				if (typedNewData.picture?.url === "[image removed]") {
-					newData = { ...newData, picture: originalData.picture };
+				// Restore picture URLs if AI replaced them with "[image removed]"
+				const origData = resumes[idx].data;
+				const normalizedPicture = normalizedData.picture as { url?: string } | undefined;
+				const origPicture = origData?.picture as { url?: string } | undefined;
+				if (normalizedPicture?.url === "[image removed]" && origPicture?.url) {
+					normalizedData.picture = origPicture;
 				}
 
 				resumes[idx] = {
 					...resumes[idx],
-					data: newData,
+					data: normalizedData,
 					updatedAt: new Date().toISOString(),
 				};
 
@@ -179,10 +271,15 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	);
 
 	// Open preview dialog with resume data diff
-	const handleApplyClick = useCallback((update: unknown) => {
-		setPreviewUpdate(update);
-		setShowPreview(true);
-	}, []);
+	const handleApplyClick = useCallback(
+		(update: unknown) => {
+			// Normalize AI data: unwrap wrappers, merge missing fields from original
+			const normalized = normalizeResumeData(update, resumeData);
+			setPreviewUpdate(normalized);
+			setShowPreview(true);
+		},
+		[resumeData],
+	);
 
 	// Confirm from preview dialog: apply the update
 	const confirmApply = useCallback(() => {
@@ -202,10 +299,16 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	const renderDiffPreview = useCallback(() => {
 		if (!previewUpdate || !resumeData) return null;
 		try {
-			const updateObj =
-				typeof previewUpdate === "object" && previewUpdate !== null ? (previewUpdate as Record<string, unknown>) : {};
-			const newData = (updateObj.data as Record<string, unknown>) ?? updateObj;
-			const oldData = resumeData as Record<string, unknown>;
+			const newData = typeof previewUpdate === "object" && previewUpdate !== null
+				? (previewUpdate as Record<string, unknown>)
+				: {};
+
+			// Unwrap original data if it has .data wrapper (from localStorage entry)
+			const rawOrig = resumeData as Record<string, unknown>;
+			const oldData =
+				"data" in rawOrig && typeof rawOrig.data === "object" && rawOrig.data !== null
+					? (rawOrig.data as Record<string, unknown>)
+					: rawOrig;
 
 			type DiffRow = { label: string; before: string; after: string };
 
@@ -318,6 +421,16 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	const requestResumeData = useCallback(
 		async (assistantMessageId: string) => {
 			if (!sanitizedResumeData) return;
+
+			// Rate limit: 60 seconds between AI requests
+			const remaining = getRateLimitRemaining();
+			if (remaining > 0) {
+				toast.warning(`Please wait ${remaining}s before sending another request.`);
+				return;
+			}
+
+			localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+			setCooldownRemaining(60);
 			setIsLoading(true);
 
 			const controller = new AbortController();
@@ -364,16 +477,18 @@ Replace {...} with the FULL updated resume data object. Keep image fields as "[i
 				const rawContent = data.choices?.[0]?.message?.content;
 				const assistantContent = typeof rawContent === "string" ? rawContent : JSON.stringify(rawContent) || "";
 
-				const { update } = parseResumeUpdate(assistantContent);
+			const { update } = parseResumeUpdate(assistantContent);
 
-				if (update) {
-					// Patch the existing assistant message with the extracted data
-					setMessages((prev) => prev.map((m) => (m.id === assistantMessageId ? { ...m, resumeUpdate: update } : m)));
-					// Open preview dialog instead of auto-applying
-					handleApplyClick(update);
-				} else {
-					toast.error(t`Could not extract resume data. Please try again.`);
-				}
+			if (update) {
+				// Normalize before storing and opening preview
+				const normalized = normalizeResumeData(update, resumeData);
+				// Patch the existing assistant message with the extracted data
+				setMessages((prev) => prev.map((m) => (m.id === assistantMessageId ? { ...m, resumeUpdate: normalized } : m)));
+				// Open preview dialog instead of auto-applying
+				handleApplyClick(normalized);
+			} else {
+				toast.error(t`Could not extract resume data. Please try again.`);
+			}
 			} catch (error) {
 				if (error instanceof Error && error.name === "AbortError") return;
 				toast.error(error instanceof Error ? error.message : t`Failed to get resume data.`);
@@ -382,13 +497,22 @@ Replace {...} with the FULL updated resume data object. Keep image fields as "[i
 				abortRef.current = null;
 			}
 		},
-		[sanitizedResumeData, messages, handleApplyClick],
+		[getRateLimitRemaining, sanitizedResumeData, messages, handleApplyClick],
 	);
 
 	const sendMessage = useCallback(async () => {
 		const text = input.trim();
 		if (!text || isLoading) return;
 
+		// Rate limit: 60 seconds between AI requests
+		const remaining = getRateLimitRemaining();
+		if (remaining > 0) {
+			toast.warning(`Please wait ${remaining}s before sending another request.`);
+			return;
+		}
+
+		localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+		setCooldownRemaining(60);
 		const userMessage: Message = { id: generateId(), role: "user", content: text };
 		setMessages((prev) => [...prev, userMessage]);
 		setInput("");
@@ -466,7 +590,7 @@ EXAMPLE RESPONSE FORMAT:
 			setIsLoading(false);
 			abortRef.current = null;
 		}
-	}, [input, isLoading, messages, sanitizedResumeData]);
+	}, [input, isLoading, messages, sanitizedResumeData, getRateLimitRemaining]);
 
 	const stopGeneration = useCallback(() => {
 		abortRef.current?.abort();
@@ -563,7 +687,11 @@ EXAMPLE RESPONSE FORMAT:
 														<p className="mb-2 font-medium text-sm">
 															<Trans>AI has prepared an update for your resume.</Trans>
 														</p>
-														<Button size="sm" onClick={() => handleApplyClick(message.resumeUpdate)}>
+														<Button
+															size="sm"
+															onClick={() => handleApplyClick(message.resumeUpdate)}
+															disabled={cooldownRemaining > 0}
+														>
 															<Trans>Apply Changes</Trans>
 														</Button>
 													</>
@@ -576,7 +704,7 @@ EXAMPLE RESPONSE FORMAT:
 															size="sm"
 															variant="outline"
 															onClick={() => requestResumeData(message.id)}
-															disabled={isLoading}
+															disabled={isLoading || cooldownRemaining > 0}
 														>
 															<Trans>Apply Changes</Trans>
 														</Button>
@@ -612,7 +740,7 @@ EXAMPLE RESPONSE FORMAT:
 						<Textarea
 							value={input}
 							rows={1}
-							disabled={isLoading}
+							disabled={isLoading || cooldownRemaining > 0}
 							onChange={(event) => setInput(event.target.value)}
 							onKeyDown={(event) => {
 								if (event.nativeEvent.isComposing) return;
@@ -620,7 +748,11 @@ EXAMPLE RESPONSE FORMAT:
 								event.preventDefault();
 								void sendMessage();
 							}}
-							placeholder={t`Ask anything about this resume`}
+							placeholder={
+								cooldownRemaining > 0
+								? `Wait ${cooldownRemaining}s before next request...`
+								: t`Ask anything about this resume`
+							}
 							className="max-h-40 min-h-9 resize-none border-0 bg-transparent p-2 leading-5 shadow-none focus-visible:ring-0"
 						/>
 						{isLoading ? (
@@ -634,7 +766,12 @@ EXAMPLE RESPONSE FORMAT:
 								<StopIcon />
 							</Button>
 						) : (
-							<Button type="submit" size="icon" aria-label={t`Send message`} disabled={!input.trim()}>
+							<Button
+								type="submit"
+								size="icon"
+								aria-label={t`Send message`}
+								disabled={!input.trim() || cooldownRemaining > 0}
+							>
 								<PaperPlaneRightIcon />
 							</Button>
 						)}

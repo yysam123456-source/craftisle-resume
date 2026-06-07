@@ -13,7 +13,28 @@ const rootPackageJson = JSON.parse(readFileSync(rootPackageJsonPath, "utf-8")) a
 const appVersion = JSON.stringify(rootPackageJson.version ?? "0.0.0");
 const workspaceRoot = fileURLToPath(new URL("../..", import.meta.url));
 
-const serverPaths = ["/api", "/mcp", "/uploads", "/.well-known", "/schema.json"] as const;
+// Load AGNES_API_KEY from .env.local for use in dev proxy
+function loadEnvLocal(dir: string): Record<string, string> {
+	try {
+		const content = readFileSync(`${dir}/.env.local`, "utf-8");
+		const result: Record<string, string> = {};
+		for (const line of content.split("\n")) {
+			const trimmed = line.trim();
+			if (!trimmed || trimmed.startsWith("#")) continue;
+			const eqIndex = trimmed.indexOf("=");
+			if (eqIndex === -1) continue;
+			const key = trimmed.slice(0, eqIndex).trim();
+			const val = trimmed.slice(eqIndex + 1).trim().replace(/^["']|["']$/g, "");
+			result[key] = val;
+		}
+		return result;
+	} catch {
+		return {};
+	}
+}
+const localEnv = loadEnvLocal(workspaceRoot);
+
+const serverPaths = ["/mcp", "/uploads", "/.well-known", "/schema.json"] as const;
 
 const serverProxy = serverPaths.reduce(
 	(acc, path) => {
@@ -25,6 +46,27 @@ const serverProxy = serverPaths.reduce(
 	},
 	{} as Record<string, ProxyOptions>,
 );
+
+// Agnes AI proxy for local dev: /api/ai/chat → https://apihub.agnes-ai.com/v1/chat/completions
+serverProxy["/api/ai"] = {
+	target: "https://apihub.agnes-ai.com",
+	changeOrigin: true,
+	rewrite: (path) => path.replace(/^\/api\/ai\/chat$/, "/v1/chat/completions"),
+	configure: (proxy) => {
+		proxy.on("proxyReq", (proxyReq) => {
+			proxyReq.setHeader(
+				"Authorization",
+				`Bearer ${localEnv.AGNES_API_KEY ?? process.env.AGNES_API_KEY ?? ""}`,
+			);
+		});
+	},
+};
+
+// Other API paths still go to backend server
+serverProxy["/api"] = {
+	target: `http://localhost:${process.env.SERVER_PORT ?? "3001"}`,
+	changeOrigin: true,
+};
 
 export default defineConfig({
 	envDir: workspaceRoot,

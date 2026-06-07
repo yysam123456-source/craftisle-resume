@@ -54,7 +54,15 @@ function RouteComponent() {
 	const { layout: initialLayout } = Route.useLoaderData();
 
 	const { resumeId } = Route.useParams();
-	const resume = useMemo(() => getResume(resumeId), [resumeId]);
+	const resume = useMemo(() => {
+		const r = getResume(resumeId);
+		if (!r) return r;
+		return {
+			...r,
+			updatedAt: new Date(r.updatedAt),
+			createdAt: new Date(r.createdAt),
+		};
+	}, [resumeId]);
 	const initializeResumeStore = useInitializeResumeStore();
 	const mergeResumeMetadata = useMergeResumeMetadata();
 	const isReady = useResumeStore((state) => state.isReady);
@@ -79,9 +87,6 @@ function RouteComponent() {
 		resume?.slug,
 		resume?.tags,
 		resume?.isLocked,
-		resume?.isPublic,
-		resume?.hasPassword,
-		resume?.updatedAt,
 		resume,
 	]);
 

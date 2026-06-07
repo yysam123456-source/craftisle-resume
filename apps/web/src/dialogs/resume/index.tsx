@@ -34,7 +34,7 @@ import { ChipInput } from "@/components/input/chip-input";
 import { usePatchResume } from "@/features/resume/builder/draft";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
 import { getResumeErrorMessage } from "@/libs/error-message";
-import { createResume, updateResumeMetadata, getResume, saveResume } from "@/libs/local-resume";
+import { createResume, updateResumeMetadata, saveResume } from "@/libs/local-resume";
 import { useAppForm, withForm } from "@/libs/tanstack-form";
 import { useDialogStore } from "../store";
 
@@ -93,8 +93,6 @@ export function CreateResumeDialog(_: DialogProps<"resume.create">) {
 		const randomName = generateRandomName();
 
 		const name = values.name || randomName;
-		const slug = values.slug || slugify(randomName);
-		const tags = values.tags;
 
 		const toastId = toast.loading(t`Creating your resume...`);
 

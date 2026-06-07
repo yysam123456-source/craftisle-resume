@@ -56,3 +56,7 @@ temp
 
 # Git Hooks
 .vite-hooks/
+
+# Local environment variables (contains API keys, never commit)
+.env.local
+.dev.vars

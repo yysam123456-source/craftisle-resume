@@ -1,12 +1,13 @@
 import { t } from "@lingui/core/macro";
 import { useParams } from "@tanstack/react-router";
 import { debounce, isEqual } from "es-toolkit";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
 import { immer } from "zustand/middleware/immer";
 import { create } from "zustand/react";
 import type { ResumeData } from "@reactive-resume/schema/resume/data";
-import { getResume, saveResume, setCurrentResumeId } from "@/libs/local-resume";
+import type { WritableDraft } from "immer";
+import type { QueryClient } from "@tanstack/react-query";
 
 export type Resume = {
 	id: string;

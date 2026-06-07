@@ -3,8 +3,9 @@ import { t } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
 import { GridFourIcon, ListIcon, ReadCvLogoIcon } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import z from "zod";
+import { useQuery } from "@tanstack/react-query";
 import { Label } from "@reactive-resume/ui/components/label";
 import { Separator } from "@reactive-resume/ui/components/separator";
 import { Tabs, TabsList, TabsTrigger } from "@reactive-resume/ui/components/tabs";
@@ -40,8 +41,11 @@ function RouteComponent() {
   const { tags, sort, view } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  // Load resume metadata from localStorage
-  const allResumes = useMemo(() => getResumeMetadata(), []);
+  // Load resume metadata from localStorage (refreshes after mutations)
+  const { data: allResumes = [] } = useQuery({
+    queryKey: ["resumes-local"],
+    queryFn: getResumeMetadata,
+  });
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
     allResumes.forEach((r) => r.tags.forEach((t: string) => tagSet.add(t)));

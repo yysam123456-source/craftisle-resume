@@ -49,6 +49,19 @@ async function getRunnableProvider(userId: string, aiProviderId?: string) {
 		? await aiProvidersService.getRunnableById({ id: aiProviderId, userId })
 		: await aiProvidersService.getDefaultRunnable({ userId });
 
+	// Fallback: use AGNES_API_KEY from environment as default openai-compatible provider
+	if (!provider) {
+		const agnesApiKey = process.env.AGNES_API_KEY;
+		if (agnesApiKey) {
+			return {
+				provider: "openai-compatible" as const,
+				model: "agnes-2.0-flash",
+				apiKey: agnesApiKey,
+				baseURL: "https://apihub.agnes-ai.com/v1",
+			};
+		}
+	}
+
 	if (!provider) throw new ORPCError("BAD_REQUEST", { message: "No tested AI provider is available." });
 
 	return provider;

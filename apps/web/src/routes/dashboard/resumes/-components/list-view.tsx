@@ -1,4 +1,4 @@
-import type { RouterOutput } from "@/libs/orpc/client";
+import type { ResumeMetadata } from "@/libs/local-resume";
 import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
 import { DotsThreeIcon, DownloadSimpleIcon, PlusIcon } from "@phosphor-icons/react";
@@ -9,14 +9,12 @@ import { Button } from "@reactive-resume/ui/components/button";
 import { useDialogStore } from "@/dialogs/store";
 import { ResumeDropdownMenu } from "./menus/dropdown-menu";
 
-type Resume = RouterOutput["resume"]["list"][number];
-
 type ListViewProps = {
-	resumes: Resume[];
+	resumes: ResumeMetadata[];
 };
 
 type ResumeListItemProps = {
-	resume: Resume;
+	resume: ResumeMetadata;
 };
 
 export function ListView({ resumes }: ListViewProps) {

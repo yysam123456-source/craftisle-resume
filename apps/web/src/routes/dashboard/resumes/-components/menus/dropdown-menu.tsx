@@ -1,4 +1,4 @@
-import type { RouterOutput } from "@/libs/orpc/client";
+import type { ResumeMetadata } from "@/libs/local-resume";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import {
@@ -9,7 +9,7 @@ import {
 	PencilSimpleLineIcon,
 	TrashSimpleIcon,
 } from "@phosphor-icons/react";
-import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -21,20 +21,17 @@ import {
 } from "@reactive-resume/ui/components/dropdown-menu";
 import { useDialogStore } from "@/dialogs/store";
 import { useConfirm } from "@/hooks/use-confirm";
-import { getResumeErrorMessage } from "@/libs/error-message";
-import { orpc } from "@/libs/orpc/client";
+import { deleteResume, updateResumeMetadata } from "@/libs/local-resume";
 
 type Props = Omit<React.ComponentProps<typeof DropdownMenuContent>, "children"> & {
-	resume: RouterOutput["resume"]["list"][number];
+	resume: ResumeMetadata;
 	children: React.ComponentProps<typeof DropdownMenuTrigger>["render"];
 };
 
 export function ResumeDropdownMenu({ resume, children, ...props }: Props) {
 	const confirm = useConfirm();
 	const { openDialog } = useDialogStore();
-
-	const { mutate: deleteResume } = useMutation(orpc.resume.delete.mutationOptions());
-	const { mutate: setLockedResume } = useMutation(orpc.resume.setLocked.mutationOptions());
+	const queryClient = useQueryClient();
 
 	const handleUpdate = () => {
 		openDialog("resume.update", resume);
@@ -53,14 +50,9 @@ export function ResumeDropdownMenu({ resume, children, ...props }: Props) {
 			if (!confirmation) return;
 		}
 
-		setLockedResume(
-			{ id: resume.id, isLocked: !resume.isLocked },
-			{
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error));
-				},
-			},
-		);
+		updateResumeMetadata(resume.id, { isLocked: !resume.isLocked });
+		void queryClient.invalidateQueries({ queryKey: ["resumes-local"] });
+		toast.success(resume.isLocked ? t`Resume unlocked.` : t`Resume locked.`);
 	};
 
 	const handleDelete = async () => {
@@ -72,17 +64,13 @@ export function ResumeDropdownMenu({ resume, children, ...props }: Props) {
 
 		const toastId = toast.loading(t`Deleting your resume...`);
 
-		deleteResume(
-			{ id: resume.id },
-			{
-				onSuccess: () => {
-					toast.success(t`Your resume has been deleted successfully.`, { id: toastId });
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error), { id: toastId });
-				},
-			},
-		);
+		try {
+			deleteResume(resume.id);
+			void queryClient.invalidateQueries({ queryKey: ["resumes-local"] });
+			toast.success(t`Your resume has been deleted successfully.`, { id: toastId });
+		} catch (error) {
+			toast.error(t`Failed to delete resume.`, { id: toastId });
+		}
 	};
 
 	return (

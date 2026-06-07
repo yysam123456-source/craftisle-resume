@@ -8,6 +8,8 @@ const workspaceRoot = findWorkspaceRoot();
 
 if (workspaceRoot) {
 	config({ path: join(workspaceRoot, ".env"), quiet: true });
+	config({ path: join(workspaceRoot, ".env.local"), override: true, quiet: true });
+	config({ path: join(workspaceRoot, ".env.server"), override: true, quiet: true });
 }
 
 export const env = createEnv({

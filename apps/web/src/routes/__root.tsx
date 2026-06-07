@@ -16,7 +16,6 @@ import { useEffect, useMemo } from "react";
 import { DirectionProvider } from "@reactive-resume/ui/components/direction";
 import { Toaster } from "@reactive-resume/ui/components/sonner";
 import { TooltipProvider } from "@reactive-resume/ui/components/tooltip";
-import { BreakpointIndicator } from "@/components/layout/breakpoint-indicator";
 import { DialogManager } from "@/dialogs/manager";
 import { CommandPalette } from "@/features/command-palette";
 import { ThemeProvider } from "@/features/theme/provider";
@@ -50,8 +49,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		return {
 			links: [
 				// Icons
-				{ rel: "icon", href: "/favicon.ico", type: "image/x-icon", sizes: "128x128" },
-				{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml", sizes: "256x256 any" },
+				{ rel: "icon", href: "/favicon.ico?v=2", type: "image/x-icon", sizes: "128x128" },
+				{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml", sizes: "256x256 any" },
 				{ rel: "apple-touch-icon", href: "/apple-touch-icon-180x180.png", type: "image/png", sizes: "180x180 any" },
 				// Manifest
 				{ rel: "manifest", href: "/manifest.webmanifest", crossOrigin: "use-credentials" },
@@ -135,7 +134,6 @@ function RootComponent() {
 														<CommandPalette />
 														<Toaster richColors position="bottom-right" />
 
-														{import.meta.env.DEV && <BreakpointIndicator />}
 													</PromptDialogProvider>
 												</ConfirmDialogProvider>
 											</TooltipProvider>

@@ -1,7 +1,6 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import {
-	CaretDownIcon,
 	CopySimpleIcon,
 	HouseSimpleIcon,
 	LockSimpleIcon,
@@ -10,22 +9,12 @@ import {
 	SidebarSimpleIcon,
 	TrashSimpleIcon,
 } from "@phosphor-icons/react";
-import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
 import { Button } from "@reactive-resume/ui/components/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@reactive-resume/ui/components/dropdown-menu";
 import { useDialogStore } from "@/dialogs/store";
 import { useCurrentResume, usePatchResume } from "@/features/resume/builder/draft";
 import { useConfirm } from "@/hooks/use-confirm";
-import { getResumeErrorMessage } from "@/libs/error-message";
-import { orpc } from "@/libs/orpc/client";
+import { deleteResume, updateResumeMetadata } from "@/libs/local-resume";
 import { useBuilderSidebar } from "../-store/sidebar";
 
 export function BuilderHeader() {
@@ -63,7 +52,7 @@ export function BuilderHeader() {
 				<span className="me-2.5 text-muted-foreground">/</span>
 				<h2 className="flex-1 truncate font-medium">{name}</h2>
 				{isLocked && <LockSimpleIcon className="ms-2 text-muted-foreground" />}
-				<BuilderHeaderDropdown />
+				<BuilderHeaderActions />
 			</div>
 
 			<Button size="icon" variant="ghost" onClick={() => toggleSidebar("right")}>
@@ -78,7 +67,7 @@ export function BuilderHeader() {
 	);
 }
 
-function BuilderHeaderDropdown() {
+function BuilderHeaderActions() {
 	const confirm = useConfirm();
 	const navigate = useNavigate();
 	const { openDialog } = useDialogStore();
@@ -90,9 +79,6 @@ function BuilderHeaderDropdown() {
 	const slug = resume.slug;
 	const tags = resume.tags;
 	const isLocked = resume.isLocked;
-
-	const { mutate: deleteResume } = useMutation(orpc.resume.delete.mutationOptions());
-	const { mutate: setLockedResume } = useMutation(orpc.resume.setLocked.mutationOptions());
 
 	const handleUpdate = () => {
 		openDialog("resume.update", { id, name, slug, tags });
@@ -107,81 +93,65 @@ function BuilderHeaderDropdown() {
 			const confirmation = await confirm(t`Are you sure you want to lock this resume?`, {
 				description: t`When locked, the resume cannot be updated or deleted.`,
 			});
-
 			if (!confirmation) return;
 		}
 
-		setLockedResume(
-			{ id, isLocked: !isLocked },
-			{
-				onSuccess: () => {
-					patchResume((draft) => {
-						draft.isLocked = !isLocked;
-					});
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error));
-				},
-			},
-		);
+		updateResumeMetadata(id, { isLocked: !isLocked });
+		patchResume((draft) => {
+			draft.isLocked = !isLocked;
+		});
 	};
 
 	const handleDelete = async () => {
 		const confirmation = await confirm(t`Are you sure you want to delete this resume?`, {
 			description: t`This action cannot be undone.`,
 		});
-
 		if (!confirmation) return;
 
-		const toastId = toast.loading(t`Deleting your resume...`);
-
-		deleteResume(
-			{ id },
-			{
-				onSuccess: () => {
-					toast.success(t`Your resume has been deleted successfully.`, { id: toastId });
-					void navigate({ to: "/dashboard/resumes", search: { sort: "lastUpdatedAt", tags: [] } });
-				},
-				onError: (error) => {
-					toast.error(getResumeErrorMessage(error), { id: toastId });
-				},
-			},
-		);
+		deleteResume(id);
+		void navigate({ to: "/dashboard/resumes", search: { sort: "lastUpdatedAt", tags: [] } });
 	};
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger
-				render={
-					<Button size="icon" variant="ghost">
-						<CaretDownIcon />
-					</Button>
-				}
-			/>
-
-			<DropdownMenuContent>
-				<DropdownMenuItem disabled={isLocked} onClick={handleUpdate}>
-					<PencilSimpleLineIcon className="me-2" />
-					<Trans>Update</Trans>
-				</DropdownMenuItem>
-
-				<DropdownMenuItem onClick={handleDuplicate}>
-					<CopySimpleIcon className="me-2" />
-					<Trans>Duplicate</Trans>
-				</DropdownMenuItem>
-
-				<DropdownMenuItem onClick={handleToggleLock}>
-					{isLocked ? <LockSimpleOpenIcon className="me-2" /> : <LockSimpleIcon className="me-2" />}
-					{isLocked ? <Trans>Unlock</Trans> : <Trans>Lock</Trans>}
-				</DropdownMenuItem>
-
-				<DropdownMenuSeparator />
-
-				<DropdownMenuItem variant="destructive" disabled={isLocked} onClick={handleDelete}>
-					<TrashSimpleIcon className="me-2" />
-					<Trans>Delete</Trans>
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+		<div className="ms-2 flex items-center gap-0.5 rounded-md bg-background/60 px-1 py-0.5">
+			<Button
+				size="icon"
+				variant="ghost"
+				className="size-7 text-foreground/70 hover:bg-primary/15 hover:text-primary"
+				disabled={isLocked}
+				onClick={handleUpdate}
+				title={t`Update`}
+			>
+				<PencilSimpleLineIcon className="size-4" />
+			</Button>
+			<Button
+				size="icon"
+				variant="ghost"
+				className="size-7 text-foreground/70 hover:bg-primary/15 hover:text-primary"
+				onClick={handleDuplicate}
+				title={t`Duplicate`}
+			>
+				<CopySimpleIcon className="size-4" />
+			</Button>
+			<Button
+				size="icon"
+				variant="ghost"
+				className="size-7 text-foreground/70 hover:bg-primary/15 hover:text-primary"
+				onClick={handleToggleLock}
+				title={isLocked ? t`Unlock` : t`Lock`}
+			>
+				{isLocked ? <LockSimpleOpenIcon className="size-4" /> : <LockSimpleIcon className="size-4" />}
+			</Button>
+			<Button
+				size="icon"
+				variant="ghost"
+				className="size-7 text-foreground/70 hover:bg-destructive/15 hover:text-destructive"
+				disabled={isLocked}
+				onClick={handleDelete}
+				title={t`Delete`}
+			>
+				<TrashSimpleIcon className="size-4" />
+			</Button>
+		</div>
 	);
 }
