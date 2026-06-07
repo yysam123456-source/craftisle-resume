@@ -9,13 +9,10 @@ if (!rootElement) throw new Error("Root element not found");
 
 // Local-only mode: disable all oRPC calls to avoid 405 errors
 if (typeof window !== "undefined") {
-  (window as any).__LOCAL_ONLY__ = true;
+	(window as Record<string, unknown>).__LOCAL_ONLY__ = true;
 }
 
 const router = await getRouter();
 
-if (!rootElement.innerHTML) {
-	const root = ReactDOM.createRoot(rootElement);
-
-	root.render(<RouterProvider router={router} />);
-}
+const root = ReactDOM.createRoot(rootElement);
+root.render(<RouterProvider router={router} />);
