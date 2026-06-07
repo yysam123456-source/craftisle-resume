@@ -9,7 +9,6 @@ export { isRTL };
 
 const storageKey = "locale";
 const defaultLocale: Locale = "en-US";
-const messageLoaders = import.meta.glob<{ messages: Messages }>("../../locales/*.js");
 
 export const localeMap = {
 	"af-ZA": msg`Afrikaans`,
@@ -87,13 +86,10 @@ export const setLocaleCookie = (locale: Locale) => {
 	Cookies.set(storageKey, locale);
 };
 
-const loadMessages = async (locale: Locale) => {
-	const load = messageLoaders[`../../locales/${locale}.js`];
-
-	if (!load) throw new Error(`Unknown locale: ${locale}`);
-
-	const { messages } = await load();
-	return messages;
+const loadMessages = async (locale: Locale): Promise<Messages> => {
+	const response = await fetch(`/locales/${locale}.json`);
+	if (!response.ok) throw new Error(`Failed to load locale: ${locale}`);
+	return (await response.json()) as Messages;
 };
 
 export const getLocaleMessages = async (locale: string) => {

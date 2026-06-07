@@ -60,3 +60,9 @@ temp
 # Local environment variables (contains API keys, never commit)
 .env.local
 .dev.vars
+
+# Generated locale catalogs
+apps/web/locales/*.js
+apps/web/locales/*.mjs
+apps/web/public/locales/
+

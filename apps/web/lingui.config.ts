@@ -1,5 +1,5 @@
 import { defineConfig } from "@lingui/cli";
-import { formatter } from "@lingui/format-po";
+import { formatter as poFormatter } from "@lingui/format-po";
 
 export default defineConfig({
 	sourceLocale: "en-US",
@@ -65,9 +65,10 @@ export default defineConfig({
 		"zu-ZA": "en-US",
 		default: "en-US",
 	},
-	format: formatter({
+	format: poFormatter({
 		lineNumbers: false,
 	}),
+	compileNamespace: "es",
 	catalogs: [
 		{
 			path: "<rootDir>/locales/{locale}",
