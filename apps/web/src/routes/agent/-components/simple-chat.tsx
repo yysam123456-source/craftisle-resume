@@ -99,6 +99,22 @@ function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): Record
 		}
 	}
 
+	// Step 4: Ensure array fields are always arrays (defensive against AI omitting them)
+	const sections = resolvedObj.sections as Record<string, unknown> | undefined;
+	if (sections && "experience" in sections) {
+		const experience = sections.experience as Record<string, unknown> | undefined;
+		if (experience && "items" in experience) {
+			const items = experience.items as Array<Record<string, unknown>> | undefined;
+			if (items) {
+				for (const item of items) {
+					if (!item.roles || !Array.isArray(item.roles)) {
+						item.roles = [];
+					}
+				}
+			}
+		}
+	}
+
 	return resolvedObj;
 }
 

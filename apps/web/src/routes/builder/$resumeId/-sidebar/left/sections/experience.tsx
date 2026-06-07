@@ -30,7 +30,7 @@ export function ExperienceSectionBuilder() {
 								type="experience"
 								item={item}
 								title={item.company}
-								subtitle={item.position || plural(item.roles.length, { one: "# role", other: "# roles" })}
+								subtitle={item.position || plural(item.roles?.length ?? 0, { one: "# role", other: "# roles" })}
 							/>
 						);
 					})}

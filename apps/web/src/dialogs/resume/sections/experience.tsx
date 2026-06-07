@@ -152,7 +152,7 @@ const ExperienceForm = withForm({
 	render: function ExperienceFormRenderer({ form }) {
 		const inlineLink = useStore(form.store, (s) => s.values.website.inlineLink);
 		const roles = useStore(form.store, (s) => s.values.roles);
-		const hasRoles = roles.length > 0;
+		const hasRoles = (roles?.length ?? 0) > 0;
 
 		const handleReorderRoles = (newOrder: RoleItem[]) => {
 			form.setFieldValue("roles", newOrder);

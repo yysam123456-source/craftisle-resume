@@ -226,7 +226,7 @@ function Combobox<TValue extends string | number = string>(props: ComboboxProps<
 			}
 		>
 			<span className={cn("min-w-0 flex-1 truncate text-left", showClear && hasSelectedValue && "pe-7")}>
-				<ComboboxValue placeholder={placeholder ?? t`Select...`} />
+				<ComboboxValue placeholder={placeholder ?? "Select..."} />
 			</span>
 		</ComboboxTrigger>
 	);
