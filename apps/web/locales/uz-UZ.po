@@ -62,10 +62,6 @@ msgctxt "Home page FAQ section heading with each word visually separated into in
 msgid "<0>Frequently</0><1>Asked</1><2>Questions</2>"
 msgstr "<0>Tez-tez</0><1>Beriladigan</1><2>Savollar</2>"
 
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
-msgid "<0>Thank you for using Reactive Resume! This app is a labor of love, created mostly in my spare time, with wonderful support from open-source contributors around the world.</0><1>If Reactive Resume has been helpful to you, and you'd like to help keep it free and open for everyone, please consider making a donation. Every little bit is appreciated!</1>"
-msgstr "<0>Reactive Resume dasturidan foydalanganingiz uchun rahmat! Bu dastur asosan bo‘sh vaqtimda, ajoyib ochiq manbali hamkorlar yordamida yaratilgan.</0><1>Agar Reactive Resume sizga yordam bergan bo‘lsa va uni hamma uchun ochiq va bepul saqlashni xohlasangiz, xayriya qilishni ko‘rib chiqing. Har qanday yordam qadrlanadi!</1>"
-
 #: src/dialogs/api-key/create.tsx
 msgid "1 month"
 msgstr "1 oy"
@@ -100,16 +96,16 @@ msgid "A link to your resume has been copied to clipboard."
 msgstr "Tarjimai holingizga havola buferga nusxalandi."
 
 #: src/routes/_home/-sections/testimonials.tsx
-msgid "A lot of people have written to me over the years to share their experiences with Reactive Resume and how it has helped them, and I never get tired of reading them. If you have a story to share, let me know by sending me an email at <0>{email}</0>."
-msgstr "Yillar davomida ko'plab odamlar menga Reactive Resume bilan bo'lgan tajribalari va bu ularga qanday yordam bergani haqida yozib, o'z fikrlarini ulashishdi va men ularni o'qishdan charchamayman. Agar sizda ham o'rtoqlashmoqchi bo'lgan hikoyangiz bo'lsa, menga <0>{email}</0> manziliga xabar yuboring."
+msgid "A lot of people have written to me over the years to share their experiences with Craftisle Resume and how it has helped them, and I never get tired of reading them. If you have a story to share, let me know by sending me an email at <0>{email}</0>."
+msgstr ""
 
 #: src/features/settings/pages/profile.tsx
 msgid "A new verification link has been sent to your email address. Please check your inbox to verify your account."
 msgstr "Yangi tasdiqlash havolasi elektron pochta manzilingizga yuborildi. Akkountingizni tasdiqlash uchun pochtangizni tekshiring."
 
 #: src/components/ui/copyright.tsx
-msgid "A passion project by <0>Amruth Pillai</0>."
-msgstr "<0>Amruth Pillai</0> tomonidan ishtiyoq loyihasi."
+msgid "A passion project by the Craftisle team."
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/right/sections/page.tsx
 msgid "A4"
@@ -269,6 +265,14 @@ msgstr "Hozirda AI agentini sozlash imkoni yo'q. Iltimos, bir ozdan keyin qayta 
 msgid "AI agent setup is unavailable until REDIS_URL and ENCRYPTION_SECRET are configured."
 msgstr "REDIS_URL va ENCRYPTION_SECRET sozlanmaguncha AI agentini sozlash imkoni bo'lmaydi."
 
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI Assistant"
+msgstr ""
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI has prepared an update for your resume."
+msgstr ""
+
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "AI provider management is unavailable until REDIS_URL and ENCRYPTION_SECRET are configured."
 msgstr "REDIS_URL va ENCRYPTION_SECRET sozlanmaguncha, AI provayderini boshqarish imkonsiz bo'ladi."
@@ -310,11 +314,6 @@ msgstr "Amxar tili"
 msgid "An error occurred while loading the page."
 msgstr "Sahifani yuklashda xatolik yuz berdi."
 
-#. Fallback toast when importing a resume fails for an unknown reason
-#: src/dialogs/resume/import.tsx
-msgid "An unknown error occurred while importing your resume."
-msgstr "Tarjimai holingizni import qilishda noma'lum xatolik yuz berdi."
-
 #: src/routes/builder/$resumeId/-sidebar/right/sections/resume-analysis.tsx
 msgid "Analyze Resume"
 msgstr "Rezyumeni tahlil qiling"
@@ -352,7 +351,6 @@ msgid "API Key"
 msgstr "API kalit"
 
 #: src/features/command-palette/pages/navigation.tsx
-#: src/routes/dashboard/-components/sidebar.tsx
 #: src/routes/dashboard/settings/api-keys.tsx
 msgid "API Keys"
 msgstr "API kalitlar"
@@ -376,6 +374,10 @@ msgstr "Ilova statistikasi"
 #: src/routes/builder/$resumeId/-sidebar/right/sections/custom-styles.tsx
 msgid "Applied Rules"
 msgstr "Amaliy qoidalar"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Apply Changes"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Arabic"
@@ -403,6 +405,7 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Ushbu elementni o'chirmoqchimisiz?"
 
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Are you sure you want to delete this resume?"
@@ -413,6 +416,7 @@ msgid "Are you sure you want to delete your account?"
 msgstr "Haqiqatan ham akkauntingizni oʻchirmoqchimisiz?"
 
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Are you sure you want to lock this resume?"
@@ -434,9 +438,14 @@ msgstr "Ta'lim sohasi"
 msgid "Artificial Intelligence"
 msgstr "Sun'iy intellekt"
 
+#: src/routes/agent/-components/simple-chat.tsx
 #: src/routes/agent/$threadId.tsx
 msgid "Ask anything about this resume"
 msgstr "Ushbu rezyume haqida biron narsa so'rang"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Ask me anything about your resume — improve content, tailor for a role, or fix formatting."
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/left/sections/picture.tsx
 msgid "Aspect Ratio"
@@ -451,7 +460,6 @@ msgid "Attachment uploaded."
 msgstr "Ilova yuklandi."
 
 #: src/features/command-palette/pages/navigation.tsx
-#: src/routes/dashboard/-components/sidebar.tsx
 #: src/routes/dashboard/settings/authentication/index.tsx
 msgid "Authentication"
 msgstr "Autentifikatsiya"
@@ -663,10 +671,6 @@ msgstr "Oldindan belgilangan soya yoki moslashtirilgan soyani tanlang."
 msgid "Choose a resume"
 msgstr "Rezyumeni tanlang"
 
-#: src/routes/agent/index.tsx
-msgid "Choose an existing conversation from the sidebar, or start a new draft-focused thread."
-msgstr "Yon paneldan mavjud suhbatni tanlang yoki qoralamaga yo'naltirilgan yangi mavzuni boshlang."
-
 #: src/components/level/combobox.tsx
 msgid "Circle"
 msgstr "Doira"
@@ -684,6 +688,10 @@ msgstr "Tanlovni tozalash"
 #: src/dialogs/resume/import.tsx
 msgid "Click here to select a file to import"
 msgstr "Import qilish uchun faylni tanlash uchun shu yerni bosing"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Close"
+msgstr ""
 
 #: src/components/input/rich-input.tsx
 msgid "Code Block"
@@ -753,10 +761,6 @@ msgstr "Davom etish"
 msgid "Continue where you left off"
 msgstr "Qoldirgan joyingizdan davom eting"
 
-#: src/dialogs/resume/import.tsx
-msgid "Continue where you left off by importing an existing resume you created using Reactive Resume or any another resume builder. Supported formats include PDF, Microsoft Word, as well as JSON files from Reactive Resume."
-msgstr "Qoldirgan joyingizdan davom etish uchun Reactive Resume yoki har qanday boshqa rezyume yaratuvchisi yordamida yaratgan mavjud rezyumeni import qiling. Qoʻllab-quvvatlanadigan formatlar: PDF, Microsoft Word, shuningdek Reactive Resume'dan JSON fayllari."
-
 #: src/routes/_home/-sections/donate.tsx
 msgid "Contributions fund bug fixes, security updates, and continuous improvements to keep the app running smoothly."
 msgstr "Hissalaringiz xatoliklarni tuzatish, xavfsizlik yangilanishlari va doimiy takomillashtirishlarni moliyalashtiradi va ilovani muammosiz ishlashini ta'minlaydi."
@@ -795,9 +799,11 @@ msgstr "Ushbu maxfiy kalitni nusxalab, maʼlumotlaringizga kirish uchun ilovalar
 msgid "Copy URL"
 msgstr "URL-ni nusxalash"
 
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Could not extract resume data. Please try again."
+msgstr ""
+
 #. Error description when AI provider cannot be reached during resume analysis
-#. Error shown when AI provider is unreachable during PDF/DOCX resume import
-#: src/dialogs/resume/import.tsx
 #: src/routes/builder/$resumeId/-sidebar/right/sections/resume-analysis.tsx
 msgid "Could not reach the AI provider. Please try again."
 msgstr "AI provayderiga ulanib bo'lmadi. Iltimos, yana urinib ko'ring."
@@ -818,6 +824,35 @@ msgstr "Provayder ulanishini tekshirib bo'lmadi."
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 msgid "Cover Letter"
 msgstr "Xat"
+
+#: src/routes/_home/-sections/header.tsx
+msgid "Craftisle Resume - Go to homepage"
+msgstr ""
+
+#: src/routes/_home/-sections/prefooter.tsx
+msgid "Craftisle Resume continues to grow thanks to its vibrant community. This project owes its progress to numerous individuals who've dedicated their time and skills to make it better. We celebrate the coders who've enhanced its features on GitHub, the linguists whose translations on Crowdin have made it accessible to a broader audience, and the people who've donated to support its continued development."
+msgstr ""
+
+#: src/routes/_home/-sections/donate.tsx
+msgid "Craftisle Resume is a free and open-source project, built with love and maintained by me and a community of contributors. Your donations help keep the lights on and the code flowing."
+msgstr ""
+
+#: src/routes/_home/-sections/hero.tsx
+msgid "Craftisle Resume is a free and open-source resume builder that simplifies the process of creating, updating, and sharing your resume."
+msgstr ""
+
+#: src/components/ui/donation-toast.tsx
+msgid "Craftisle Resume is free and open source. If it has helped you, please consider donating."
+msgstr ""
+
+#: src/routes/_home/-sections/faq.tsx
+msgid "Craftisle Resume is open-source, privacy-focused, and completely free. Unlike other resume builders, it doesn't show ads, track your data, or limit your features behind a paywall."
+msgstr ""
+
+#. App version label in footer; includes semantic version variable
+#: src/components/ui/copyright.tsx
+msgid "Craftisle Resume v{__APP_VERSION__}"
+msgstr ""
 
 #. Create API key dialog submit action
 #: src/dialogs/api-key/create.tsx
@@ -972,7 +1007,6 @@ msgid "Czech"
 msgstr "Chex tili"
 
 #: src/features/command-palette/pages/navigation.tsx
-#: src/routes/dashboard/-components/sidebar.tsx
 #: src/routes/dashboard/settings/danger-zone.tsx
 msgid "Danger Zone"
 msgstr "Xavfli Hudud"
@@ -1022,6 +1056,7 @@ msgstr "Daraja"
 #: src/routes/builder/$resumeId/-components/header.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/shared/section-item.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Delete"
@@ -1068,7 +1103,6 @@ msgstr "Hisobingiz o‘chirilmoqda..."
 msgid "Deleting your API key..."
 msgstr "API kalitingiz o'chirilmoqda..."
 
-#: src/routes/builder/$resumeId/-components/header.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Deleting your resume..."
@@ -1117,7 +1151,6 @@ msgid "Dismiss"
 msgstr "Bekor qilish"
 
 #: src/routes/_home/-sections/footer.tsx
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
 msgid "Documentation"
 msgstr "Hujjatlar"
 
@@ -1128,10 +1161,6 @@ msgstr "Hisobingiz yoʻqmi? <0/>"
 #: src/components/ui/donation-toast.tsx
 msgid "Donate"
 msgstr "Xayriya qiling"
-
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
-msgid "Donate to Reactive Resume"
-msgstr "Reactive Resume'ga xayriya qiling"
 
 #. Action button to download two-factor backup codes as a text file
 #: src/dialogs/auth/enable-two-factor.tsx
@@ -1178,6 +1207,7 @@ msgstr "Bo‘limlarni ustunlar orasida ko‘chirish uchun shu yergа tortib tash
 #: src/routes/builder/$resumeId/-components/header.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/shared/section-item.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Duplicate"
@@ -1333,12 +1363,12 @@ msgid "Expires on {0}"
 msgstr "Tugash sanasi: {0}"
 
 #: src/routes/_home/-sections/templates.tsx
-msgid "Explore our diverse selection of templates, each designed to fit different styles, professions, and personalities. Reactive Resume currently offers 12 templates, with more on the way."
-msgstr "Turli uslub, kasb va shaxsiyatlar uchun tayyorlangan ko‘plab andozalarimizni ko‘rib chiqing. Reactive Resume hozirda 12 ta andoza taklif qiladi va yanada ko‘paymoqda."
+msgid "Explore our diverse selection of templates, each designed to fit different styles, professions, and personalities. Craftisle Resume currently offers 12 templates, with more on the way."
+msgstr ""
 
 #: src/features/settings/pages/api-keys.tsx
-msgid "Explore the API documentation to learn how to integrate Reactive Resume with your applications. Find detailed endpoints, request examples, and authentication methods."
-msgstr "Reactive Resume'ni ilovalaringiz bilan birlashtirish uchun API hujjatlarini o‘rganing. Batafsil endpointlar, so‘rov namunalarini va autentifikatsiya usullarini toping."
+msgid "Explore the API documentation to learn how to integrate Craftisle Resume with your applications. Find detailed endpoints, request examples, and authentication methods."
+msgstr ""
 
 #: src/libs/resume/section.tsx
 msgid "Export"
@@ -1380,6 +1410,11 @@ msgstr "Parol kalitini o'chirib tashlash muvaffaqiyatsiz bo'ldi. Iltimos, yana u
 msgid "Failed to delete provider."
 msgstr "Provayderni o'chirib bo'lmadi."
 
+#: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
+#: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
+msgid "Failed to delete resume."
+msgstr ""
+
 #. Fallback toast when deleting an API key fails
 #: src/features/settings/pages/api-keys.tsx
 msgid "Failed to delete the API key. Please try again."
@@ -1404,6 +1439,14 @@ msgstr "Ikki omilli autentifikatsiyani o'chirib bo'lmadi. Iltimos, yana urinib k
 #: src/dialogs/auth/enable-two-factor.tsx
 msgid "Failed to enable two-factor authentication. Please try again."
 msgstr "Ikki bosqichli autentifikatsiyani yoqish muvaffaqiyatsiz bo'ldi. Iltimos, yana urinib ko'ring."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Failed to get response."
+msgstr ""
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Failed to get resume data."
+msgstr ""
 
 #. Fallback toast when linking a social authentication provider fails
 #: src/features/settings/authentication/components/hooks.tsx
@@ -1457,11 +1500,6 @@ msgstr "Ikki bosqichli autentifikatsiyani o‘rnatishda xatolik yuz berdi."
 msgid "Failed to sign in. Please try again."
 msgstr "Kirish amalga oshmadi. Iltimos, qayta urinib koʻring."
 
-#. Fallback toast when signing out fails
-#: src/features/user/dropdown-menu.tsx
-msgid "Failed to sign out. Please try again."
-msgstr "Chiqish muvaffaqiyatsiz bo'ldi. Iltimos, yana urinib ko'ring."
-
 #: src/routes/agent/-components/new-thread-setup.tsx
 msgid "Failed to start agent thread."
 msgstr "Agent mavzusini ishga tushirib bo'lmadi."
@@ -1474,6 +1512,10 @@ msgstr "Provayderni bog'lanishni bekor qila olmadik. Iltimos, yana urinib ko'rin
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "Failed to update provider."
 msgstr "Provayderni yangilashda xatolik yuz berdi."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Failed to update resume."
+msgstr ""
 
 #. Fallback toast when changing account password fails
 #: src/dialogs/auth/change-password.tsx
@@ -1514,6 +1556,10 @@ msgstr "Kodingizni tekshirish muvaffaqiyatsiz bo'ldi. Iltimos, yana urinib ko'ri
 #: src/routes/_home/-sections/features.tsx
 msgid "Features"
 msgstr "Xususiyatlar"
+
+#: src/dialogs/resume/import.tsx
+msgid "File Type"
+msgstr ""
 
 #: src/routes/dashboard/resumes/index.tsx
 msgid "Filter by"
@@ -1827,22 +1873,10 @@ msgid "Identify gaps for an applicant tracking system and apply only high-confid
 msgstr "Ariza beruvchini kuzatish tizimidagi kamchiliklarni aniqlang va faqat yuqori ishonchlilikdagi kalit so'zlarni yaxshilashni qo'llang."
 
 #: src/dialogs/resume/import.tsx
-msgid "Import"
-msgstr "Import"
-
-#: src/dialogs/resume/import.tsx
 #: src/routes/dashboard/resumes/-components/cards/import-card.tsx
 #: src/routes/dashboard/resumes/-components/list-view.tsx
 msgid "Import an existing resume"
 msgstr "Mavjud rezyumeni import qilish"
-
-#: src/dialogs/resume/import.tsx
-msgid "Importing your resume..."
-msgstr "Rezyumengiz import qilinmoqda..."
-
-#: src/dialogs/resume/import.tsx
-msgid "Importing…"
-msgstr "… import qilinmoqda"
 
 #: src/routes/agent/$threadId.tsx
 msgid "Increase zoom"
@@ -1885,12 +1919,12 @@ msgid "Invalid AI provider configuration."
 msgstr "Noto'g'ri AI provayder konfiguratsiyasi."
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "Is Reactive Resume available in multiple languages?"
-msgstr "Reactive Resume bir nechta tillarda mavjudmi?"
+msgid "Is Craftisle Resume available in multiple languages?"
+msgstr ""
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "Is Reactive Resume really free?"
-msgstr "Reactive Resume haqiqatan ham bepulmi?"
+msgid "Is Craftisle Resume really free?"
+msgstr ""
 
 #: src/dialogs/resume/sections/certification.tsx
 msgid "Issuer"
@@ -1932,11 +1966,6 @@ msgstr "jon.doe"
 #: src/features/settings/pages/profile.tsx
 msgid "john.doe@example.com"
 msgstr "john.doe@example.com"
-
-#. Import source option for standard JSON Resume format
-#: src/dialogs/resume/import.tsx
-msgid "JSON Resume"
-msgstr "JSON rezyume"
 
 #: src/components/input/rich-input.tsx
 msgid "Justify Align"
@@ -2089,10 +2118,6 @@ msgstr "Litva tili"
 msgid "Loading agent workspace…"
 msgstr "Agent ish maydoni yuklanmoqda…"
 
-#: src/dialogs/resume/import.tsx
-msgid "Loading AI providers. Please try again in a moment."
-msgstr "Sun'iy intellekt provayderlari yuklanmoqda. Iltimos, bir zumda qayta urinib ko'ring."
-
 #: src/features/settings/integrations/components/ai-section.tsx
 #: src/routes/agent/-components/new-thread-setup.tsx
 msgid "Loading providers…"
@@ -2121,15 +2146,11 @@ msgstr "Manzil"
 #. Resume card context menu action to prevent edits
 #. Resume card dropdown action to prevent edits
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Lock"
 msgstr "Qulf"
-
-#. User menu action to sign out of current account
-#: src/features/user/dropdown-menu.tsx
-msgid "Logout"
-msgstr "Chiqish"
 
 #: src/routes/_home/-sections/donate.tsx
 msgid "Long-term Sustainability"
@@ -2259,11 +2280,6 @@ msgstr "Yangi mavzu"
 #: src/routes/_home/-sections/features.tsx
 msgid "No Advertising, No Tracking"
 msgstr "Reklamasiz, kuzatuvsiz"
-
-#. Error shown when AI import endpoint returns no parsed resume data
-#: src/dialogs/resume/import.tsx
-msgid "No data was returned from the AI provider."
-msgstr "AI provayderidan hech qanday ma'lumot qaytarilmadi."
 
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "No passkeys registered yet."
@@ -2469,8 +2485,8 @@ msgstr "Yamoq orqaga surildi."
 
 #. File format label in import source selector
 #: src/dialogs/resume/import.tsx
-msgid "PDF"
-msgstr "PDF"
+msgid "PDF Document"
+msgstr ""
 
 #: src/dialogs/resume/sections/education.tsx
 #: src/dialogs/resume/sections/experience.tsx
@@ -2577,7 +2593,6 @@ msgid "Proficiency"
 msgstr "Daraja"
 
 #: src/features/command-palette/pages/navigation.tsx
-#: src/routes/dashboard/-components/sidebar.tsx
 #: src/routes/dashboard/settings/profile.tsx
 msgid "Profile"
 msgstr "Profil"
@@ -2623,45 +2638,6 @@ msgstr "Nashrlar"
 #: src/dialogs/resume/sections/publication.tsx
 msgid "Publisher"
 msgstr "Nashriyotchi"
-
-#: src/routes/_home/-sections/header.tsx
-msgid "Reactive Resume - Go to homepage"
-msgstr "Reactive Resume - Bosh sahifaga o'tish"
-
-#. Import source option for current Reactive Resume JSON format
-#: src/dialogs/resume/import.tsx
-msgid "Reactive Resume (JSON)"
-msgstr "Reaktiv Rezume (JSON)"
-
-#: src/routes/_home/-sections/prefooter.tsx
-msgid "Reactive Resume continues to grow thanks to its vibrant community. This project owes its progress to numerous individuals who've dedicated their time and skills to make it better. We celebrate the coders who've enhanced its features on GitHub, the linguists whose translations on Crowdin have made it accessible to a broader audience, and the people who've donated to support its continued development."
-msgstr "Reactive Resume oʻzining faol hamjamiyati sababli rivojlanishda davom etmoqda. Ushbu loyiha koʻplab insonlarning fidoyiligi va mahorati evaziga rivojlandi. Biz GitHub’dagi imkoniyatlarini oshirgan dasturchilarni, Crowdin’dagi tarjimalari bilan uni keng auditoriyaga yetkazgan tilshunoslarni va rivojlanishini qoʻllab-quvvatlash uchun xayriya qilgan insonlarni tan olamiz va faxrlanamiz."
-
-#: src/routes/_home/-sections/donate.tsx
-msgid "Reactive Resume is a free and open-source project, built with love and maintained by me and a community of contributors. Your donations help keep the lights on and the code flowing."
-msgstr "Reactive Resume bu bepul va ochiq kodli loyiha bo‘lib, muhabbat bilan yaratilgan va men hamda ko‘ngilli hamjamiyat tomonidan qo‘llab-quvvatlanadi. Sizning xayriyalariz loyiha davomiyligini ta’minlashga yordam beradi."
-
-#: src/routes/_home/-sections/hero.tsx
-msgid "Reactive Resume is a free and open-source resume builder that simplifies the process of creating, updating, and sharing your resume."
-msgstr "Reactive Resume bu bepul va ochiq kodli rezyume tuzuvchi bo‘lib, rezyumeingizni yaratish, yangilash va ulashish jarayonini soddalashtiradi."
-
-#: src/components/ui/donation-toast.tsx
-msgid "Reactive Resume is free and open source. If it has helped you, please consider donating."
-msgstr "Reactive Resume bepul va ochiq kodli. Agar u sizga yordam bergan bo'lsa, iltimos, xayriya qilishni ko'rib chiqing."
-
-#: src/routes/_home/-sections/faq.tsx
-msgid "Reactive Resume is open-source, privacy-focused, and completely free. Unlike other resume builders, it doesn't show ads, track your data, or limit your features behind a paywall."
-msgstr "Reactive Resume ochiq manbali, maxfiylikka yo'naltirilgan va butunlay bepul. Boshqa rezume tuzuvchilardan farqli o'laroq, u reklamalarni ko'rsatmaydi, ma'lumotlaringizni kuzatmaydi yoki funksiyalarni to'lov devori ortida cheklamaydi."
-
-#. App version label in footer; includes semantic version variable
-#: src/components/ui/copyright.tsx
-msgid "Reactive Resume v{__APP_VERSION__}"
-msgstr "Reactive Resume v{__APP_VERSION__}"
-
-#. Import source option for legacy Reactive Resume v4 JSON format
-#: src/dialogs/resume/import.tsx
-msgid "Reactive Resume v4 (JSON)"
-msgstr "Reaktiv Rezume v4 (JSON)"
 
 #: src/dialogs/resume/sections/cover-letter.tsx
 msgid "Recipient"
@@ -2717,10 +2693,6 @@ msgstr "Nomini o‘zgartirish"
 #: src/dialogs/resume/sections/experience.tsx
 msgid "Reorder"
 msgstr "Qayta tartiblash"
-
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
-msgid "Report a Bug"
-msgstr "Xatolik haqida xabar berish"
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Report an issue"
@@ -2780,9 +2752,23 @@ msgstr "Rezyume tahlili"
 msgid "Resume analysis complete."
 msgstr "Rezyume tahlili yakunlandi."
 
+#: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
+#: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
+msgid "Resume locked."
+msgstr ""
+
 #: src/routes/agent/$threadId.tsx
 msgid "Resume patch"
 msgstr "Rezyume yamoqlari"
+
+#: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
+#: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
+msgid "Resume unlocked."
+msgstr ""
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Resume updated successfully!"
+msgstr ""
 
 #: src/features/command-palette/pages/navigation.tsx
 #: src/features/command-palette/pages/resumes.tsx
@@ -2925,22 +2911,15 @@ msgstr "Sinovdan o'tgan provayderni tanlang"
 msgid "Select a tested provider before starting a thread."
 msgstr "Mavzuni boshlashdan oldin sinovdan o'tgan provayderni tanlang."
 
-#: src/routes/agent/index.tsx
-msgid "Select a thread"
-msgstr "Mavzuni tanlang"
-
 #: src/routes/agent/-components/new-thread-setup.tsx
 msgid "Select an agent model"
 msgstr "Agent modelini tanlang"
-
-#: src/components/ui/combobox.tsx
-msgid "Select..."
-msgstr "Tanlang..."
 
 #: src/routes/_home/-sections/features.tsx
 msgid "Self-Host with Docker"
 msgstr "Docker bilan mustaqil joylashtirish"
 
+#: src/routes/agent/-components/simple-chat.tsx
 #: src/routes/agent/$threadId.tsx
 msgid "Send message"
 msgstr "Xabar yuborish"
@@ -2988,10 +2967,6 @@ msgstr "Rezyumeni ommaviy URL bilan ulashing va boshqalar ko‘ra olishini ta’
 #: src/routes/_home/-sections/features.tsx
 msgid "Shareable Links"
 msgstr "Bo‘lishish uchun havolalar"
-
-#: src/libs/resume/section.tsx
-msgid "Sharing"
-msgstr "Ulashish"
 
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/shared/section-item.tsx
@@ -3069,10 +3044,6 @@ msgstr "Roʻyxatdan oʻtish"
 msgid "Signing in..."
 msgstr "Kirish jarayoni..."
 
-#: src/features/user/dropdown-menu.tsx
-msgid "Signing out..."
-msgstr "Chiqish jarayoni..."
-
 #: src/features/auth/pages/register.tsx
 msgid "Signing up..."
 msgstr "Roʻyxatdan oʻtish jarayoni..."
@@ -3141,7 +3112,6 @@ msgid "Sort by"
 msgstr "Saralash boʻyicha"
 
 #: src/routes/_home/-sections/footer.tsx
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
 msgid "Source Code"
 msgstr "Manba kodi"
 
@@ -3156,10 +3126,6 @@ msgstr "Bo'shliq (vertikal)"
 #: src/libs/locale.ts
 msgid "Spanish"
 msgstr "Ispan tili"
-
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
-msgid "Sponsors"
-msgstr "Homiylar"
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Sponsorships"
@@ -3197,22 +3163,15 @@ msgstr "Rezyumeni yaratishni unga nom berishdan boshlang."
 msgid "Start building your resume from scratch"
 msgstr "Rezyumeni nolldan boshlang va yarating"
 
-#: src/routes/agent/index.tsx
-msgid "Start new thread"
-msgstr "Yangi mavzuni boshlash"
-
 #: src/routes/agent/-components/new-thread-setup.tsx
 msgid "Start Thread"
 msgstr "Mavzuni boshlash"
-
-#: src/libs/resume/section.tsx
-msgid "Statistics"
-msgstr "Statistika"
 
 #: src/hooks/use-form-blocker.tsx
 msgid "Stay"
 msgstr "Qolish"
 
+#: src/routes/agent/-components/simple-chat.tsx
 #: src/routes/agent/$threadId.tsx
 msgid "Stop generation"
 msgstr "Avlodni to'xtatish"
@@ -3243,12 +3202,8 @@ msgid "Summary"
 msgstr "Qisqacha ma'lumot"
 
 #: src/routes/_home/-sections/donate.tsx
-msgid "Support Reactive Resume"
-msgstr "Reactive Resume'ni qoʻllab-quvvatlang"
-
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
-msgid "Support the app by doing what you can!"
-msgstr "Ilovani imkon qadar qoʻllab-quvvatlang!"
+msgid "Support Craftisle Resume"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Swedish"
@@ -3341,11 +3296,6 @@ msgstr "Oʻchirilgandan soʻng API kaliti endi maʼlumotlaringizga kira olmaydi.
 msgid "The command you're looking for doesn't exist."
 msgstr "Siz izlayotgan buyruq mavjud emas."
 
-#. Error shown when AI parsing returns invalid resume structure during import
-#: src/dialogs/resume/import.tsx
-msgid "The imported file could not be parsed into a valid resume."
-msgstr "Import qilingan fayl haqiqiy rezyume shaklida qayta ishlanmadi."
-
 #: src/features/auth/pages/resume-password.tsx
 msgid "The password you entered is incorrect"
 msgstr "Kiritilgan parol noto'g'ri"
@@ -3390,6 +3340,7 @@ msgid "Thinking"
 msgstr "Fikrlash"
 
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "This action cannot be undone."
@@ -3411,17 +3362,9 @@ msgstr "Bu amalni bekor qilib bo'lmaydi. Xabarlar va mavzu qo'shimchalari olib t
 msgid "This agent thread could not be opened."
 msgstr "Bu agent mavzusini ochib bo'lmadi."
 
-#: src/dialogs/resume/import.tsx
-msgid "This feature requires a tested AI provider. Please add one in the settings."
-msgstr "Bu funksiya sinovdan o'tgan AI provayderini talab qiladi. Iltimos, sozlamalardan birini qo'shing."
-
 #: src/dialogs/resume/index.tsx
 msgid "This is a URL-friendly name for your resume."
 msgstr "Bu rezyume uchun URL uchun qulay ism."
-
-#: src/dialogs/resume/import.tsx
-msgid "This may take a few minutes, depending on the response of the AI provider. Please do not close the window or refresh the page."
-msgstr "Bu AI provayderining javobiga qarab bir necha daqiqa davom etishi mumkin. Iltimos, oynani yoping yoki sahifani yangilamang."
 
 #: src/features/resume/builder/draft.ts
 msgid "This resume is locked and cannot be updated."
@@ -3448,8 +3391,8 @@ msgid "This thread is read-only because the working resume or AI provider is una
 msgstr "Ushbu mavzu faqat o'qish uchun mo'ljallangan, chunki ishlaydigan rezyume yoki AI provayderi mavjud emas."
 
 #: src/dialogs/api-key/create.tsx
-msgid "This will generate a new API key to access the Reactive Resume API to allow machines to interact with your resume data."
-msgstr "Bu sizga Reactive Resume API ga kirish uchun yangi API kalitini yaratadi va mashinalarga rezyume ma'lumotlaringiz bilan ishlash imkonini beradi."
+msgid "This will generate a new API key to access the Craftisle Resume API to allow machines to interact with your resume data."
+msgstr ""
 
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "This will help you identify it later, if you plan to have multiple passkeys."
@@ -3482,8 +3425,8 @@ msgid "Tighten the skills section so it supports the target role instead of read
 msgstr "Kalit so'zlarni o'qish o'rniga, maqsadli rolni qo'llab-quvvatlaydigan qilib, ko'nikmalar bo'limini qisqartiring."
 
 #: src/routes/_home/-sections/hero.tsx
-msgid "Timelapse demonstration of building a resume with Reactive Resume"
-msgstr "Reactive Resume bilan rezume tuzishning timelapse namoyishi"
+msgid "Timelapse demonstration of building a resume with Craftisle Resume"
+msgstr ""
 
 #: src/dialogs/api-key/create.tsx
 msgid "Tip: Give your API key a name, corresponding to the purpose of the key, to help you identify it later."
@@ -3531,7 +3474,6 @@ msgid "Track your resume's views and downloads"
 msgstr "Rezyumingizga koʻrilishlar va yuklab olishlarni kuzatib boring"
 
 #: src/routes/_home/-sections/footer.tsx
-#: src/routes/builder/$resumeId/-sidebar/right/sections/information.tsx
 msgid "Translations"
 msgstr "Tarjimalar"
 
@@ -3597,7 +3539,6 @@ msgstr "Ikki bosqichli autentifikatsiya muvaffaqiyatli yoqildi."
 msgid "Two-Factor Authentication QR Code"
 msgstr "Ikki omilli autentifikatsiya QR-kodi"
 
-#: src/dialogs/resume/import.tsx
 #: src/routes/builder/$resumeId/-sidebar/right/sections/design.tsx
 msgid "Type"
 msgstr "Turi"
@@ -3637,6 +3578,7 @@ msgstr "{providerName} hisobingizni ajratib qoʻyilmoqda..."
 #. Resume card dropdown action to remove edit lock
 #: src/features/auth/pages/resume-password.tsx
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Unlock"
@@ -3659,6 +3601,7 @@ msgstr "Tasdiqlanmagan"
 #: src/routes/builder/$resumeId/-components/header.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 #: src/routes/builder/$resumeId/-sidebar/left/shared/section-item.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Update"
@@ -3749,6 +3692,10 @@ msgstr "Parolingiz yangilanmoqda..."
 #: src/dialogs/resume/index.tsx
 msgid "Updating your resume..."
 msgstr "Rezyume yangilanmoqda..."
+
+#: src/dialogs/resume/import.tsx
+msgid "Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a structured resume you can edit."
+msgstr ""
 
 #: src/routes/agent/$threadId.tsx
 msgid "Upload attachments"
@@ -3848,6 +3795,10 @@ msgstr "Ko‘rishlar"
 msgid "Volunteer"
 msgstr "Ko‘ngillilar"
 
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Want to apply the changes?"
+msgstr ""
+
 #: src/dialogs/resume/sections/award.tsx
 #: src/dialogs/resume/sections/certification.tsx
 #: src/dialogs/resume/sections/education.tsx
@@ -3861,6 +3812,7 @@ msgstr "Ko‘ngillilar"
 msgid "Website"
 msgstr "Veb-sayt"
 
+#: src/routes/agent/-components/simple-chat.tsx
 #: src/routes/agent/$threadId.tsx
 msgid "What do you want to do?"
 msgstr "Nima qilmoqchisiz?"
@@ -3870,14 +3822,15 @@ msgid "What do you want to rename this section to?"
 msgstr "Bu bo‘limni qanday nomlamoqchisiz?"
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "What makes Reactive Resume different from other resume builders?"
-msgstr "Reactive Resume-ni boshqa rezyume tuzuvchilardan nimasi farq qiladi?"
+msgid "What makes Craftisle Resume different from other resume builders?"
+msgstr ""
 
 #: src/routes/_home/-sections/hero.tsx
 msgid "What's new in the latest version?"
 msgstr "So‘nggi versiyada nima yangiliklar bor?"
 
 #: src/routes/builder/$resumeId/-components/header.tsx
+#: src/routes/dashboard/resumes/-components/cards/resume-card.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "When locked, the resume cannot be updated or deleted."
@@ -3887,6 +3840,7 @@ msgstr "Qulfda bo‘lsa, rezyumeni yangilash yoki o‘chirish mumkin emas."
 msgid "Work OpenAI"
 msgstr "OpenAI bilan ishlang"
 
+#: src/routes/agent/-components/simple-chat.tsx
 #: src/routes/agent/$threadId.tsx
 msgid "Working…"
 msgstr "… ishlayapti"
@@ -3896,12 +3850,12 @@ msgid "X (Twitter)"
 msgstr "X (Twitter)"
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "Yes, Reactive Resume is available in multiple languages. You can choose your preferred language in the settings page, or using the language switcher in the top right corner. If you don't see your language, or you would like to improve the existing translations, you can <0>contribute to the translations on Crowdin<1> (opens in new tab)</1></0>."
-msgstr "Ha, Reactive Resume bir nechta tillarda mavjud. Siz sozlamalar sahifasida yoki yuqori o'ng burchakdagi til almashtirgich yordamida o'zingizga qulay tilni tanlashingiz mumkin. Agar tilingiz ro'yxatda bo'lmasa yoki mavjud tarjimalarni yaxshilashni istasangiz, <0>Crowdin'da tarjimalarga hissa qo'shishingiz mumkin<1> (yangi tabda ochiladi)</1></0>."
+msgid "Yes, Craftisle Resume is available in multiple languages. You can choose your preferred language in the settings page, or using the language switcher in the top right corner. If you don't see your language, or you would like to improve the existing translations, you can <0>contribute to the translations on Crowdin<1> (opens in new tab)</1></0>."
+msgstr ""
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "Yes! Reactive Resume is completely free to use, with no hidden costs, premium tiers, or subscription fees. It's open-source and will always remain free."
-msgstr "Ha! Reactive Resume’dan foydalanish butunlay bepul — yashirin toʻlovlar, premium darajalar yoki obuna haqqi yoʻq. Ochiq kodli va har doim bepul boʻlib qoladi."
+msgid "Yes! Craftisle Resume is completely free to use, with no hidden costs, premium tiers, or subscription fees. It's open-source and will always remain free."
+msgstr ""
 
 #: src/routes/_home/-sections/features.tsx
 msgid "You also have the option to deploy on your own servers using the Docker image."
@@ -3941,8 +3895,8 @@ msgid "Your data is secure, and never shared or sold to anyone."
 msgstr "Maʼlumotlaringiz xavfsiz va hech qachon boshqalarga berilmaydi yoki sotilmaydi."
 
 #: src/routes/_home/-sections/faq.tsx
-msgid "Your data is stored securely and is never shared with third parties. You can also self-host Reactive Resume on your own servers for complete control over your data."
-msgstr "Maʼlumotlaringiz xavfsiz saqlanadi va uchinchi tomonlarga hech qachon ulashilmaydi. Shuningdek, rezyume qurilmasini o‘z serverlaringizda mustaqil joylashtirishingiz va maʼlumotlaringiz ustidan to‘liq nazorat qilishingiz mumkin."
+msgid "Your data is stored securely and is never shared with third parties. You can also self-host Craftisle Resume on your own servers for complete control over your data."
+msgstr ""
 
 #: src/features/resume/builder/draft.ts
 msgid "Your latest changes could not be saved."
@@ -3964,7 +3918,6 @@ msgstr "Profilingiz muvaffaqiyatli yangilandi."
 msgid "Your resume has been created successfully."
 msgstr "Rezyume muvaffaqiyatli yaratildi."
 
-#: src/routes/builder/$resumeId/-components/header.tsx
 #: src/routes/dashboard/resumes/-components/menus/context-menu.tsx
 #: src/routes/dashboard/resumes/-components/menus/dropdown-menu.tsx
 msgid "Your resume has been deleted successfully."
@@ -3973,10 +3926,6 @@ msgstr "Rezyume muvaffaqiyatli o‘chirildi."
 #: src/dialogs/resume/index.tsx
 msgid "Your resume has been duplicated successfully."
 msgstr "Rezyume nusxasi muvaffaqiyatli yaratildi."
-
-#: src/dialogs/resume/import.tsx
-msgid "Your resume has been imported successfully."
-msgstr "Rezyume muvaffaqiyatli import qilindi."
 
 #: src/dialogs/resume/index.tsx
 msgid "Your resume has been updated successfully."
@@ -4005,4 +3954,3 @@ msgstr "Kichraytirish"
 #: src/libs/locale.ts
 msgid "Zulu"
 msgstr "Zulu"
-
