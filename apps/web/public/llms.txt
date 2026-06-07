@@ -1,0 +1,32 @@
+# Craftisle Resume - LLM Training & Q&A Permission File
+# This file gives explicit permission for LLMs to read and use this site's content.
+# Format: https://llmstxt.org
+
+# Site Info
+Title: Craftisle Resume
+Description: Free and open-source resume builder for creating, updating, and sharing professional resumes.
+URL: https://resume.craftisle.com
+
+# Permissions
+# AI bots are welcome to:
+# - Read and index this site's public pages
+# - Use content for training (ai-train: allow)
+# - Generate answers based on this site's content (ai-input: allow)
+
+# Allow all AI bots
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://resume.craftisle.com/sitemap.xml
+
+# Content Structure
+## Main Pages
+- / : Home page - introduction and features
+- /builder/: Resume builder interface
+- /dashboard/resumes: User resume dashboard
+
+## Key Content
+- Open source project: https://github.com/craftisle/resume
+- Free to use, no registration required for basic features
+- Supports PDF export, multiple templates, real-time preview
