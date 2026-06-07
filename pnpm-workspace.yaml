@@ -11,9 +11,8 @@ onlyBuiltDependencies:
   - esbuild
   - lefthook
   - msgpackr-extract
+  - msw
   - pdfjs-dist
   - sharp
 overrides:
   postcss@<8.5.10: ^8.5.14
-allowBuilds:
-  canvas: true
