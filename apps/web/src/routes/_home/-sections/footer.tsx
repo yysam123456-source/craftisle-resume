@@ -6,6 +6,7 @@ import { m } from "motion/react";
 import { useState } from "react";
 import { BrandIcon } from "@reactive-resume/ui/components/brand-icon";
 import { Button } from "@reactive-resume/ui/components/button";
+import { AdBanner } from "@/components/ads";
 import { Copyright } from "@/components/ui/copyright";
 
 type FooterLinkItem = {
@@ -54,6 +55,11 @@ export function Footer() {
 			viewport={{ once: true }}
 			transition={{ duration: 0.45 }}
 		>
+			{/* Ad banner above footer — global placement for all pages */}
+			<div className="container mx-auto mb-8 flex justify-center px-4 sm:px-6 lg:px-12">
+				<AdBanner size="leaderboard" />
+			</div>
+
 			<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 				{/* Brand Column */}
 				<div className="space-y-4 sm:col-span-2 lg:col-span-1">

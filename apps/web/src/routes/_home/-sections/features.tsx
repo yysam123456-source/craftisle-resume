@@ -15,7 +15,6 @@ import {
 	LayoutIcon,
 	LockSimpleIcon,
 	PaletteIcon,
-	ProhibitIcon,
 	ShieldCheckIcon,
 	TranslateIcon,
 } from "@phosphor-icons/react";
@@ -44,12 +43,6 @@ const getFeatures = (): Feature[] => [
 		icon: GithubLogoIcon,
 		title: t`Open Source`,
 		description: t`By the community, for the community.`,
-	},
-	{
-		id: "no-ads",
-		icon: ProhibitIcon,
-		title: t`No Advertising, No Tracking`,
-		description: t`For a secure and distraction-free experience.`,
 	},
 	{
 		id: "instant-generation",

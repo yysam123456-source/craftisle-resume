@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AdBanner } from "@/components/ads";
 import { createRootStructuredDataScript, getCanonicalRootUrl } from "@/libs/seo";
 import { Faq } from "./-sections/faq";
 import { Features } from "./-sections/features";
@@ -24,6 +25,11 @@ export const Route = createFileRoute("/_home/")({
 function RouteComponent() {
 	return (
 		<main id="main-content" className="relative">
+			{/* Top banner ad — below header, above hero */}
+			<div className="container mx-auto flex justify-center px-4 py-3 sm:px-6 lg:px-12">
+				<AdBanner size="leaderboard" />
+			</div>
+
 			<Hero />
 
 			<div className="container mx-auto px-4 sm:px-6 lg:px-12">
@@ -35,6 +41,11 @@ function RouteComponent() {
 					<Faq />
 					<Prefooter />
 				</div>
+			</div>
+
+			{/* Bottom banner ad — above footer */}
+			<div className="container mx-auto flex justify-center px-4 py-6 sm:px-6 lg:px-12">
+				<AdBanner size="leaderboard" />
 			</div>
 		</main>
 	);

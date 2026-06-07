@@ -4,6 +4,7 @@ import { match } from "ts-pattern";
 import { Button } from "@reactive-resume/ui/components/button";
 import { ScrollArea } from "@reactive-resume/ui/components/scroll-area";
 import { Separator } from "@reactive-resume/ui/components/separator";
+import { AdBanner } from "@/components/ads";
 import { getSectionIcon, getSectionTitle, rightSidebarSections } from "@/libs/resume/section";
 import { BuilderSidebarEdge } from "../../-components/edge";
 import { useBuilderSidebar } from "../../-store/sidebar";
@@ -51,6 +52,11 @@ export function BuilderSidebarRight() {
 							<Separator />
 						</Fragment>
 					))}
+
+					{/* Ad banner at bottom of right sidebar — highest value placement */}
+					<div className="pt-2">
+						<AdBanner size="rectangle" className="mx-auto" />
+					</div>
 				</div>
 			</ScrollArea>
 		</>
