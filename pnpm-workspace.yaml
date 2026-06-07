@@ -7,7 +7,6 @@ patchedDependencies:
 minimumReleaseAge: 0
 onlyBuiltDependencies:
   - bcrypt
-  - canvas
   - esbuild
   - lefthook
   - msgpackr-extract

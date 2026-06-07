@@ -73,6 +73,10 @@ export default defineConfig({
 
 	resolve: {
 		tsconfigPaths: true,
+		alias: {
+			// Redirect pdfjs-dist legacy imports to vendored files (no postinstall needed in CI)
+			"pdfjs-dist/legacy": fileURLToPath(new URL("./src/vendor/pdfjs-legacy", import.meta.url)),
+		},
 	},
 
 	define: {
@@ -82,7 +86,7 @@ export default defineConfig({
 	build: {
 		chunkSizeWarningLimit: 10 * 1024, // 10 MB
 		rolldownOptions: {
-			external: ["bcrypt", "sharp", "@aws-sdk/client-s3", "ioredis", "linkedom"],
+			external: ["bcrypt", "sharp", "canvas", "@aws-sdk/client-s3", "ioredis", "linkedom"],
 		},
 	},
 
