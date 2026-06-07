@@ -1,7 +1,7 @@
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { PaperPlaneRightIcon, SparkleIcon, StopIcon, XIcon } from "@phosphor-icons/react";
-import { useEffect, lazy, Suspense, useCallback, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { Button } from "@reactive-resume/ui/components/button";
@@ -42,8 +42,10 @@ function generateId() {
 // Normalize AI-returned resume data to match the expected ResumeData schema.
 // AI may return data in various formats: wrapped in {"data":{...}}, missing metadata, etc.
 // This function does NOT trust AI output — it validates, unwraps, and merges with original.
-function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): unknown {
-	if (!rawUpdate || typeof rawUpdate !== "object") return rawUpdate;
+function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): Record<string, unknown> {
+	const empty: Record<string, unknown> = {};
+
+	if (!rawUpdate || typeof rawUpdate !== "object" || rawUpdate === null) return empty;
 
 	const updateObj = rawUpdate as Record<string, unknown>;
 
@@ -57,44 +59,47 @@ function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): unknow
 		}
 	}
 
-	// Step 2: If we have original data, merge missing structural fields
-	if (originalData && typeof originalData === "object") {
+	if (typeof resolved !== "object" || resolved === null) return empty;
+	const resolvedObj = resolved as Record<string, unknown>;
+
+	// Step 2: Normalize originalData — handle both localStorage wrapper and raw resume data
+	let origData: Record<string, unknown> = {};
+	if (originalData && typeof originalData === "object" && originalData !== null) {
 		const orig = originalData as Record<string, unknown>;
-
-		// Unwrap original if also wrapped in .data (as stored in localStorage)
-		const origData =
-			"data" in orig && typeof orig.data === "object" && orig.data !== null
-				? (orig.data as Record<string, unknown>)
-				: orig;
-
-		// Merge critical missing top-level keys from original
-		const criticalKeys = ["metadata", "picture", "customSections", "summary"];
-		for (const key of criticalKeys) {
-			if (!(key in resolved) && key in origData) {
-				(resolved as Record<string, unknown>)[key] = origData[key];
-			}
+		// Check if this is a localStorage entry wrapper { id, data: {...}, updatedAt }
+		if ("data" in orig && typeof orig.data === "object" && orig.data !== null) {
+			origData = orig.data as Record<string, unknown>;
+		} else if ("basics" in orig || "sections" in orig) {
+			origData = orig as Record<string, unknown>;
 		}
+	}
 
-		// Merge missing section types from original's sections
-		const origSections =
-			"sections" in origData ? (origData.sections as Record<string, unknown> | undefined) : undefined;
-		const resolvedSections = (resolved as Record<string, unknown>).sections as
-			| Record<string, unknown>
-			| undefined;
+	// Step 3: Merge missing structural fields from original
+	const criticalKeys = ["metadata", "picture", "customSections", "summary"];
+	for (const key of criticalKeys) {
+		if (!(key in resolvedObj) && key in origData) {
+			resolvedObj[key] = origData[key];
+		}
+	}
 
-		if (origSections && resolvedSections) {
+	// Merge missing section types from original
+	const origSections = origData.sections as Record<string, unknown> | undefined;
+	const resolvedSections = resolvedObj.sections as Record<string, unknown> | undefined;
+
+	if (origSections) {
+		if (resolvedSections) {
 			for (const key of Object.keys(origSections)) {
 				if (!(key in resolvedSections)) {
 					resolvedSections[key] = origSections[key];
 				}
 			}
-			(resolved as Record<string, unknown>).sections = resolvedSections;
-		} else if (origSections) {
-			(resolved as Record<string, unknown>).sections = origSections;
+			resolvedObj.sections = resolvedSections;
+		} else {
+			resolvedObj.sections = origSections;
 		}
 	}
 
-	return resolved;
+	return resolvedObj;
 }
 
 // Extract hidden resume data marker from AI response
@@ -103,8 +108,8 @@ function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): unknow
 // 2. ```json\n{...}\n```
 // 3. Raw JSON object at end of message
 function parseResumeUpdate(content: string): { visibleContent: string; update?: unknown } {
-	// Try hidden marker first
-	const markerRegex = /<!--RESUME_DATA:({[\s\S]*?})-->\s*$/;
+	// Try hidden marker first: <!--RESUME_DATA:{...}-->
+	const markerRegex = /<!--RESUME_DATA:([\s\S]*?)-->\s*$/;
 	const markerMatch = content.match(markerRegex);
 	if (markerMatch) {
 		try {
@@ -116,26 +121,45 @@ function parseResumeUpdate(content: string): { visibleContent: string; update?: 
 		}
 	}
 
-	// Try markdown code blocks (```json ... ``` or ``` ... ```)
-	// Use global match to find ALL code blocks, then try parsing each one
-	// This avoids matching a garbage code block at the end while missing valid data earlier
-	const codeBlockRegex = /```(?:json)?\s*\n?({[\s\S]*?})\n?```/g;
-	let codeMatch;
-	while ((codeMatch = codeBlockRegex.exec(content)) !== null) {
+	// Try markdown code blocks: extract FULL content between ``` and ```, then parse
+	// Fixed: capture group is ([\s\S]*?), NOT ([\s\S]*?}) — the old regex stopped at first "}"
+	const codeBlockPattern = /```(?:json)?\s*\n?([\s\S]*?)\n?```/g;
+	let codeMatch: RegExpExecArray | null = null;
+	let lastValidResult: { visibleContent: string; parsed: unknown } | null = null;
+
+	for (codeMatch = codeBlockPattern.exec(content); codeMatch !== null; codeMatch = codeBlockPattern.exec(content)) {
+		const blockContent = codeMatch[1].trim();
+		if (!blockContent) continue;
 		try {
-			const parsed = JSON.parse(codeMatch[1]);
-			const visibleContent = content.replace(codeMatch[0], "").trim();
-			return { visibleContent, update: parsed };
+			const parsed = JSON.parse(blockContent);
+			// Prefer blocks that look like resume data
+			const looksLikeResume =
+				typeof parsed === "object" &&
+				parsed !== null &&
+				("data" in parsed || "basics" in parsed || "sections" in parsed);
+			if (looksLikeResume) {
+				const visibleContent = content.replace(codeMatch[0], "").trim();
+				return { visibleContent, update: parsed };
+			}
+			// Save as fallback (may be a non-resume JSON block)
+			lastValidResult = {
+				visibleContent: content.replace(codeMatch[0], "").trim(),
+				parsed,
+			};
 		} catch {
-			// Not valid JSON, try next code block
+			// Not valid JSON, try next block
 		}
 	}
 
+	// Fallback: use the last valid JSON block we found
+	if (lastValidResult) {
+		return { visibleContent: lastValidResult.visibleContent, update: lastValidResult.parsed };
+	}
+
 	// Try finding a raw JSON object at the end of the message
-	// Look for the last occurrence of a top-level object {}
+	// Use a simple heuristic: look for the last "{" that starts a top-level object
 	const lastBraceIdx = content.lastIndexOf("}");
 	if (lastBraceIdx > 0) {
-		// Walk backwards to find matching opening brace
 		let depth = 0;
 		let startIdx = -1;
 		for (let i = lastBraceIdx; i >= 0; i--) {
@@ -150,7 +174,6 @@ function parseResumeUpdate(content: string): { visibleContent: string; update?: 
 			const jsonStr = content.slice(startIdx, lastBraceIdx + 1);
 			try {
 				const parsed = JSON.parse(jsonStr);
-				// Validate it looks like resume data (has basics or data key)
 				if (
 					typeof parsed === "object" &&
 					parsed !== null &&
@@ -190,7 +213,10 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 		if (cooldownRemaining <= 0) return;
 		const interval = setInterval(() => {
 			setCooldownRemaining((prev) => {
-				if (prev <= 1) { clearInterval(interval); return 0; }
+				if (prev <= 1) {
+					clearInterval(interval);
+					return 0;
+				}
 				return prev - 1;
 			});
 		}, 1000);
@@ -246,7 +272,8 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 				if (idx === -1) return;
 
 				// Normalize: unwrap .data, merge missing fields from original
-				const normalizedData = normalizeResumeData(update, resumes[idx]) as Record<string, unknown>;
+				// Pass resumes[idx].data (the actual resume data), NOT resumes[idx] (the wrapper)
+				const normalizedData = normalizeResumeData(update, resumes[idx].data) as Record<string, unknown>;
 
 				// Restore picture URLs if AI replaced them with "[image removed]"
 				const origData = resumes[idx].data;
@@ -276,6 +303,7 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	const handleApplyClick = useCallback(
 		(update: unknown) => {
 			// Normalize AI data: unwrap wrappers, merge missing fields from original
+			// resumeData may be localStorage wrapper or raw resume data
 			const normalized = normalizeResumeData(update, resumeData);
 			setPreviewUpdate(normalized);
 			setShowPreview(true);
@@ -301,11 +329,10 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 	const renderDiffPreview = useCallback(() => {
 		if (!previewUpdate || !resumeData) return null;
 		try {
-			const newData = typeof previewUpdate === "object" && previewUpdate !== null
-				? (previewUpdate as Record<string, unknown>)
-				: {};
+			const newData =
+				typeof previewUpdate === "object" && previewUpdate !== null ? (previewUpdate as Record<string, unknown>) : {};
 
-			// Unwrap original data if it has .data wrapper (from localStorage entry)
+			// Unwrap original data if it has .data wrapper (from localStorage entry or AI wrapper)
 			const rawOrig = resumeData as Record<string, unknown>;
 			const oldData =
 				"data" in rawOrig && typeof rawOrig.data === "object" && rawOrig.data !== null
@@ -325,11 +352,15 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 				const oldVal =
 					section === "basics"
 						? (oldBasics?.[field] as string | undefined)
-						: ((oldData?.[section] as Record<string, unknown> | undefined)?.[field] as string | undefined);
+						: (((oldData as Record<string, unknown>)?.[section] as Record<string, unknown> | undefined)?.[field] as
+								| string
+								| undefined);
 				const newVal =
 					section === "basics"
 						? (newBasics?.[field] as string | undefined)
-						: ((newData?.[section] as Record<string, unknown> | undefined)?.[field] as string | undefined);
+						: (((newData as Record<string, unknown>)?.[section] as Record<string, unknown> | undefined)?.[field] as
+								| string
+								| undefined);
 				const oldStr = oldVal ? String(oldVal) : "";
 				const newStr = newVal ? String(newVal) : "";
 				if (oldStr !== newStr) {
@@ -343,7 +374,6 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 
 			compareField("basics", "name");
 			compareField("basics", "headline");
-			compareField("basics", "email");
 			compareField("basics", "phone");
 			compareField("basics", "location");
 			compareField("basics", "summary");
@@ -447,10 +477,10 @@ Format 2: {"data":{...}}
 Replace {...} with the FULL updated resume data object. Keep image fields as "[image removed]" if they were in the original. Do not include any other text before or after the JSON.`;
 
 				const apiMessages = [
-					{ role: "system", content: "You are a resume assistant." },
-					{ role: "user", content: `Here is my current resume data: ${JSON.stringify(sanitizedResumeData)}` },
+					{ role: "system" as const, content: "You are a resume assistant." },
+					{ role: "user" as const, content: `Here is my current resume data: ${JSON.stringify(sanitizedResumeData)}` },
 					...messages.map((m) => ({ role: m.role, content: m.content })),
-					{ role: "user", content: followUpPrompt },
+					{ role: "user" as const, content: followUpPrompt },
 				];
 
 				const response = await fetch("/api/ai/chat", {
@@ -479,18 +509,20 @@ Replace {...} with the FULL updated resume data object. Keep image fields as "[i
 				const rawContent = data.choices?.[0]?.message?.content;
 				const assistantContent = typeof rawContent === "string" ? rawContent : JSON.stringify(rawContent) || "";
 
-			const { update } = parseResumeUpdate(assistantContent);
+				const { update } = parseResumeUpdate(assistantContent);
 
-			if (update) {
-				// Normalize before storing and opening preview
-				const normalized = normalizeResumeData(update, resumeData);
-				// Patch the existing assistant message with the extracted data
-				setMessages((prev) => prev.map((m) => (m.id === assistantMessageId ? { ...m, resumeUpdate: normalized } : m)));
-				// Open preview dialog instead of auto-applying
-				handleApplyClick(normalized);
-			} else {
-				toast.error(t`Could not extract resume data. Please try again.`);
-			}
+				if (update) {
+					// Normalize before storing and opening preview
+					const normalized = normalizeResumeData(update, resumeData);
+					// Patch the existing assistant message with the extracted data
+					setMessages((prev) =>
+						prev.map((m) => (m.id === assistantMessageId ? { ...m, resumeUpdate: normalized } : m)),
+					);
+					// Open preview dialog instead of auto-applying
+					handleApplyClick(normalized);
+				} else {
+					toast.error(t`Could not extract resume data. Please try again.`);
+				}
 			} catch (error) {
 				if (error instanceof Error && error.name === "AbortError") return;
 				toast.error(error instanceof Error ? error.message : t`Failed to get resume data.`);
@@ -499,7 +531,7 @@ Replace {...} with the FULL updated resume data object. Keep image fields as "[i
 				abortRef.current = null;
 			}
 		},
-		[getRateLimitRemaining, sanitizedResumeData, messages, handleApplyClick],
+		[getRateLimitRemaining, sanitizedResumeData, messages, handleApplyClick, resumeData],
 	);
 
 	const sendMessage = useCallback(async () => {
@@ -547,9 +579,9 @@ EXAMPLE RESPONSE FORMAT:
 				: "You are a helpful resume assistant. The user is working on their resume. Provide advice, suggestions, and improvements.";
 
 			const apiMessages = [
-				{ role: "system", content: systemPrompt },
+				{ role: "system" as const, content: systemPrompt },
 				...messages.map((m) => ({ role: m.role, content: m.content })),
-				{ role: "user", content: text },
+				{ role: "user" as const, content: text },
 			];
 
 			const response = await fetch("/api/ai/chat", {
@@ -752,8 +784,8 @@ EXAMPLE RESPONSE FORMAT:
 							}}
 							placeholder={
 								cooldownRemaining > 0
-								? `Wait ${cooldownRemaining}s before next request...`
-								: t`Ask anything about this resume`
+									? `Wait ${cooldownRemaining}s before next request...`
+									: t`Ask anything about this resume`
 							}
 							className="max-h-40 min-h-9 resize-none border-0 bg-transparent p-2 leading-5 shadow-none focus-visible:ring-0"
 						/>
