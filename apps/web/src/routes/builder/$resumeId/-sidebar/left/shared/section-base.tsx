@@ -30,9 +30,9 @@ export function SectionBase({ type, className, ...props }: Props) {
 						? data.customSections
 						: data.sections[type];
 
-	const isHidden = "hidden" in section && section.hidden;
+	const isHidden = section != null && "hidden" in section && section.hidden;
 	const hasSectionIcon = !["picture", "basics", "custom"].includes(type);
-	const rawIcon = "icon" in section && typeof section.icon === "string" ? section.icon : "";
+	const rawIcon = section != null && "icon" in section && typeof section.icon === "string" ? section.icon : "";
 	const fallbackIcon = hasSectionIcon ? getDefaultSectionIconName(type as "summary" | SectionType) : "";
 	const sectionIcon = rawIcon === "none" ? "" : rawIcon || fallbackIcon;
 
@@ -77,7 +77,7 @@ export function SectionBase({ type, className, ...props }: Props) {
 							getSectionIcon(type)
 						)}
 						<h2 className="line-clamp-1 font-semibold text-2xl tracking-tight">
-							{("title" in section && section.title) || getSectionTitle(type)}
+							{(section != null && "title" in section && section.title) || getSectionTitle(type)}
 						</h2>
 					</div>
 

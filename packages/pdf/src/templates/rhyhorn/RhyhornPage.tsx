@@ -118,7 +118,7 @@ const Header = ({ styles }: RhyhornHeaderProps) => {
 		});
 	}
 
-	if (basics.website.url) {
+	if (basics.website?.url) {
 		contactItems.push({
 			id: "website",
 			content: <WebsiteContactItem website={basics.website} style={styles.contactItemContent} />,

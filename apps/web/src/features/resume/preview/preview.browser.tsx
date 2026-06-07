@@ -94,6 +94,7 @@ export function ResumePreviewClient({
 	const resumeData = data ?? builderResumeData;
 
 	const [previewLayers, setPreviewLayers] = useState<PreviewPdf[]>([]);
+	const [_previewError, setPreviewError] = useState<string | null>(null);
 
 	const pdfIdRef = useRef(0);
 	const requestIdRef = useRef(0);
@@ -109,6 +110,38 @@ export function ResumePreviewClient({
 		const generatePdfPreview = async () => {
 			try {
 				if (cancelled || requestId !== requestIdRef.current) return;
+
+				// DIAGNOSTIC: log resume data shape to find undefined fields
+				const diag = {
+					basics_website: resumeData.basics?.website,
+					basics_picture: resumeData.basics?.picture,
+					summary_content_type: typeof resumeData.summary?.content,
+					summary_content_preview:
+						typeof resumeData.summary?.content === "string"
+							? resumeData.summary.content.substring(0, 50)
+							: String(resumeData.summary?.content).substring(0, 50),
+					sections_keys: Object.keys(resumeData.sections || {}),
+				};
+				// check each section item for missing fields
+				for (const [key, section] of Object.entries(resumeData.sections || {})) {
+					const sec = section as Record<string, unknown>;
+					if (section && sec.items) {
+						const items = sec.items as Record<string, unknown>[];
+						const nullables = items.slice(0, 3).map((item: Record<string, unknown>) => ({
+							hasWebsite: item.website !== undefined,
+							hasRoles: item.roles !== undefined,
+							hasDescription: item.description !== undefined,
+							hasPosition: item.position !== undefined,
+							hasLocation: item.location !== undefined,
+							hasArea: item.area !== undefined,
+							hasDegree: item.degree !== undefined,
+							hasContent: item.content !== undefined,
+						}));
+						diag[`${key}_nullables`] = nullables;
+					}
+				}
+				console.log("[ResumePreview DIAG] resumeData:", JSON.stringify(diag, null, 2));
+
 				const blob = await createResumePdfBlob(resumeData);
 
 				if (!cancelled && requestId === requestIdRef.current) {

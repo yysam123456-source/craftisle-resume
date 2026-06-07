@@ -2,10 +2,11 @@ import type z from "zod";
 import { t } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { EyeIcon, EyeSlashIcon, TrashSimpleIcon, UploadSimpleIcon } from "@phosphor-icons/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { pictureSchema } from "@reactive-resume/schema/resume/data";
+import { defaultResumeData } from "@reactive-resume/schema/resume/default";
 import { Button } from "@reactive-resume/ui/components/button";
 import { ButtonGroup } from "@reactive-resume/ui/components/button-group";
 import { FormControl, FormItem, FormLabel, FormMessage } from "@reactive-resume/ui/components/form";
@@ -19,8 +20,6 @@ import {
 import { ColorPicker } from "@/components/input/color-picker";
 import { useCurrentResume, useUpdateResumeData } from "@/features/resume/builder/draft";
 import { useSyncFormValues } from "@/hooks/use-sync-form-values";
-import { getReadableErrorMessage } from "@/libs/error-message";
-import { orpc } from "@/libs/orpc/client";
 import { useAppForm } from "@/libs/tanstack-form";
 import { SectionBase } from "../shared/section-base";
 
@@ -393,7 +392,7 @@ function PictureSectionForm() {
 	const appOrigin = typeof window === "undefined" ? "" : window.location.origin;
 
 	const resume = useCurrentResume();
-	const picture = resume.data.picture;
+	const picture = resume.data.picture ?? { ...defaultResumeData.picture };
 	const normalizedPictureUrl = normalizePictureUrl(picture.url, appOrigin);
 	const picturePreviewQuery = useQuery({
 		queryKey: ["resume-picture-preview", normalizedPictureUrl],
@@ -404,8 +403,7 @@ function PictureSectionForm() {
 	const pictureSrc = picturePreviewQuery.data ?? normalizedPictureUrl;
 	const updateResumeData = useUpdateResumeData();
 
-	const { mutate: uploadFile } = useMutation(orpc.storage.uploadFile.mutationOptions({ meta: { noInvalidate: true } }));
-	const { mutate: deleteFile } = useMutation(orpc.storage.deleteFile.mutationOptions({ meta: { noInvalidate: true } }));
+	// NOTE: Upload is done client-side via FileReader -> base64 (no backend server required)
 
 	const persist = (data: PictureValues) => {
 		updateResumeData((draft) => {
@@ -425,18 +423,6 @@ function PictureSectionForm() {
 	};
 
 	const onDeletePicture = () => {
-		if (!picture.url) return;
-
-		const appOrigin = window.location.origin;
-		const pictureUrl = new URL(picture.url, appOrigin);
-		const pictureOrigin = pictureUrl.origin;
-
-		const filename = pictureUrl.pathname.split("/").pop();
-		if (!filename) return;
-
-		// If the picture is from the same origin, attempt to delete it
-		if (pictureOrigin === appOrigin) deleteFile({ filename });
-
 		form.setFieldValue("url", "");
 		handleAutoSave();
 	};
@@ -447,26 +433,24 @@ function PictureSectionForm() {
 
 		const toastId = toast.loading(t`Uploading picture…`);
 
-		uploadFile(file, {
-			onSuccess: ({ url }) => {
-				form.setFieldValue("url", url);
-				handleAutoSave();
-				toast.dismiss(toastId);
-				if (fileInputRef.current) fileInputRef.current.value = "";
-			},
-			onError: (error) => {
-				toast.error(
-					getReadableErrorMessage(
-						error,
-						t({
-							comment: "Fallback toast when uploading profile picture for resume fails",
-							message: "Failed to upload picture. Please try again.",
-						}),
-					),
-					{ id: toastId },
-				);
-			},
-		});
+		const reader = new FileReader();
+		reader.onload = () => {
+			const base64 = reader.result as string;
+			form.setFieldValue("url", base64);
+			handleAutoSave();
+			toast.dismiss(toastId);
+			if (fileInputRef.current) fileInputRef.current.value = "";
+		};
+		reader.onerror = () => {
+			toast.error(
+				t({
+					comment: "Fallback toast when uploading profile picture for resume fails",
+					message: "Failed to upload picture. Please try again.",
+				}),
+				{ id: toastId },
+			);
+		};
+		reader.readAsDataURL(file);
 	};
 
 	useEffect(() => {

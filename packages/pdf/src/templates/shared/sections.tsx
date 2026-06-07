@@ -421,7 +421,7 @@ const ProfileSection = ({ sectionId = "profiles", sectionData }: ItemSectionProp
 								<Bold>{item.network}</Bold>
 							</View>
 						</SectionItemHeader>
-						<Link src={item.website.url}>{item.username}</Link>
+						<Link src={item.website?.url}>{item.username}</Link>
 					</SectionItem>
 				))}
 			</SectionItems>
@@ -443,8 +443,8 @@ const ExperienceSection = ({ sectionId = "experience", sectionData }: ItemSectio
 		<SectionShell sectionId={sectionId} title={experience.title}>
 			<SectionItems columns={experience.columns}>
 				{items.map((item) => {
-					const hasPosition = Boolean(item.position.trim());
-					const hasLocation = Boolean(item.location.trim());
+					const hasPosition = Boolean(item.position?.trim());
+					const hasLocation = Boolean(item.location?.trim());
 					const { top: headerLocation, bottom: headerPeriod } = promoteSplitRowRight({
 						top: item.location,
 						bottom: item.period,
@@ -486,7 +486,7 @@ const ExperienceSection = ({ sectionId = "experience", sectionData }: ItemSectio
 						<SectionItem key={item.id}>
 							<SectionItemHeader>{inlineItemHeader ? renderInlineHeader() : renderSplitHeader()}</SectionItemHeader>
 
-							{item.roles.map((role) => (
+							{(item.roles ?? []).map((role) => (
 								<View key={role.id}>
 									<View style={composeStyles(splitRowStyle)}>
 										<Text>{role.position}</Text>
@@ -496,7 +496,7 @@ const ExperienceSection = ({ sectionId = "experience", sectionData }: ItemSectio
 								</View>
 							))}
 
-							{item.roles.length === 0 && <RichText>{item.description}</RichText>}
+							{(!item.roles || item.roles.length === 0) && <RichText>{item.description}</RichText>}
 
 							<ItemWebsiteLink website={item.website} />
 						</SectionItem>
@@ -524,8 +524,8 @@ const EducationSection = ({ sectionId = "education", sectionData }: ItemSectionP
 					const degreeAndGrade = [item.degree, item.grade].filter(Boolean).join(" • ");
 					const locationAndPeriod = [item.location, item.period].filter(Boolean).join(" • ");
 					const gradeAndLocation = [item.grade, item.location].filter(Boolean).join(" • ");
-					const hasArea = Boolean(item.area.trim());
-					const hasDegree = Boolean(item.degree.trim());
+					const hasArea = Boolean(item.area?.trim());
+					const hasDegree = Boolean(item.degree?.trim());
 					const { top: headerDegreeAndGrade, bottom: headerLocationAndPeriod } = promoteSplitRowRight({
 						top: degreeAndGrade,
 						bottom: locationAndPeriod,

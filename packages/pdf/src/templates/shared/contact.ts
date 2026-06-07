@@ -7,7 +7,8 @@ type CustomFieldLink = {
 	link?: string | undefined;
 };
 
-export const getWebsiteDisplayText = (website: WebsiteDisplay): string => {
+export const getWebsiteDisplayText = (website: WebsiteDisplay | undefined): string => {
+	if (!website) return "";
 	const label = website.label?.trim();
 
 	return label || website.url;

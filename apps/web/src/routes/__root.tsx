@@ -17,7 +17,6 @@ import { DirectionProvider } from "@reactive-resume/ui/components/direction";
 import { Toaster } from "@reactive-resume/ui/components/sonner";
 import { TooltipProvider } from "@reactive-resume/ui/components/tooltip";
 import { BreakpointIndicator } from "@/components/layout/breakpoint-indicator";
-import { DonationToast } from "@/components/ui/donation-toast";
 import { DialogManager } from "@/dialogs/manager";
 import { CommandPalette } from "@/features/command-palette";
 import { ThemeProvider } from "@/features/theme/provider";
@@ -84,15 +83,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		};
 	},
 	beforeLoad: async () => {
-	const isLocalOnly = typeof window !== "undefined" && !!(window as any).__LOCAL_ONLY__;
+		const isLocalOnly =
+			typeof window !== "undefined" && !!(window as typeof globalThis & { __LOCAL_ONLY__?: boolean }).__LOCAL_ONLY__;
 
-	const [theme, locale, session] = await Promise.all([
-		getTheme(),
-		getLocale(),
-		getSession().catch(() => null),
-	]);
+		const [theme, locale, session] = await Promise.all([getTheme(), getLocale(), getSession().catch(() => null)]);
 
-	const flags = isLocalOnly ? ({} as Record<string, unknown>) : await client.flags.get().catch(() => ({} as Record<string, unknown>));
+		const flags = isLocalOnly
+			? ({} as Record<string, unknown>)
+			: await client.flags.get().catch(() => ({}) as Record<string, unknown>);
 
 		try {
 			await loadLocale(locale);
@@ -133,7 +131,6 @@ function RootComponent() {
 													<PromptDialogProvider>
 														<Outlet />
 
-														<DonationToast />
 														<DialogManager />
 														<CommandPalette />
 														<Toaster richColors position="bottom-right" />

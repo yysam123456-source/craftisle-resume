@@ -2,19 +2,9 @@ import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react";
 import { Trans } from "@lingui/react/macro";
-import {
-	BrainIcon,
-	ChatCircleDotsIcon,
-	GearSixIcon,
-	KeyIcon,
-	ReadCvLogoIcon,
-	ShieldCheckIcon,
-	UserCircleIcon,
-	WarningIcon,
-} from "@phosphor-icons/react";
+import { BrainIcon, ChatCircleDotsIcon, GearSixIcon, ReadCvLogoIcon } from "@phosphor-icons/react";
 import { Link } from "@tanstack/react-router";
 import { AnimatePresence, m } from "motion/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@reactive-resume/ui/components/avatar";
 import { BrandIcon } from "@reactive-resume/ui/components/brand-icon";
 import {
 	Sidebar,
@@ -31,7 +21,6 @@ import {
 	SidebarSeparator,
 	useSidebarState,
 } from "@reactive-resume/ui/components/sidebar";
-import { getInitials } from "@reactive-resume/utils/string";
 import { Copyright } from "@/components/ui/copyright";
 import { UserDropdownMenu } from "@/features/user/dropdown-menu";
 
@@ -56,34 +45,14 @@ const appSidebarItems = [
 
 const settingsSidebarItems = [
 	{
-		icon: <UserCircleIcon />,
-		label: msg`Profile`,
-		href: "/dashboard/settings/profile",
-	},
-	{
 		icon: <GearSixIcon />,
 		label: msg`Preferences`,
 		href: "/dashboard/settings/preferences",
 	},
 	{
-		icon: <ShieldCheckIcon />,
-		label: msg`Authentication`,
-		href: "/dashboard/settings/authentication",
-	},
-	{
-		icon: <KeyIcon />,
-		label: msg`API Keys`,
-		href: "/dashboard/settings/api-keys",
-	},
-	{
 		icon: <BrainIcon />,
 		label: msg`Integrations`,
 		href: "/dashboard/settings/integrations",
-	},
-	{
-		icon: <WarningIcon />,
-		label: msg`Danger Zone`,
-		href: "/dashboard/settings/danger-zone",
 	},
 ] as const satisfies SidebarItem[];
 
@@ -164,18 +133,10 @@ export function DashboardSidebar() {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<UserDropdownMenu>
-							{({ session }) => (
+							{() => (
 								<SidebarMenuButton className="h-auto gap-x-3 group-data-[collapsible=icon]:p-1!">
-									<Avatar className="size-8 shrink-0 transition-all group-data-[collapsible=icon]:size-6">
-										{session?.user?.image && <AvatarImage src={session.user.image} />}
-										<AvatarFallback className="group-data-[collapsible=icon]:text-[0.5rem]">
-											{getInitials(session?.user?.name ?? '')}
-										</AvatarFallback>
-									</Avatar>
-
 									<div className="transition-[margin,opacity] duration-200 ease-in-out group-data-[collapsible=icon]:-ms-8 group-data-[collapsible=icon]:opacity-0">
-										<p className="font-medium">{session?.user?.name ?? 'Guest'}</p>
-										<p className="text-muted-foreground text-xs">{session?.user?.email ?? ''}</p>
+										<p className="font-medium">Settings</p>
 									</div>
 								</SidebarMenuButton>
 							)}

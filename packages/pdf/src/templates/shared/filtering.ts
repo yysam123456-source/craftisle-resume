@@ -96,7 +96,8 @@ export const hasVisibleItems = (section: ItemSectionLike, sectionType?: string):
 };
 
 export const isVisibleSummary = (summary: Pick<Summary, "hidden" | "content">): boolean => {
-	return !summary.hidden && summary.content.trim().length > 0;
+	if (!summary || summary.hidden) return false;
+	return typeof summary.content === "string" && summary.content.trim().length > 0;
 };
 
 const getSectionForFiltering = (sectionId: string, data: FilterableData) => {
