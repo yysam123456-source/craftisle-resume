@@ -116,16 +116,18 @@ function parseResumeUpdate(content: string): { visibleContent: string; update?: 
 		}
 	}
 
-	// Try markdown code block (```json ... ```)
-	const codeBlockRegex = /```(?:json)?\s*\n?({[\s\S]*?})\n?```\s*$/;
-	const codeMatch = content.match(codeBlockRegex);
-	if (codeMatch) {
+	// Try markdown code blocks (```json ... ``` or ``` ... ```)
+	// Use global match to find ALL code blocks, then try parsing each one
+	// This avoids matching a garbage code block at the end while missing valid data earlier
+	const codeBlockRegex = /```(?:json)?\s*\n?({[\s\S]*?})\n?```/g;
+	let codeMatch;
+	while ((codeMatch = codeBlockRegex.exec(content)) !== null) {
 		try {
 			const parsed = JSON.parse(codeMatch[1]);
-			const visibleContent = content.replace(codeBlockRegex, "").trim();
+			const visibleContent = content.replace(codeMatch[0], "").trim();
 			return { visibleContent, update: parsed };
 		} catch {
-			/* fall through */
+			// Not valid JSON, try next code block
 		}
 	}
 
