@@ -15,8 +15,8 @@ const canvasToBlob = async (canvas: HTMLCanvasElement) => {
 };
 
 export const createPdfFirstPageImageUrl = async (file: Blob) => {
-	const { AnnotationMode, GlobalWorkerOptions, getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
-	GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.min.mjs", import.meta.url).toString();
+	const { AnnotationMode, GlobalWorkerOptions, getDocument } = await import("pdfjs-dist/legacy/build/pdf.js");
+	GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.min.js", import.meta.url).toString();
 
 	const arrayBuffer = await file.arrayBuffer();
 	const loadingTask = getDocument({ data: new Uint8Array(arrayBuffer) });

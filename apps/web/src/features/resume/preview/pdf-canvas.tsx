@@ -1,4 +1,4 @@
-import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from "pdfjs-dist/legacy/build/pdf.mjs";
+import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from "pdfjs-dist/legacy/build/pdf.js";
 import type { ReactNode } from "react";
 import type { PreviewPageSize } from "./preview.shared";
 import {
@@ -6,8 +6,8 @@ import {
 	GlobalWorkerOptions,
 	getDocument,
 	RenderingCancelledException,
-} from "pdfjs-dist/legacy/build/pdf.mjs";
-import pdfWorkerSrc from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
+} from "pdfjs-dist/legacy/build/pdf.js";
+import pdfWorkerSrc from "pdfjs-dist/legacy/build/pdf.worker.min.js?url";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@reactive-resume/utils/style";
 import { DEFAULT_PDF_PAGE_SIZE, getPreviewCanvasScale, getScaledPreviewPageSize } from "./preview.shared";
