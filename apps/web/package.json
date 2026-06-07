@@ -14,7 +14,8 @@
 		"test:ci": "vitest run --coverage --reporter=default --reporter=github-actions --reporter=json --reporter=junit --outputFile.json=reports/vitest-results.json --outputFile.junit=reports/vitest-junit.xml --passWithNoTests",
 		"test:agent": "vitest run --reporter=agent --reporter=json --outputFile.json=reports/vitest-results.json --passWithNoTests",
 		"lingui:extract": "lingui extract --clean --overwrite",
-		"lingui:compile": "lingui compile"
+		"lingui:compile": "lingui compile",
+		"postbuild": "node ../../scripts/generate-seo-pages.js"
 	},
 	"dependencies": {
 		"@ai-sdk/react": "^3.0.195",

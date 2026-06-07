@@ -1,8 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { RegisterPage } from "@/features/auth/pages/register";
+import { createNoindexFollowMeta } from "@/libs/seo";
 
 export const Route = createFileRoute("/auth/register")({
 	component: RouteComponent,
+	head: () => ({
+		meta: [{ title: "Register — Craftisle Resume" }, createNoindexFollowMeta()],
+	}),
 	beforeLoad: async ({ context }) => {
 		if (context.session) throw redirect({ to: "/dashboard", replace: true });
 		if (context.flags.disableSignups) throw redirect({ to: "/auth/login", replace: true });

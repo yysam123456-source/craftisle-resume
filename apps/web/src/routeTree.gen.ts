@@ -17,7 +17,9 @@ import { Route as DashboardIndexRouteImport } from "./routes/dashboard/index";
 import { Route as AuthIndexRouteImport } from "./routes/auth/index";
 import { Route as AgentIndexRouteImport } from "./routes/agent/index";
 import { Route as HomeIndexRouteImport } from "./routes/_home/index";
+import { Route as TemplatesProfessionRouteImport } from "./routes/templates/$profession";
 import { Route as TemplatesSplatRouteImport } from "./routes/templates/$";
+import { Route as GuidesSlugRouteImport } from "./routes/guides/$slug";
 import { Route as AuthVerify2faBackupRouteImport } from "./routes/auth/verify-2fa-backup";
 import { Route as AuthVerify2faRouteImport } from "./routes/auth/verify-2fa";
 import { Route as AuthResumePasswordRouteImport } from "./routes/auth/resume-password";
@@ -78,9 +80,19 @@ const HomeIndexRoute = HomeIndexRouteImport.update({
   path: "/",
   getParentRoute: () => HomeRouteRoute,
 } as any);
+const TemplatesProfessionRoute = TemplatesProfessionRouteImport.update({
+  id: "/templates/$profession",
+  path: "/templates/$profession",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const TemplatesSplatRoute = TemplatesSplatRouteImport.update({
   id: "/templates/$",
   path: "/templates/$",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: "/guides/$slug",
+  path: "/guides/$slug",
   getParentRoute: () => rootRouteImport,
 } as any);
 const AuthVerify2faBackupRoute = AuthVerify2faBackupRouteImport.update({
@@ -207,7 +219,9 @@ export interface FileRoutesByFullPath {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
+  "/templates/$profession": typeof TemplatesProfessionRoute;
   "/agent/": typeof AgentIndexRoute;
   "/auth/": typeof AuthIndexRoute;
   "/dashboard/": typeof DashboardIndexRoute;
@@ -232,7 +246,9 @@ export interface FileRoutesByTo {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
+  "/templates/$profession": typeof TemplatesProfessionRoute;
   "/": typeof HomeIndexRoute;
   "/agent": typeof AgentIndexRoute;
   "/auth": typeof AuthIndexRoute;
@@ -264,7 +280,9 @@ export interface FileRoutesById {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
+  "/templates/$profession": typeof TemplatesProfessionRoute;
   "/_home/": typeof HomeIndexRoute;
   "/agent/": typeof AgentIndexRoute;
   "/auth/": typeof AuthIndexRoute;
@@ -297,7 +315,9 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/guides/$slug"
     | "/templates/$"
+    | "/templates/$profession"
     | "/agent/"
     | "/auth/"
     | "/dashboard/"
@@ -322,7 +342,9 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/guides/$slug"
     | "/templates/$"
+    | "/templates/$profession"
     | "/"
     | "/agent"
     | "/auth"
@@ -353,7 +375,9 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/guides/$slug"
     | "/templates/$"
+    | "/templates/$profession"
     | "/_home/"
     | "/agent/"
     | "/auth/"
@@ -376,7 +400,9 @@ export interface RootRouteChildren {
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren;
   BuilderResumeIdRouteRoute: typeof BuilderResumeIdRouteRouteWithChildren;
   UsernameSlugRoute: typeof UsernameSlugRoute;
+  GuidesSlugRoute: typeof GuidesSlugRoute;
   TemplatesSplatRoute: typeof TemplatesSplatRoute;
+  TemplatesProfessionRoute: typeof TemplatesProfessionRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -437,11 +463,25 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof HomeIndexRouteImport;
       parentRoute: typeof HomeRouteRoute;
     };
+    "/templates/$profession": {
+      id: "/templates/$profession";
+      path: "/templates/$profession";
+      fullPath: "/templates/$profession";
+      preLoaderRoute: typeof TemplatesProfessionRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/templates/$": {
       id: "/templates/$";
       path: "/templates/$";
       fullPath: "/templates/$";
       preLoaderRoute: typeof TemplatesSplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/guides/$slug": {
+      id: "/guides/$slug";
+      path: "/guides/$slug";
+      fullPath: "/guides/$slug";
+      preLoaderRoute: typeof GuidesSlugRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/auth/verify-2fa-backup": {
@@ -689,7 +729,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   BuilderResumeIdRouteRoute: BuilderResumeIdRouteRouteWithChildren,
   UsernameSlugRoute: UsernameSlugRoute,
+  GuidesSlugRoute: GuidesSlugRoute,
   TemplatesSplatRoute: TemplatesSplatRoute,
+  TemplatesProfessionRoute: TemplatesProfessionRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
