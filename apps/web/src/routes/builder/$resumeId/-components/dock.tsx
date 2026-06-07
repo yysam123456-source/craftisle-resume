@@ -16,7 +16,7 @@ import {
 } from "@phosphor-icons/react";
 import { useNavigate } from "@tanstack/react-router";
 import { m } from "motion/react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useControls } from "react-zoom-pan-pinch";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
@@ -27,7 +27,6 @@ import { downloadWithAnchor, generateFilename } from "@reactive-resume/utils/fil
 import { cn } from "@reactive-resume/utils/style";
 import { useCurrentResume } from "@/features/resume/builder/draft";
 import { createResumePdfBlob } from "@/features/resume/export/pdf-document";
-import { authClient } from "@/libs/auth/client";
 
 type BuilderDockProps = {
 	pageLayout: BuilderPreviewPageLayout;
@@ -35,24 +34,20 @@ type BuilderDockProps = {
 };
 
 export function BuilderDock({ pageLayout, onTogglePageLayout }: BuilderDockProps) {
-	const { data: session } = authClient.useSession();
 	const resume = useCurrentResume();
 	const navigate = useNavigate();
 
-	const [_, copyToClipboard] = useCopyToClipboard();
+	const [_clipboard, copyToClipboard] = useCopyToClipboard();
 	const { zoomIn, zoomOut, centerView } = useControls();
 
 	const [isPrinting, setIsPrinting] = useState(false);
 
-	const publicUrl = useMemo(() => {
-		if (!session?.user?.username || !resume?.slug) return "";
-		return `${window.location.origin}/${session.user.username}/${resume.slug}`;
-	}, [session?.user?.username, resume?.slug]);
-
 	const onCopyUrl = useCallback(async () => {
-		await copyToClipboard(publicUrl);
+		if (!resume?.slug) return;
+		const url = `${window.location.origin}/r/${resume.slug}`;
+		await copyToClipboard(url);
 		toast.success(t`A link to your resume has been copied to clipboard.`);
-	}, [publicUrl, copyToClipboard]);
+	}, [resume?.slug, copyToClipboard]);
 
 	const onDownloadJSON = useCallback(async () => {
 		if (!resume) return;
