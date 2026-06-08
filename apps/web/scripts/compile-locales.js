@@ -1,9 +1,8 @@
 /**
- * Generate locale JSON files directly from .po files.
- * No dependency on `lingui compile`.
- * Run before `vite build`.
+ * Generate locale JSON files from lingui compiled .mjs files.
+ * Requires `lingui compile` to have been run first (generates .mjs in locales/).\n * Run before `vite build`.
  */
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,76 +12,32 @@ const publicLocalesDir = join(__dirname, "../public/locales");
 
 mkdirSync(publicLocalesDir, { recursive: true });
 
-// Parse a .po file into { msgid: [msgstr] } mapping
-function parsePoFile(filePath) {
-	const content = readFileSync(filePath, "utf-8");
-	const messages = {};
-	const lines = content.split("\n");
+const mjsFiles = readdirSync(localesDir).filter((f) => f.endsWith(".mjs"));
 
-	let currentMsgid = null;
-	let currentMsgstr = null;
-	let collectingId = false;
-	let collectingStr = false;
-
-	for (const line of lines) {
-		const trimmed = line.trim();
-
-		if (trimmed.startsWith("msgid ")) {
-			// Save previous entry
-			if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
-				messages[currentMsgid] = [currentMsgstr];
-			}
-			collectingId = true;
-			collectingStr = false;
-			currentMsgid = trimmed.slice(7, -1); // Remove `msgid "` and trailing `"`
-		} else if (trimmed.startsWith("msgstr ")) {
-			collectingId = false;
-			collectingStr = true;
-			currentMsgstr = trimmed.slice(8, -1); // Remove `msgstr "` and trailing `"`
-		} else if (trimmed.startsWith('"') && collectingId) {
-			// Continuation of msgid
-			currentMsgid += trimmed.slice(1, -1);
-		} else if (trimmed.startsWith('"') && collectingStr) {
-			// Continuation of msgstr
-			currentMsgstr += trimmed.slice(1, -1);
-		} else if (trimmed === "" || trimmed.startsWith("#")) {
-			// Blank line or comment: save entry if complete
-			if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
-				messages[currentMsgid] = [currentMsgstr];
-			}
-			currentMsgid = null;
-			currentMsgstr = null;
-			collectingId = false;
-			collectingStr = false;
-		}
-	}
-
-	// Save last entry
-	if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
-		messages[currentMsgid] = [currentMsgstr];
-	}
-
-	return messages;
-}
-
-const poFiles = readdirSync(localesDir).filter((f) => f.endsWith(".po"));
-
-if (poFiles.length === 0) {
-	console.error("❌ No .po files found in", localesDir);
+if (mjsFiles.length === 0) {
+	console.error("❌ No .mjs files found in", localesDir);
+	console.error("   Run `pnpm lingui compile` first.");
 	process.exit(1);
 }
 
-console.log(`Found ${poFiles.length} .po files`);
+console.log(`Found ${mjsFiles.length} .mjs files`);
 
-for (const file of poFiles) {
-	const locale = file.replace(".po", "");
-	const poPath = join(localesDir, file);
+for (const file of mjsFiles) {
+	const locale = file.replace(".mjs", "");
+	const mjsPath = join(localesDir, file);
 	const jsonPath = join(publicLocalesDir, `${locale}.json`);
 
-	const messages = parsePoFile(poPath);
+	const module = await import(mjsPath);
+	const messages = module.messages;
+
+	if (!messages) {
+		console.error(`❌ ${file}: no 'messages' export found`);
+		process.exit(1);
+	}
+
 	writeFileSync(jsonPath, JSON.stringify(messages, null, 2));
 
 	console.log(`✅ ${file} → public/locales/${locale}.json (${Object.keys(messages).length} messages)`);
 }
 
-console.log(`\nCompiled ${poFiles.length} locale catalogs to public/locales/`);
+console.log(`\nCompiled ${mjsFiles.length} locale catalogs to public/locales/`);

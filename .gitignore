@@ -63,6 +63,5 @@ temp
 
 # Generated locale catalogs
 apps/web/locales/*.js
-apps/web/locales/*.mjs
 apps/web/public/locales/
 
