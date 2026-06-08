@@ -735,20 +735,20 @@ EXAMPLE RESPONSE FORMAT:
 												{message.resumeUpdate ? (
 													<>
 														<p className="mb-2 font-medium text-sm">
-															<Trans>AI has prepared an update for your resume.</Trans>
+															<Trans>AI has prepared a preview for your resume.</Trans>
 														</p>
 														<Button
 															size="sm"
 															onClick={() => handleApplyClick(message.resumeUpdate)}
 															disabled={cooldownRemaining > 0}
 														>
-															<Trans>Apply Changes</Trans>
+															<Trans>Preview Changes</Trans>
 														</Button>
 													</>
 												) : (
 													<>
 														<p className="mb-2 font-medium text-sm">
-															<Trans>Want to apply the changes?</Trans>
+															<Trans>Want to generate a preview?</Trans>
 														</p>
 														<Button
 															size="sm"
@@ -756,7 +756,7 @@ EXAMPLE RESPONSE FORMAT:
 															onClick={() => requestResumeData(message.id)}
 															disabled={isLoading || cooldownRemaining > 0}
 														>
-															<Trans>Apply Changes</Trans>
+															<Trans>Generate Preview</Trans>
 														</Button>
 													</>
 												)}
