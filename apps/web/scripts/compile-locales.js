@@ -1,6 +1,6 @@
 /**
- * Convert Lingui .po catalogs to .json for static serving.
- * Reads .po files directly (no dependency on `lingui compile`).
+ * Generate locale JSON files directly from .po files.
+ * No dependency on `lingui compile`.
  * Run before `vite build`.
  */
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -13,58 +13,53 @@ const publicLocalesDir = join(__dirname, "../public/locales");
 
 mkdirSync(publicLocalesDir, { recursive: true });
 
-// Parse a .po file into { msgid: msgstr } mapping
+// Parse a .po file into { msgid: [msgstr] } mapping
 function parsePoFile(filePath) {
 	const content = readFileSync(filePath, "utf-8");
 	const messages = {};
-
-	// Split by blank lines to get entries
-	const _entries = content.split(/\n\n/);
+	const lines = content.split("\n");
 
 	let currentMsgid = null;
 	let currentMsgstr = null;
-	let inMsgid = false;
-	let inMsgstr = false;
+	let collectingId = false;
+	let collectingStr = false;
 
-	const lines = content.split("\n");
+	for (const line of lines) {
+		const trimmed = line.trim();
 
-	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
-
-		if (line.startsWith("msgid ")) {
+		if (trimmed.startsWith("msgid ")) {
 			// Save previous entry
-			if (currentMsgid !== null && currentMsgstr !== null) {
-				messages[currentMsgid] = currentMsgstr;
+			if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
+				messages[currentMsgid] = [currentMsgstr];
 			}
-
-			inMsgid = true;
-			inMsgstr = false;
-			currentMsgid = line.slice(7, -1); // Remove msgid " and "
-		} else if (line.startsWith("msgstr ")) {
-			inMsgid = false;
-			inMsgstr = true;
-			currentMsgstr = line.slice(8, -1); // Remove msgstr " and "
-		} else if (line.startsWith('"') && inMsgid) {
+			collectingId = true;
+			collectingStr = false;
+			currentMsgid = trimmed.slice(7, -1); // Remove `msgid "` and trailing `"`
+		} else if (trimmed.startsWith("msgstr ")) {
+			collectingId = false;
+			collectingStr = true;
+			currentMsgstr = trimmed.slice(8, -1); // Remove `msgstr "` and trailing `"`
+		} else if (trimmed.startsWith('"') && collectingId) {
 			// Continuation of msgid
-			currentMsgid += line.slice(1, -1);
-		} else if (line.startsWith('"') && inMsgstr) {
+			currentMsgid += trimmed.slice(1, -1);
+		} else if (trimmed.startsWith('"') && collectingStr) {
 			// Continuation of msgstr
-			currentMsgstr += line.slice(1, -1);
-		} else if (line.trim() === "" || line.startsWith("#")) {
+			currentMsgstr += trimmed.slice(1, -1);
+		} else if (trimmed === "" || trimmed.startsWith("#")) {
 			// Blank line or comment: save entry if complete
-			if (currentMsgid !== null && currentMsgstr !== null) {
-				messages[currentMsgid] = currentMsgstr;
-				currentMsgid = null;
-				currentMsgstr = null;
-				inMsgid = false;
-				inMsgstr = false;
+			if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
+				messages[currentMsgid] = [currentMsgstr];
 			}
+			currentMsgid = null;
+			currentMsgstr = null;
+			collectingId = false;
+			collectingStr = false;
 		}
 	}
 
 	// Save last entry
-	if (currentMsgid !== null && currentMsgstr !== null) {
-		messages[currentMsgid] = currentMsgstr;
+	if (currentMsgid !== null && currentMsgstr !== null && currentMsgid !== "") {
+		messages[currentMsgid] = [currentMsgstr];
 	}
 
 	return messages;
