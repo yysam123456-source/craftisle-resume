@@ -430,7 +430,49 @@ React SPA 的 DOM 由 JS 动态生成，AI 爬虫不执行 JS 就看不到内容
 
 ## 七、广告功能
 
-### 7.1 广告组件
+### 7.1 Monetag Vignette 广告
+
+**概述**：使用 Monetag Vignette（插页式广告）作为主广告，脚本硬编码在根布局中。
+
+| 属性 | 值 |
+|------|-----|
+| 脚本 URL | `https://n6wxm.com/vignette.min.js` |
+| Zone ID | `11117037` |
+| 加载位置 | `apps/web/src/routes/__root.tsx` → `RootComponent()` → `useEffect()` |
+| 触发时机 | 应用首次加载或页面刷新（F5）|
+| SPA 路由跳转 | 不重复触发（Vignette 设计如此）|
+
+**开关逻辑**（`VITE_PUBLIC_ADVER_ENABLE` 环境变量）：
+
+```tsx
+const adEnable = (import.meta.env.VITE_PUBLIC_ADVER_ENABLE || "true") === "true";
+
+if (!adEnable) return;  // false = 不展现广告
+// true = 展现广告（默认）
+```
+
+| `VITE_PUBLIC_ADVER_ENABLE` 值 | 结果 |
+|--------------------------------|---------|
+| 未设置（Cloudflare 没配置） | ✅ 默认 `"true"`，广告展现 |
+| `"true"` | ✅ 广告展现 |
+| `"false"` | ❌ 广告不展现 |
+
+**硬编码说明**：
+
+Monetag 脚本 URL 和 Zone ID 已硬编码到 `__root.tsx`，未在 Cloudflare Pages 环境变量中配置，原因：
+1. 减少环境变量配置项
+2. 避免环境变量读取失败导致广告不加载
+
+**Cloudflare Pages 环境变量配置**（只需配置 AdSense 相关）：
+
+```
+VITE_PUBLIC_ADVER_ENABLE=true        # 可选，默认 true
+VITE_ADSENSE_CLIENT_ID=ca-pub-xxxxx # AdSense 发布商 ID（可选）
+```
+
+**注意**：修改环境变量后需点击 **"Retry deployment"** 重新部署。
+
+### 7.2 广告组件（AdSense）
 
 - **组件文件**：`apps/web/src/components/ads/index.tsx`
 - **组件**：`AdBanner`（横幅广告）、`AdCard`（卡片广告）
@@ -466,7 +508,7 @@ function useAdsenseScript(): boolean {
 - `typeof window !== "undefined"` 检查确保在 SSR 环境下不报错
 - `adsbygoogle.push()` 在 `try/catch` 中执行，避免 AdSense 未加载时崩溃
 
-### 7.2 广告位布局
+### 7.3 广告位布局
 
 | 页面 | 广告位置 | 尺寸 | 组件 |
 |------|---------|------|--------|
@@ -487,7 +529,7 @@ const sizeMap = {
 } as const;
 ```
 
-### 7.3 开启广告的完整步骤
+### 7.4 开启广告的完整步骤
 
 **前置条件**：需要有效的 Google AdSense 账号（需通过审核）
 
@@ -539,7 +581,7 @@ VITE_ADSENSE_SLOT_LEADERBOARD=test-slot-123
 
 本地启动 `pnpm dev` 后，广告位会显示占位符（`Advertisement · leaderboard`），不会加载真实广告。
 
-### 7.4 广告平台选择
+### 7.5 广告平台选择
 
 | 平台 | 申请条件 | RPM（每千次展示收入）| 支付方式 | 推荐度 |
 |-------|----------|----------------------|---------|--------|
@@ -554,7 +596,7 @@ VITE_ADSENSE_SLOT_LEADERBOARD=test-slot-123
 2. **流量增长后**（> 5000 PV/月）：申请 **Media.net**
 3. **流量稳定后**（> 10000 PV/月）：申请 **Google AdSense**（收益最高）
 
-### 7.5 故障排查
+### 7.6 故障排查
 
 | 问题 | 可能原因 | 排查步骤 |
 |-------|----------|----------|
@@ -566,7 +608,7 @@ VITE_ADSENSE_SLOT_LEADERBOARD=test-slot-123
 
 ---
 
-## 八、文件清单
+## 九、文件清单
 
 ### i18n 相关
 
@@ -591,10 +633,10 @@ VITE_ADSENSE_SLOT_LEADERBOARD=test-slot-123
 
 ---
 
-## 九、更新记录
+## 十、更新记录
 
 | 日期 | 变更 |
 |------|------|
 | 2026-06-08 | 初始版本，基于实际调试经验编写 |
 | 2026-06-08 | 确定 `.mjs` 提交到 Git 的方案，绕过 CI 中 `lingui compile` 问题 |
-| 2026-06-08 | 修复 `compile-locales.js` 读取错误文件格式（`.po` 而非 `.mjs`）导致所有翻译失效 |
+| 2026-06-08 | 添加 Monetag Vignette 广告（https://n6wxm.com/vignette.min.js, zone=11117037），硬编码到 `__root.tsx`；`VITE_PUBLIC_ADVER_ENABLE` 默认 `"true"`（未配置环境变量时广告展现）；AdSense 变量名统一为 `VITE_ADSENSE_CLIENT_ID`；更新 `project-overview.mdx` 文档（新增 7.1 Monetag 章节）|
