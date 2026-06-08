@@ -113,6 +113,27 @@ function RootComponent() {
 		document.documentElement.classList.toggle("dark", theme === "dark");
 	}, [dir, locale, theme]);
 
+	// Load ads based on env var
+	useEffect(() => {
+		if (import.meta.env.VITE_PUBLIC_ADVER_ENABLE === "true") {
+			// Load Monetag Vignette Banner
+			const script = document.createElement("script");
+			script.id = "monetag-vignette";
+			script.src = "/monetag-vignette.js";
+			script.async = true;
+			document.body.appendChild(script);
+
+			// Load Google AdSense
+			if (import.meta.env.VITE_PUBLIC_ADSENSE_CLIENT) {
+				const adsense = document.createElement("script");
+				adsense.async = true;
+				adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_PUBLIC_ADSENSE_CLIENT}`;
+				adsense.crossOrigin = "anonymous";
+				document.head.appendChild(adsense);
+			}
+		}
+	}, []);
+
 	return (
 		<>
 			<HeadContent />
@@ -133,7 +154,6 @@ function RootComponent() {
 														<DialogManager />
 														<CommandPalette />
 														<Toaster richColors position="bottom-right" />
-
 													</PromptDialogProvider>
 												</ConfirmDialogProvider>
 											</TooltipProvider>
