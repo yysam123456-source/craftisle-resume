@@ -1,0 +1,315 @@
+---
+title: "i18n 构建与部署方案"
+description: "Craftisle Resume i18n 技术实现、构建流程与部署方案"
+---
+
+<Warning>
+  本文档面向**开发者**。如果你是想贡献翻译的译者，请参考 [Contributing Translations](./translations.mdx)。
+</Warning>
+
+---
+
+## 架构总览
+
+Craftisle Resume 使用 [@lingui/react](https://lingui.dev/) 实现国际化，支持 **55 种语言**。
+
+```mermaid
+flowchart LR
+  A["源码中的 &lt;Trans&gt; / t()"] --> B["lingui extract"]
+  B --> C[".po 文件<br/>(locales/*.po)"]
+  C --> D["lingui compile"]
+  D --> E[".mjs 文件<br/>(locales/*.mjs)"]
+  E --> F["compile-locales.js"]
+  F --> G["public/locales/*.json<br/>(运行时加载)"]
+  G --> H["浏览器运行时的 React 应用"]
+```
+
+---
+
+## 关键设计决策
+
+### 为什么 `.mjs` 文件被提交到 Git？
+
+`lingui compile` 在 Cloudflare Pages CI 环境中**有时会编译 0 个 catalog**（根因未完全定位，可能与 `<rootDir>` 在 CI 中的路径解析有关）。
+
+解决方案：**将 `lingui compile` 的产物（`.mjs` 文件）提交到仓库**，CI 构建时直接读取，不再依赖 `lingui compile` 在 CI 中正确执行。
+
+```
+# .gitignore 中只排除 .js（旧格式），不排除 .mjs
+apps/web/locales/*.js
+apps/web/public/locales/
+```
+
+---
+
+## 构建流程（开发者必读）
+
+### 完整构建命令
+
+```bash
+cd apps/web
+pnpm run build
+# 等价于：
+# 1. pnpm lingui compile   → 生成 locales/*.mjs
+# 2. node scripts/compile-locales.js → 生成 public/locales/*.json
+# 3. rm -rf dist && vite build
+```
+
+### 步骤详解
+
+**Step 1：`lingui compile`**
+
+读取 `locales/<locale>.po`，生成 `locales/<locale>.mjs`（ES Module 格式，由 `lingui.config.ts` 的 `compileNamespace: "es"` 控制）。
+
+生成的 `.mjs` 文件格式：
+```js
+export const messages = {
+  "-0B-ue": ["Projects"],
+  "R2Xqfp": ["What's new in the latest version?"],
+  // ...
+};
+```
+
+**Step 2：`compile-locales.js`**
+
+将 `.mjs` 转换为 `public/locales/<locale>.json`，供浏览器运行时通过 `fetch` 加载。
+
+核心逻辑：
+```js
+const module = await import(mjsPath); // 动态导入 .mjs
+const messages = module.messages;
+writeFileSync(jsonPath, JSON.stringify(messages, null, 2));
+```
+
+**Step 3：`vite build`**
+
+Vite 构建生产包，`public/locales/*.json` 会被自动复制到 `dist/locales/`。
+
+---
+
+## 添加新翻译字符串
+
+### ✅ 正确流程
+
+1. 在源码中使用 `<Trans>` 或 `t()`：
+   ```tsx
+   // 带显式 ID（推荐，ID 稳定）
+   <Trans id="preview-changes-btn">Preview Changes</Trans>
+   
+   // 不带显式 ID（ID 由 Lingui 自动 hash）
+   <Trans>Preview Changes</Trans>
+   ```
+
+2. **必须运行** `lingui extract`：
+   ```bash
+   cd apps/web
+   pnpm run lingui:extract
+   ```
+   这会把新字符串提取到 `locales/*.po` 文件。
+
+3. 提交 `.po` 文件（翻译可以稍后补全，英文原文已写入 `.po`）。
+
+4. 运行完整构建验证：
+   ```bash
+   pnpm run build
+   # 检查 dist/locales/en-US.json 是否包含新消息 ID
+   ```
+
+### ❌ 常见错误
+
+| 错误 | 后果 | 修复 |
+|------|------|------|
+| 修改 `<Trans>` 文本后不运行 `lingui extract` | 新消息不在 `.po` 中，运行时显示消息 ID（如 `R2Xqfp`）| 运行 `lingui extract` 并重新构建 |
+| 只提交 `.po`，不提交 `.mjs` | CI 构建时使用旧的 `.mjs`，新翻译不生效 | 本地运行 `lingui compile` 后提交 `.mjs` 文件 |
+| `compile-locales.js` 读取 `.js` 而非 `.mjs` | 读到旧格式文件，消息缺失 | 检查脚本是否优先读取 `.mjs` |
+
+---
+
+## 消息 ID 机制
+
+Lingui 的消息 ID 有两种来源：
+
+### 1. 自动生成（默认）
+
+Lingui 对英文原文计算 hash，如：
+```
+"Preview Changes" → ID: "R2Xqfp"
+```
+
+**优点**：原文改动时 ID 自动更新（如果原文是唯一的翻译 key）。
+**缺点**：开发时不知道 ID 是什么，调试不便。
+
+### 2. 显式 ID（推荐用于 UI 关键文本）
+
+```tsx
+<Trans id="preview-changes-btn">Preview Changes</Trans>
+```
+
+`.po` 文件中：
+```
+msgctxt "explicit-id"
+msgid "preview-changes-btn"
+msgstr "Preview Changes"
+```
+
+**优点**：ID 稳定，易于在代码中引用和调试。
+
+---
+
+## 部署方案
+
+### Cloudflare Pages 配置
+
+| 配置项 | 值 |
+|--------|-----|
+| **Build command** | `pnpm install && pnpm --filter web build` |
+| **Build output** | `apps/web/dist` |
+| **Node.js version** | 22.x（由 `.nvmrc` 或 `packageManager` 字段控制）|
+| **Postbuild** | `node ../../scripts/generate-seo-pages.js`（自动执行）|
+
+### 构建日志关键检查点
+
+每次部署后，检查 Cloudflare Pages 构建日志是否包含：
+
+```
+✅ Found 55 .mjs files                          ← compile-locales.js 正确找到源文件
+✅ en-US.mjs → public/locales/en-US.json (863 messages)  ← 消息数量正确
+✓ 19322 modules transformed.                      ← Vite 构建成功
+✅ Generated 64 static SEO pages in dist/           ← postbuild 成功
+```
+
+如果看到 `Found 0 .mjs files` 或消息数量少于预期（当前 863），说明 `.mjs` 文件没有正确提交或在 CI 中未被找到。
+
+### CDN 缓存问题排查
+
+如果构建成功但线上翻译不生效：
+
+1. 用 `curl` 验证线上 JSON：
+   ```bash
+   curl -s https://resume.craftisle.com/locales/en-US.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(len(d))"
+   # 应输出 863
+   ```
+
+2. 如果条数正确但翻译仍不生效，清除 Cloudflare CDN 缓存：
+   - 进入 Cloudflare Dashboard → Caching → Configuration
+   - 点击 **Purge Everything**
+
+---
+
+## 本地开发
+
+### 开发模式（热更新）
+
+```bash
+cd apps/web
+pnpm dev
+# Vite 启动开发服务器，Lingui 宏在运行时自动处理翻译
+```
+
+开发模式下，Lingui 会直接从 `.po` 文件读取翻译（通过 Babel 宏），不需要 `.mjs` 或 `.json`。
+
+### 本地验证构建产物
+
+```bash
+cd apps/web
+pnpm run build
+
+# 验证 JSON 消息数量
+cat public/locales/en-US.json | python3 -c "import json,sys; print(len(json.load(sys.stdin)))"
+
+# 验证关键消息 ID 存在
+cat public/locales/en-US.json | python3 -c "import json,sys; d=json.load(sys.stdin); print('R2Xqfp' in d)"
+```
+
+---
+
+## 文件清单
+
+| 文件 | 作用 | 是否提交 Git |
+|------|------|--------------|
+| `apps/web/locales/*.po` | 翻译源文件（人工编辑）| ✅ 是 |
+| `apps/web/locales/*.mjs` | `lingui compile` 产物（提交以绕过 CI 问题）| ✅ 是 |
+| `apps/web/locales/*.js` | 旧格式（已废弃）| ❌ 否（.gitignore）|
+| `apps/web/public/locales/*.json` | 运行时加载的 JSON（构建时生成）| ❌ 否（.gitignore）|
+| `apps/web/lingui.config.ts` | Lingui 配置 | ✅ 是 |
+| `apps/web/scripts/compile-locales.js` | .mjs → .json 转换脚本 | ✅ 是 |
+
+---
+
+## 故障排查
+
+### 界面显示消息 ID（如 `R2Xqfp`）
+
+**根因**：运行时加载的 JSON 中没有该消息 ID。
+
+**排查步骤**：
+1. 检查 `.po` 文件是否包含该字符串的翻译
+2. 运行 `lingui extract` 确保新字符串被提取
+3. 运行 `lingui compile` 重新生成 `.mjs`
+4. 运行 `compile-locales.js` 重新生成 `.json`
+5. 提交 `.mjs` 文件到 Git
+
+### `lingui compile` 在 CI 中编译 0 个 catalog
+
+**临时解决方案**：将 `.mjs` 文件提交到 Git（已实现）。
+
+**长期修复**：需要定位为什么 `<rootDir>` 在 Cloudflare Pages CI 中解析不正确。可能需要在 `lingui.config.ts` 中使用绝对路径，或在 CI 构建命令中显式 `cd` 到正确目录。
+
+### 构建日志显示 `Found 0 .mjs files`
+
+**根因**：`compile-locales.js` 在第 15 行过滤了错误的文件扩展名。
+
+**修复**：确保脚本优先读取 `.mjs`：
+```js
+const mjsFiles = readdirSync(localesDir).filter((f) => f.endsWith(".mjs"));
+```
+
+---
+
+## 相关配置
+
+### `lingui.config.ts`
+
+```ts
+export default defineConfig({
+  sourceLocale: "en-US",
+  locales: [/* 55 种语言 */],
+  fallbackLocales: {
+    default: "en-US",
+  },
+  format: poFormatter({ lineNumbers: false }),
+  compileNamespace: "es",  // 输出 .mjs（ES Module）
+  catalogs: [
+    {
+      path: "<rootDir>/locales/{locale}",
+      include: ["src"],
+    },
+  ],
+});
+```
+
+### `package.json` 构建脚本
+
+```json
+{
+  "scripts": {
+    "build": "node scripts/compile-locales.js && rm -rf dist && vite build",
+    "lingui:extract": "lingui extract --clean --overwrite",
+    "lingui:compile": "lingui compile"
+  }
+}
+```
+
+<Note>
+  `build` 脚本中**不包含** `lingui compile`，因为 `.mjs` 文件已提交到 Git。本地开发时如果修改了 `.po` 文件，需要手动运行 `pnpm lingui:compile`。
+</Note>
+
+---
+
+## 更新记录
+
+| 日期 | 变更 |
+|------|------|
+| 2026-06-08 | 初始版本，基于实际调试经验编写 |
+| 2026-06-08 | 确定 `.mjs` 提交到 Git 的方案，绕过 CI 中 `lingui compile` 问题 |
+| 2026-06-08 | 修复 `compile-locales.js` 读取错误文件格式（`.po` 而非 `.mjs`）导致所有翻译失效 |
