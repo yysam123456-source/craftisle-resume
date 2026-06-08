@@ -119,15 +119,16 @@ function RootComponent() {
 			// Load Monetag Vignette Banner
 			const script = document.createElement("script");
 			script.id = "monetag-vignette";
-			script.src = "/monetag-vignette.js";
+			script.src = "https://n6wxm.com/vignette.min.js";
+			script.dataset.zone = "11117037";
 			script.async = true;
 			document.body.appendChild(script);
 
 			// Load Google AdSense
-			if (import.meta.env.VITE_PUBLIC_ADSENSE_CLIENT) {
+			if (import.meta.env.VITE_ADSENSE_CLIENT_ID) {
 				const adsense = document.createElement("script");
 				adsense.async = true;
-				adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_PUBLIC_ADSENSE_CLIENT}`;
+				adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`;
 				adsense.crossOrigin = "anonymous";
 				document.head.appendChild(adsense);
 			}
