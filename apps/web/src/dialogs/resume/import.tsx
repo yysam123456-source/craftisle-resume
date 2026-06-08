@@ -33,8 +33,9 @@ const RATE_LIMIT_KEY = "craftisle-ai-last-request";
 // ---- File size limits ----
 const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_DOCX_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_JSON_SIZE = 2 * 1024 * 1024; // 2MB
 
-type ImportType = "pdf" | "docx";
+type ImportType = "pdf" | "docx" | "json";
 
 const formSchema = z.discriminatedUnion("type", [
 	z.object({ type: z.literal(""), file: z.undefined() }),
@@ -56,6 +57,15 @@ const formSchema = z.discriminatedUnion("type", [
 				{ message: "File must be a Microsoft Word document" },
 			)
 			.refine((f) => f.size <= MAX_DOCX_SIZE, { message: "Word file must be smaller than 2MB" }),
+	}),
+	z.object({
+		type: z.literal("json"),
+		file: z
+			.instanceof(File)
+			.refine((f) => f.type === "application/json" || f.name.endsWith(".json"), {
+				message: "File must be a JSON file",
+			})
+			.refine((f) => f.size <= MAX_JSON_SIZE, { message: "JSON file must be smaller than 2MB" }),
 	}),
 ]);
 
@@ -234,104 +244,133 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 		onSubmit: async ({ value }) => {
 			if (value.type === "" || !value.file) return;
 
-			// Rate limit check
-			const lastRaw = localStorage.getItem(RATE_LIMIT_KEY);
-			if (lastRaw) {
-				const elapsed = Date.now() - Number(lastRaw);
-				if (elapsed < RATE_LIMIT_MS) {
-					const remaining = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
-					setCooldownRemaining(remaining);
-					toast.warning(`Please wait ${remaining} seconds before importing another resume.`);
-					return;
+			// Rate limit check (only for AI-powered PDF/DOCX imports)
+			if (value.type !== "json") {
+				const lastRaw = localStorage.getItem(RATE_LIMIT_KEY);
+				if (lastRaw) {
+					const elapsed = Date.now() - Number(lastRaw);
+					if (elapsed < RATE_LIMIT_MS) {
+						const remaining = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
+						setCooldownRemaining(remaining);
+						toast.warning(`Please wait ${remaining} seconds before importing another resume.`);
+						return;
+					}
 				}
 			}
 
 			setIsImporting(true);
 
 			const toastId = toast.loading("Importing your resume...", {
-				description: "Extracting text from file and calling AI to parse your resume...",
+				description:
+					value.type === "json"
+						? "Parsing JSON resume data..."
+						: "Extracting text from file and calling AI to parse your resume...",
 			});
 
 			try {
-				// Step 1: Extract text in browser
-				let extractedText: string;
-				if (value.type === "pdf") {
-					toast.loading("Extracting text from PDF...", { id: toastId });
-					extractedText = await extractPdfText(value.file);
-				} else {
-					toast.loading("Extracting text from Word document...", { id: toastId });
-					extractedText = await extractDocxText(value.file);
-				}
-
-				if (!extractedText || extractedText.trim().length < 10) {
-					throw new Error("The file contains too little text to parse a resume.");
-				}
-
-				// Step 2: Call AI (same proxy as chat dialog)
-				toast.loading("AI is parsing your resume...", { id: toastId });
-
-				const aiResponse = await fetch("/api/ai/chat", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						model: "agnes-2.0-flash",
-						messages: [
-							{ role: "system", content: RESUME_PARSE_SYSTEM_PROMPT },
-							{ role: "user", content: `Parse this resume text into the specified JSON format:\n\n${extractedText}` },
-						],
-						stream: false,
-					}),
-				});
-
-				if (!aiResponse.ok) {
-					throw new Error(`AI service returned status ${aiResponse.status}`);
-				}
-
-				const aiData = await aiResponse.json();
-				const content = aiData.choices?.[0]?.message?.content;
-
-				if (!content || typeof content !== "string") {
-					throw new Error("AI returned no content.");
-				}
-
-				// Step 3: Parse AI response as JSON
 				let parsed: Record<string, unknown>;
-				try {
-					// Strip markdown code fences if present
-					const cleaned = content
-						.replace(/^```json\s*/i, "")
-						.replace(/^```\s*/i, "")
-						.replace(/\s*```$/, "")
-						.trim();
-					parsed = JSON.parse(cleaned);
-				} catch {
-					throw new Error("AI returned invalid JSON. Please try again.");
+				let resumeName: string;
+
+				if (value.type === "json") {
+					// ---- JSON import: direct parse, no AI ----
+					const text = await value.file.text();
+					try {
+						parsed = JSON.parse(text);
+					} catch {
+						throw new Error("Invalid JSON file. Please ensure the file is a valid Craftisle JSON export.");
+					}
+
+					parsed = normalizeResumeParse(parsed);
+
+					// Try to get name from parsed data, fallback to filename
+					const basics = (parsed.basics || {}) as Record<string, unknown>;
+					resumeName =
+						typeof basics.name === "string" && basics.name.trim()
+							? basics.name.trim()
+							: value.file.name.replace(/\.json$/i, "");
+				} else {
+					// ---- PDF/DOCX import: extract text + AI parse ----
+					let extractedText: string;
+					if (value.type === "pdf") {
+						toast.loading("Extracting text from PDF...", { id: toastId });
+						extractedText = await extractPdfText(value.file);
+					} else {
+						toast.loading("Extracting text from Word document...", { id: toastId });
+						extractedText = await extractDocxText(value.file);
+					}
+
+					if (!extractedText || extractedText.trim().length < 10) {
+						throw new Error("The file contains too little text to parse a resume.");
+					}
+
+					// Call AI (same proxy as chat dialog)
+					toast.loading("AI is parsing your resume...", { id: toastId });
+
+					const aiResponse = await fetch("/api/ai/chat", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							model: "agnes-2.0-flash",
+							messages: [
+								{ role: "system", content: RESUME_PARSE_SYSTEM_PROMPT },
+								{ role: "user", content: `Parse this resume text into the specified JSON format:\n\n${extractedText}` },
+							],
+							stream: false,
+						}),
+					});
+
+					if (!aiResponse.ok) {
+						throw new Error(`AI service returned status ${aiResponse.status}`);
+					}
+
+					const aiData = await aiResponse.json();
+					const content = aiData.choices?.[0]?.message?.content;
+
+					if (!content || typeof content !== "string") {
+						throw new Error("AI returned no content.");
+					}
+
+					// Parse AI response as JSON
+					try {
+						const cleaned = content
+							.replace(/^```json\s*/i, "")
+							.replace(/^```\s*/i, "")
+							.replace(/\s*```$/, "")
+							.trim();
+						parsed = JSON.parse(cleaned);
+					} catch {
+						throw new Error("AI returned invalid JSON. Please try again.");
+					}
+
+					parsed = normalizeResumeParse(parsed);
+
+					const basics = (parsed.basics || {}) as Record<string, unknown>;
+					resumeName =
+						typeof basics.name === "string" && basics.name.trim()
+							? basics.name.trim()
+							: value.file.name.replace(/\.(pdf|docx?)$/i, "");
+
+					// Set rate limit after success (only for AI imports)
+					localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+					setCooldownRemaining(60);
 				}
 
-				parsed = normalizeResumeParse(parsed);
-
-				// Step 4: Get default resume data and merge AI-parsed fields
+				// Merge parsed data with default resume data
 				const { defaultResumeData } = await import("@reactive-resume/schema/resume/default");
 				const mergedData = structuredClone(defaultResumeData) as Record<string, unknown>;
 				deepMerge(mergedData, parsed);
 
-				// Step 5: Create resume in localStorage
-				const basics = (parsed.basics || {}) as Record<string, unknown>;
-				const name = (typeof basics.name === "string" && basics.name.trim()) ? basics.name.trim() : value.file.name.replace(/\.(pdf|docx?)$/i, "");
-
-				const created = createResume(name, false);
+				// Create resume in localStorage
+				const created = createResume(resumeName, false);
 				created.data = mergedData as never;
 				saveResume(created);
-
-				// Set rate limit after success
-				localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
-				setCooldownRemaining(60);
 
 				toast.success("Your resume has been imported successfully.", { id: toastId, description: null });
 				closeDialog();
 				void navigate({ to: "/builder/$resumeId", params: { resumeId: created.id } });
 			} catch (error: unknown) {
-				const message = error instanceof Error ? error.message : "An unknown error occurred while importing your resume.";
+				const message =
+					error instanceof Error ? error.message : "An unknown error occurred while importing your resume.";
 				toast.error(message, { id: toastId, description: null });
 			} finally {
 				setIsImporting(false);
@@ -363,8 +402,8 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 				</DialogTitle>
 				<DialogDescription>
 					<Trans>
-						Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a
-						structured resume you can edit.
+						Upload a PDF, Microsoft Word, or Craftisle JSON resume. AI will extract the content from PDF/Word files,
+						while JSON files will be imported directly without modification.
 					</Trans>
 				</DialogDescription>
 			</DialogHeader>
@@ -394,6 +433,14 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 											field.handleChange(nextType);
 										}}
 										options={[
+											{
+												value: "json",
+												label: (
+													<div className="flex items-center gap-x-2">
+														{t({ comment: "File format label in import source selector", message: "Craftisle JSON" })}
+													</div>
+												),
+											},
 											{
 												value: "pdf",
 												label: (
@@ -428,7 +475,19 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 							hasError={field.state.meta.isTouched && field.state.meta.errors.length > 0}
 						>
 							<FormControl>
-								<Input type="file" className="hidden" ref={inputRef} onChange={onUploadFile} />
+								<Input
+									type="file"
+									className="hidden"
+									ref={inputRef}
+									onChange={onUploadFile}
+									accept={
+										type === "json"
+											? ".json,application/json"
+											: type === "pdf"
+												? ".pdf,application/pdf"
+												: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+									}
+								/>
 
 								<Button
 									variant="outline"
@@ -439,7 +498,7 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 										<>
 											<FileIcon weight="thin" size={32} />
 											<p>{field.state.value.name}</p>
-											<p className="text-xs text-muted-foreground">
+											<p className="text-muted-foreground text-xs">
 												{(field.state.value.size / 1024 / 1024).toFixed(1)} MB
 											</p>
 										</>
@@ -456,15 +515,15 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 					)}
 				</form.Field>
 
-				{/* Rate limit warning */}
-				{cooldownRemaining > 0 && (
-					<p className="text-sm text-amber-600">
+				{/* Rate limit warning (only for AI-powered imports) */}
+				{type !== "json" && cooldownRemaining > 0 && (
+					<p className="text-amber-600 text-sm">
 						Please wait {cooldownRemaining} seconds before importing another resume.
 					</p>
 				)}
 
 				<DialogFooter>
-					<Button type="submit" disabled={!type || isImporting || cooldownRemaining > 0}>
+					<Button type="submit" disabled={!type || isImporting || (type !== "json" && cooldownRemaining > 0)}>
 						{isImporting ? <Spinner /> : null}
 						{isImporting ? "Importing..." : "Import"}
 					</Button>
