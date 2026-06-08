@@ -43,7 +43,7 @@ msgstr "(mở ở tab mới)"
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, other {# mục}}"
 
-#. placeholder {0}: item.roles.length
+#. placeholder {0}: item.roles?.length ?? 0
 #: src/routes/builder/$resumeId/-sidebar/left/sections/experience.tsx
 msgid "{0, plural, one {# role} other {# roles}}"
 msgstr "{0, plural, one {# vai trò} other {# vai trò}}"
@@ -237,6 +237,10 @@ msgstr "Thêm dòng trước"
 msgid "Adjust the resume for a remote-first role that values async communication and ownership."
 msgstr "Hãy điều chỉnh sơ yếu lý lịch cho phù hợp với vị trí làm việc từ xa, coi trọng giao tiếp bất đồng bộ và tinh thần trách nhiệm."
 
+#: src/components/ads/index.tsx
+msgid "Advertisement"
+msgstr ""
+
 #: src/libs/locale.ts
 msgid "Afrikaans"
 msgstr "Tiếng Afrikaans"
@@ -270,7 +274,7 @@ msgid "AI Assistant"
 msgstr ""
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "AI has prepared an update for your resume."
+msgid "AI has prepared a preview for your resume."
 msgstr ""
 
 #: src/features/settings/integrations/components/ai-section.tsx
@@ -292,6 +296,10 @@ msgstr "Các nhà cung cấp AI"
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "AI providers require REDIS_URL and ENCRYPTION_SECRET to be configured."
 msgstr "Các nhà cung cấp AI yêu cầu cấu hình REDIS_URL và ENCRYPTION_SECRET."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI service temporarily unavailable. Please try again in a moment."
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Albanian"
@@ -374,10 +382,6 @@ msgstr "Thống kê ứng dụng"
 #: src/routes/builder/$resumeId/-sidebar/right/sections/custom-styles.tsx
 msgid "Applied Rules"
 msgstr "Quy tắc áp dụng"
-
-#: src/routes/agent/-components/simple-chat.tsx
-msgid "Apply Changes"
-msgstr ""
 
 #: src/libs/locale.ts
 msgid "Arabic"
@@ -824,6 +828,11 @@ msgstr "Không thể xác minh kết nối với nhà cung cấp."
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 msgid "Cover Letter"
 msgstr "Thư xin việc"
+
+#. File format label in import source selector
+#: src/dialogs/resume/import.tsx
+msgid "Craftisle JSON"
+msgstr ""
 
 #: src/routes/_home/-sections/header.tsx
 msgid "Craftisle Resume - Go to homepage"
@@ -1597,10 +1606,6 @@ msgstr "Độ đậm Font"
 msgid "Font Weights"
 msgstr "Các độ đậm Font"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "For a secure and distraction-free experience."
-msgstr "Trải nghiệm an toàn và không bị phân tâm."
-
 #: src/routes/builder/$resumeId/-sidebar/right/sections/notes.tsx
 msgid "For example, information regarding which companies you sent this resume to or the links to the job descriptions can be noted down here."
 msgstr "Ví dụ: thông tin về công ty bạn đã gửi bản lý lịch này đến hoặc các liên kết đến mô tả công việc có thể được ghi lại ở đây."
@@ -1652,6 +1657,10 @@ msgstr "Trình chỉnh sửa toàn màn hình"
 #: src/dialogs/resume/index.tsx
 msgid "Generate a random name"
 msgstr "Tạo tên ngẫu nhiên"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Generate Preview"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "German"
@@ -2277,10 +2286,6 @@ msgstr "Phần mới"
 msgid "New thread"
 msgstr "Chủ đề mới"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "No Advertising, No Tracking"
-msgstr "Không quảng cáo, không theo dõi"
-
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "No passkeys registered yet."
 msgstr "Chưa có khóa truy cập nào được đăng ký."
@@ -2583,6 +2588,10 @@ msgstr "Nhấn <0>{RETURN_KEY}</0> hoặc <1>{COMMA_KEY}</1> để thêm hoặc 
 #: src/features/command-palette/pages/resumes.tsx
 msgid "Press <0>Enter</0> to open"
 msgstr "Nhấn <0>phím Enter</0> để mở"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Preview Changes"
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/right/sections/design.tsx
 msgid "Primary Color"
@@ -3126,6 +3135,10 @@ msgstr "Khoảng cách (Dọc)"
 #: src/libs/locale.ts
 msgid "Spanish"
 msgstr "Tây Ban Nha"
+
+#: src/components/ads/index.tsx
+msgid "Sponsored"
+msgstr ""
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Sponsorships"
@@ -3694,7 +3707,7 @@ msgid "Updating your resume..."
 msgstr "Đang cập nhật resume của bạn..."
 
 #: src/dialogs/resume/import.tsx
-msgid "Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a structured resume you can edit."
+msgid "Upload a PDF, Microsoft Word, or Craftisle JSON resume. AI will extract the content from PDF/Word files, while JSON files will be imported directly without modification."
 msgstr ""
 
 #: src/routes/agent/$threadId.tsx
@@ -3796,7 +3809,7 @@ msgid "Volunteer"
 msgstr "Tình nguyện viên"
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "Want to apply the changes?"
+msgid "Want to generate a preview?"
 msgstr ""
 
 #: src/dialogs/resume/sections/award.tsx

@@ -43,7 +43,7 @@ msgstr "(apre in una nuova scheda)"
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# elemento} other {# elementi}}"
 
-#. placeholder {0}: item.roles.length
+#. placeholder {0}: item.roles?.length ?? 0
 #: src/routes/builder/$resumeId/-sidebar/left/sections/experience.tsx
 msgid "{0, plural, one {# role} other {# roles}}"
 msgstr "{0, plural, one {# ruolo} other {# ruoli}}"
@@ -237,6 +237,10 @@ msgstr "Aggiungi riga prima"
 msgid "Adjust the resume for a remote-first role that values async communication and ownership."
 msgstr "Adatta il curriculum per un ruolo che predilige il lavoro da remoto, valorizzando la comunicazione asincrona e l'autonomia."
 
+#: src/components/ads/index.tsx
+msgid "Advertisement"
+msgstr ""
+
 #: src/libs/locale.ts
 msgid "Afrikaans"
 msgstr "Afrikaans"
@@ -270,7 +274,7 @@ msgid "AI Assistant"
 msgstr ""
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "AI has prepared an update for your resume."
+msgid "AI has prepared a preview for your resume."
 msgstr ""
 
 #: src/features/settings/integrations/components/ai-section.tsx
@@ -292,6 +296,10 @@ msgstr "Fornitori di IA"
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "AI providers require REDIS_URL and ENCRYPTION_SECRET to be configured."
 msgstr "I provider di intelligenza artificiale richiedono la configurazione di REDIS_URL e ENCRYPTION_SECRET."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI service temporarily unavailable. Please try again in a moment."
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Albanian"
@@ -374,10 +382,6 @@ msgstr "Statistiche dell'applicazione"
 #: src/routes/builder/$resumeId/-sidebar/right/sections/custom-styles.tsx
 msgid "Applied Rules"
 msgstr "Regole applicate"
-
-#: src/routes/agent/-components/simple-chat.tsx
-msgid "Apply Changes"
-msgstr ""
 
 #: src/libs/locale.ts
 msgid "Arabic"
@@ -824,6 +828,11 @@ msgstr "Impossibile verificare la connessione al provider."
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 msgid "Cover Letter"
 msgstr "Lettera di presentazione"
+
+#. File format label in import source selector
+#: src/dialogs/resume/import.tsx
+msgid "Craftisle JSON"
+msgstr ""
 
 #: src/routes/_home/-sections/header.tsx
 msgid "Craftisle Resume - Go to homepage"
@@ -1597,10 +1606,6 @@ msgstr "Peso del font"
 msgid "Font Weights"
 msgstr "Pesi del font"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "For a secure and distraction-free experience."
-msgstr "Per un'esperienza sicura e senza distrazioni."
-
 #: src/routes/builder/$resumeId/-sidebar/right/sections/notes.tsx
 msgid "For example, information regarding which companies you sent this resume to or the links to the job descriptions can be noted down here."
 msgstr "Per esempio, qui si possono annotare le informazioni relative alle aziende a cui ha inviato il curriculum o i link alle descrizioni del lavoro."
@@ -1652,6 +1657,10 @@ msgstr "Editor a schermo intero"
 #: src/dialogs/resume/index.tsx
 msgid "Generate a random name"
 msgstr "Genera un nome casuale"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Generate Preview"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "German"
@@ -2277,10 +2286,6 @@ msgstr "Nuova sezione"
 msgid "New thread"
 msgstr "Nuovo thread"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "No Advertising, No Tracking"
-msgstr "Nessuna pubblicità, nessun tracciamento"
-
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "No passkeys registered yet."
 msgstr "Non sono ancora stati registrati dei passepartout."
@@ -2583,6 +2588,10 @@ msgstr "Premi <0>{RETURN_KEY}</0> o <1>{COMMA_KEY}</1> per aggiungere o salvare 
 #: src/features/command-palette/pages/resumes.tsx
 msgid "Press <0>Enter</0> to open"
 msgstr "Premere <0>Invio</0> per aprire"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Preview Changes"
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/right/sections/design.tsx
 msgid "Primary Color"
@@ -3126,6 +3135,10 @@ msgstr "Spaziatura (verticale)"
 #: src/libs/locale.ts
 msgid "Spanish"
 msgstr "Spagnolo"
+
+#: src/components/ads/index.tsx
+msgid "Sponsored"
+msgstr ""
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Sponsorships"
@@ -3694,7 +3707,7 @@ msgid "Updating your resume..."
 msgstr "Aggiornamento del tuo curriculum in corso..."
 
 #: src/dialogs/resume/import.tsx
-msgid "Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a structured resume you can edit."
+msgid "Upload a PDF, Microsoft Word, or Craftisle JSON resume. AI will extract the content from PDF/Word files, while JSON files will be imported directly without modification."
 msgstr ""
 
 #: src/routes/agent/$threadId.tsx
@@ -3796,7 +3809,7 @@ msgid "Volunteer"
 msgstr "Volontariato"
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "Want to apply the changes?"
+msgid "Want to generate a preview?"
 msgstr ""
 
 #: src/dialogs/resume/sections/award.tsx

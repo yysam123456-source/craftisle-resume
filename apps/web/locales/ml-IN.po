@@ -43,7 +43,7 @@ msgstr "(പുതിയ ടാബിൽ തുറക്കും)"
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# ഇനം} other {# ഇനങ്ങൾ}}"
 
-#. placeholder {0}: item.roles.length
+#. placeholder {0}: item.roles?.length ?? 0
 #: src/routes/builder/$resumeId/-sidebar/left/sections/experience.tsx
 msgid "{0, plural, one {# role} other {# roles}}"
 msgstr "{0, plural, one {# റോൾ} other {# റോളുകൾ}}"
@@ -237,6 +237,10 @@ msgstr "വരി മുമ്പ് ചേർക്കുക"
 msgid "Adjust the resume for a remote-first role that values async communication and ownership."
 msgstr "അസമന്വിത ആശയവിനിമയത്തിനും ഉടമസ്ഥതയ്ക്കും പ്രാധാന്യം നൽകുന്ന ഒരു റിമോട്ട്-ഫസ്റ്റ് റോളിനായി റെസ്യൂമെ ക്രമീകരിക്കുക."
 
+#: src/components/ads/index.tsx
+msgid "Advertisement"
+msgstr ""
+
 #: src/libs/locale.ts
 msgid "Afrikaans"
 msgstr "ആഫ്രിക്കാൻസ്"
@@ -270,7 +274,7 @@ msgid "AI Assistant"
 msgstr ""
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "AI has prepared an update for your resume."
+msgid "AI has prepared a preview for your resume."
 msgstr ""
 
 #: src/features/settings/integrations/components/ai-section.tsx
@@ -292,6 +296,10 @@ msgstr "AI ദാതാക്കൾ"
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "AI providers require REDIS_URL and ENCRYPTION_SECRET to be configured."
 msgstr "AI ദാതാക്കൾക്ക് REDIS_URL ഉം ENCRYPTION_SECRET ഉം കോൺഫിഗർ ചെയ്യേണ്ടതുണ്ട്."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI service temporarily unavailable. Please try again in a moment."
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Albanian"
@@ -374,10 +382,6 @@ msgstr "ആപ്ലിക്കേഷൻ സ്റ്റാറ്റിസ്�
 #: src/routes/builder/$resumeId/-sidebar/right/sections/custom-styles.tsx
 msgid "Applied Rules"
 msgstr "ബാധകമായ നിയമങ്ങൾ"
-
-#: src/routes/agent/-components/simple-chat.tsx
-msgid "Apply Changes"
-msgstr ""
 
 #: src/libs/locale.ts
 msgid "Arabic"
@@ -824,6 +828,11 @@ msgstr "ദാതാവിന്റെ കണക്ഷൻ പരിശോധി�
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 msgid "Cover Letter"
 msgstr "കവർ ലെറ്റർ"
+
+#. File format label in import source selector
+#: src/dialogs/resume/import.tsx
+msgid "Craftisle JSON"
+msgstr ""
 
 #: src/routes/_home/-sections/header.tsx
 msgid "Craftisle Resume - Go to homepage"
@@ -1597,10 +1606,6 @@ msgstr "ഫോണ്ട് വെയ്റ്റ്"
 msgid "Font Weights"
 msgstr "ഫോണ്ട് വെയ്റ്റുകൾ"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "For a secure and distraction-free experience."
-msgstr "സുരക്ഷിതവും ശ്രദ്ധവിപരീതം ഇല്ലാത്ത ഒരു അനുഭവത്തിനായി."
-
 #: src/routes/builder/$resumeId/-sidebar/right/sections/notes.tsx
 msgid "For example, information regarding which companies you sent this resume to or the links to the job descriptions can be noted down here."
 msgstr "ഉദാഹരണത്തിന്, ഈ റിസ്യൂം നിങ്ങൾ ഏത് കമ്പനികൾക്ക് അയച്ചിട്ടുണ്ട് എന്നീ വിവരങ്ങളും ജോബ് വിവരണങ്ങളിലേക്കുള്ള ലിങ്കുകളും ഇവിടെ കുറിച്ചുവെക്കാം."
@@ -1652,6 +1657,10 @@ msgstr "ഫുൾസ്ക്രീൻ എഡിറ്റർ"
 #: src/dialogs/resume/index.tsx
 msgid "Generate a random name"
 msgstr "ഒരു റാൻഡം പേരുണ്ടാക്കുക"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Generate Preview"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "German"
@@ -2277,10 +2286,6 @@ msgstr "പുതിയ സെക്ഷൻ"
 msgid "New thread"
 msgstr "പുതിയ ത്രെഡ്"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "No Advertising, No Tracking"
-msgstr "പരസ്യങ്ങളില്ല, ട്രാക്കിംഗ് ഇല്ല"
-
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "No passkeys registered yet."
 msgstr "ഇതുവരെ പാസ്‌കീകൾ രജിസ്റ്റർ ചെയ്തിട്ടില്ല."
@@ -2583,6 +2588,10 @@ msgstr "നിലവിലുള്ള കീവിഡ്സ് ചേർക്�
 #: src/features/command-palette/pages/resumes.tsx
 msgid "Press <0>Enter</0> to open"
 msgstr "തുറക്കാൻ <0>എന്റർ</0> അമർത്തുക"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Preview Changes"
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/right/sections/design.tsx
 msgid "Primary Color"
@@ -3126,6 +3135,10 @@ msgstr "സ്പേസിംഗ് (ലംബം)"
 #: src/libs/locale.ts
 msgid "Spanish"
 msgstr "സ്പാനിഷ്"
+
+#: src/components/ads/index.tsx
+msgid "Sponsored"
+msgstr ""
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Sponsorships"
@@ -3694,7 +3707,7 @@ msgid "Updating your resume..."
 msgstr "നിങ്ങളുടെ റിസ്യൂം അപ്‌ഡേറ്റ് ചെയ്യുന്നു..."
 
 #: src/dialogs/resume/import.tsx
-msgid "Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a structured resume you can edit."
+msgid "Upload a PDF, Microsoft Word, or Craftisle JSON resume. AI will extract the content from PDF/Word files, while JSON files will be imported directly without modification."
 msgstr ""
 
 #: src/routes/agent/$threadId.tsx
@@ -3796,7 +3809,7 @@ msgid "Volunteer"
 msgstr "വളന്റിയർ"
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "Want to apply the changes?"
+msgid "Want to generate a preview?"
 msgstr ""
 
 #: src/dialogs/resume/sections/award.tsx

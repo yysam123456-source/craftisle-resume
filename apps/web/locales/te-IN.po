@@ -43,7 +43,7 @@ msgstr "(కొత్త ట్యాబ్‌లో తెరవబడుతు
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# అంశం} other {# అంశాలు}}"
 
-#. placeholder {0}: item.roles.length
+#. placeholder {0}: item.roles?.length ?? 0
 #: src/routes/builder/$resumeId/-sidebar/left/sections/experience.tsx
 msgid "{0, plural, one {# role} other {# roles}}"
 msgstr "{0, plural, one {# పాత్ర} other {# పాత్రలు}}"
@@ -237,6 +237,10 @@ msgstr "ముందు వరుస చేర్చండి"
 msgid "Adjust the resume for a remote-first role that values async communication and ownership."
 msgstr "అసింక్ కమ్యూనికేషన్ మరియు యాజమాన్యానికి విలువనిచ్చే రిమోట్-ఫస్ట్ ఉద్యోగానికి అనుగుణంగా రెజ్యూమెను సర్దుబాటు చేసుకోండి."
 
+#: src/components/ads/index.tsx
+msgid "Advertisement"
+msgstr ""
+
 #: src/libs/locale.ts
 msgid "Afrikaans"
 msgstr "ఆఫ్రికాన్స్"
@@ -270,7 +274,7 @@ msgid "AI Assistant"
 msgstr ""
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "AI has prepared an update for your resume."
+msgid "AI has prepared a preview for your resume."
 msgstr ""
 
 #: src/features/settings/integrations/components/ai-section.tsx
@@ -292,6 +296,10 @@ msgstr "AI ప్రొవైడర్లు"
 #: src/features/settings/integrations/components/ai-section.tsx
 msgid "AI providers require REDIS_URL and ENCRYPTION_SECRET to be configured."
 msgstr "AI ప్రొవైడర్లకు REDIS_URL మరియు ENCRYPTION_SECRET కాన్ఫిగర్ చేయబడి ఉండాలి."
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "AI service temporarily unavailable. Please try again in a moment."
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "Albanian"
@@ -374,10 +382,6 @@ msgstr "యాప్ గణాంకాలు"
 #: src/routes/builder/$resumeId/-sidebar/right/sections/custom-styles.tsx
 msgid "Applied Rules"
 msgstr "వర్తింపజేసిన నియమాలు"
-
-#: src/routes/agent/-components/simple-chat.tsx
-msgid "Apply Changes"
-msgstr ""
 
 #: src/libs/locale.ts
 msgid "Arabic"
@@ -824,6 +828,11 @@ msgstr "ప్రొవైడర్ కనెక్షన్‌ను ధృవ�
 #: src/routes/builder/$resumeId/-sidebar/left/sections/custom.tsx
 msgid "Cover Letter"
 msgstr "కవర్ లెటర్"
+
+#. File format label in import source selector
+#: src/dialogs/resume/import.tsx
+msgid "Craftisle JSON"
+msgstr ""
 
 #: src/routes/_home/-sections/header.tsx
 msgid "Craftisle Resume - Go to homepage"
@@ -1597,10 +1606,6 @@ msgstr "ఫాంట్ బరువు"
 msgid "Font Weights"
 msgstr "ఫాంట్ బరువులు"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "For a secure and distraction-free experience."
-msgstr "భద్రత మరియు అశాంతి లేని అనుభవానికి."
-
 #: src/routes/builder/$resumeId/-sidebar/right/sections/notes.tsx
 msgid "For example, information regarding which companies you sent this resume to or the links to the job descriptions can be noted down here."
 msgstr "ఉదాహరణకు, మీరు ఈ రిజ్యూమ్ పంపిన కంపెనీలు లేదా జాబ్ వివరణల లింకులు వంటి వివరాలను ఇక్కడ నమోదు చేయవచ్చు."
@@ -1652,6 +1657,10 @@ msgstr "పూర్తిస్క్రీన్ ఎడిటర్"
 #: src/dialogs/resume/index.tsx
 msgid "Generate a random name"
 msgstr "యాదృచ్ఛిక పేరు రూపొందించండి"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Generate Preview"
+msgstr ""
 
 #: src/libs/locale.ts
 msgid "German"
@@ -2277,10 +2286,6 @@ msgstr "కొత్త విభాగం"
 msgid "New thread"
 msgstr "కొత్త థ్రెడ్"
 
-#: src/routes/_home/-sections/features.tsx
-msgid "No Advertising, No Tracking"
-msgstr "ప్రకటనలు లేవు, ట్రాకింగ్ లేదు"
-
 #: src/features/settings/authentication/components/passkeys.tsx
 msgid "No passkeys registered yet."
 msgstr "ఇంకా పాస్‌కీలు నమోదు కాలేదు."
@@ -2583,6 +2588,10 @@ msgstr "ప్రస్తుత కీలుపదాన్ని జోడి�
 #: src/features/command-palette/pages/resumes.tsx
 msgid "Press <0>Enter</0> to open"
 msgstr "తెరవడానికి <0>ఎంటర్</0> నొక్కండి"
+
+#: src/routes/agent/-components/simple-chat.tsx
+msgid "Preview Changes"
+msgstr ""
 
 #: src/routes/builder/$resumeId/-sidebar/right/sections/design.tsx
 msgid "Primary Color"
@@ -3126,6 +3135,10 @@ msgstr "స్పేసింగ్ (నిలువుగా)"
 #: src/libs/locale.ts
 msgid "Spanish"
 msgstr "స్పానిష్"
+
+#: src/components/ads/index.tsx
+msgid "Sponsored"
+msgstr ""
 
 #: src/routes/_home/-sections/footer.tsx
 msgid "Sponsorships"
@@ -3694,7 +3707,7 @@ msgid "Updating your resume..."
 msgstr "మీ రిజ్యూమ్‌ను నవీకరిస్తోంది..."
 
 #: src/dialogs/resume/import.tsx
-msgid "Upload a PDF or Microsoft Word resume. AI will extract the content and convert it into a structured resume you can edit."
+msgid "Upload a PDF, Microsoft Word, or Craftisle JSON resume. AI will extract the content from PDF/Word files, while JSON files will be imported directly without modification."
 msgstr ""
 
 #: src/routes/agent/$threadId.tsx
@@ -3796,7 +3809,7 @@ msgid "Volunteer"
 msgstr "వాలంటియర్"
 
 #: src/routes/agent/-components/simple-chat.tsx
-msgid "Want to apply the changes?"
+msgid "Want to generate a preview?"
 msgstr ""
 
 #: src/dialogs/resume/sections/award.tsx

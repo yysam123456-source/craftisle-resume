@@ -82,7 +82,7 @@ function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): Record
 		}
 	}
 
-	// Merge missing section types from original
+	// Merge missing section types from original (deep clone to avoid shared references)
 	const origSections = origData.sections as Record<string, unknown> | undefined;
 	const resolvedSections = resolvedObj.sections as Record<string, unknown> | undefined;
 
@@ -90,12 +90,12 @@ function normalizeResumeData(rawUpdate: unknown, originalData?: unknown): Record
 		if (resolvedSections) {
 			for (const key of Object.keys(origSections)) {
 				if (!(key in resolvedSections)) {
-					resolvedSections[key] = origSections[key];
+					resolvedSections[key] = structuredClone(origSections[key]);
 				}
 			}
 			resolvedObj.sections = resolvedSections;
 		} else {
-			resolvedObj.sections = origSections;
+			resolvedObj.sections = structuredClone(origSections);
 		}
 	}
 
@@ -394,8 +394,8 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 			compareField("basics", "location");
 			compareField("basics", "summary");
 
-			// Compare summary (top-level)
-			compareField("summary", "summary");
+			// Compare summary content (top-level summary object has "content" field)
+			compareField("summary", "content");
 
 			// Compare sections: experience, education, skills, etc.
 			// Resume data stores sections under data.sections.{key}.items
@@ -750,11 +750,7 @@ EXAMPLE RESPONSE FORMAT:
 														<p className="mb-2 font-medium text-sm">
 															<Trans>AI has prepared a preview for your resume.</Trans>
 														</p>
-														<Button
-															size="sm"
-															onClick={() => handleApplyClick(message.resumeUpdate)}
-															disabled={cooldownRemaining > 0}
-														>
+														<Button size="sm" onClick={() => handleApplyClick(message.resumeUpdate)}>
 															<Trans>Preview Changes</Trans>
 														</Button>
 													</>
