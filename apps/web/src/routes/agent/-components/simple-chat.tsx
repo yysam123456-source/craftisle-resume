@@ -516,12 +516,16 @@ Replace {...} with the FULL updated resume data object. Keep image fields as "[i
 
 				if (!response.ok) {
 					const errBody = await response.json().catch(() => null);
-					const errMsg =
+					const rawErr =
 						typeof errBody?.error === "string"
 							? errBody.error
 							: typeof errBody?.error?.message === "string"
 								? errBody.error.message
 								: (errBody?.message ?? `HTTP ${response.status}`);
+					const errMsg =
+						rawErr.includes("SyntaxError") || rawErr.includes("Unexpected token")
+							? t`AI service temporarily unavailable. Please try again in a moment.`
+							: rawErr;
 					throw new Error(errMsg);
 				}
 
@@ -617,12 +621,17 @@ EXAMPLE RESPONSE FORMAT:
 
 			if (!response.ok) {
 				const errBody = await response.json().catch(() => null);
-				const errMsg =
+				const rawErr =
 					typeof errBody?.error === "string"
 						? errBody.error
 						: typeof errBody?.error?.message === "string"
 							? errBody.error.message
 							: (errBody?.message ?? `HTTP ${response.status}`);
+				// Sanitize internal-looking errors so users don't see raw SyntaxError / stack traces
+				const errMsg =
+					rawErr.includes("SyntaxError") || rawErr.includes("Unexpected token")
+						? t`AI service temporarily unavailable. Please try again in a moment.`
+						: rawErr;
 				throw new Error(errMsg);
 			}
 

@@ -35,22 +35,65 @@ export async function onRequestPost(context: { request: Request; env: Record<str
 			body: JSON.stringify(body),
 		});
 
-		const data = await response.json();
+		// If Agnes API returns an error status, read the body as text and return a friendly error
+		if (!response.ok) {
+			const text = await response.text().catch(() => "unknown error");
+			console.error(`Agnes API error ${response.status}: ${text.slice(0, 200)}`);
+			return new Response(
+				JSON.stringify({
+					error: `AI service error (${response.status}). Please try again in a moment.`,
+				}),
+				{
+					status: 502,
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				},
+			);
+		}
+
+		// Try to parse JSON; if it fails, return a friendly error instead of raw SyntaxError
+		let data: unknown;
+		try {
+			data = await response.json();
+		} catch {
+			const text = await response.text().catch(() => "unknown error");
+			console.error(`Agnes API returned non-JSON: ${text.slice(0, 200)}`);
+			return new Response(
+				JSON.stringify({
+					error: "AI service returned an unexpected response. Please try again.",
+				}),
+				{
+					status: 502,
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				},
+			);
+		}
 
 		return new Response(JSON.stringify(data), {
-			status: response.status,
+			status: 200,
 			headers: {
 				"Content-Type": "application/json",
 				"Access-Control-Allow-Origin": "*",
 			},
 		});
 	} catch (error) {
-		return new Response(JSON.stringify({ error: String(error) }), {
-			status: 500,
-			headers: {
-				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "*",
+		console.error("Cloudflare Function error:", error);
+		return new Response(
+			JSON.stringify({
+				error: "Server error. Please try again in a moment.",
+			}),
+			{
+				status: 500,
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*",
+				},
 			},
-		});
+		);
 	}
 }
