@@ -397,14 +397,18 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 			// Compare summary (top-level)
 			compareField("summary", "summary");
 
-			// Compare sections: experience, education, skills
+			// Compare sections: experience, education, skills, etc.
+			// Resume data stores sections under data.sections.{key}.items
 			const compareSectionItems = (key: string, labelField = "summary") => {
-				const oldItems = Array.isArray((oldData as Record<string, unknown>)?.[key])
-					? ((oldData as Record<string, unknown>)?.[key] as Array<Record<string, unknown>>)
-					: [];
-				const newItems = Array.isArray((newData as Record<string, unknown>)?.[key])
-					? ((newData as Record<string, unknown>)?.[key] as Array<Record<string, unknown>>)
-					: [];
+				const oldSections = (oldData as Record<string, unknown>)?.sections as
+					| Record<string, { items?: Array<Record<string, unknown>> }>
+					| undefined;
+				const newSections = (newData as Record<string, unknown>)?.sections as
+					| Record<string, { items?: Array<Record<string, unknown>> }>
+					| undefined;
+
+				const oldItems = oldSections?.[key]?.items ?? [];
+				const newItems = newSections?.[key]?.items ?? [];
 				const maxLen = Math.max(oldItems.length, newItems.length);
 				for (let i = 0; i < maxLen; i++) {
 					const oldItem = oldItems[i];
@@ -413,7 +417,7 @@ export function SimpleChat({ resumeId, resumeData, onClose }: SimpleChatProps) {
 					const newText = newItem?.[labelField] ? String(newItem[labelField]) : "";
 					if (oldText !== newText) {
 						rows.push({
-							label: `${key}[${i}].${labelField}`,
+							label: `sections.${key}[${i}].${labelField}`,
 							before: oldText ? truncate(oldText, 120) : "(empty)",
 							after: newText ? truncate(newText, 120) : "(empty)",
 						});
