@@ -113,25 +113,27 @@ function RootComponent() {
 		document.documentElement.classList.toggle("dark", theme === "dark");
 	}, [dir, locale, theme]);
 
-	// Load ads based on env var
+	// Load ads - VITE_PUBLIC_ADVER_ENABLE: "true"=show ads, "false"=hide ads
 	useEffect(() => {
-		if (import.meta.env.VITE_PUBLIC_ADVER_ENABLE === "true") {
-			// Load Monetag Vignette Banner
-			const script = document.createElement("script");
-			script.id = "monetag-vignette";
-			script.src = "https://n6wxm.com/vignette.min.js";
-			script.dataset.zone = "11117037";
-			script.async = true;
-			document.body.appendChild(script);
+		const adEnable = (import.meta.env.VITE_PUBLIC_ADVER_ENABLE || "true") === "true";
 
-			// Load Google AdSense
-			if (import.meta.env.VITE_ADSENSE_CLIENT_ID) {
-				const adsense = document.createElement("script");
-				adsense.async = true;
-				adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`;
-				adsense.crossOrigin = "anonymous";
-				document.head.appendChild(adsense);
-			}
+		if (!adEnable) return;
+
+		// Load Monetag Vignette Banner
+		const script = document.createElement("script");
+		script.id = "monetag-vignette";
+		script.src = "https://n6wxm.com/vignette.min.js";
+		script.dataset.zone = "11117037";
+		script.async = true;
+		document.body.appendChild(script);
+
+		// Load Google AdSense
+		if (import.meta.env.VITE_ADSENSE_CLIENT_ID) {
+			const adsense = document.createElement("script");
+			adsense.async = true;
+			adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`;
+			adsense.crossOrigin = "anonymous";
+			document.head.appendChild(adsense);
 		}
 	}, []);
 
