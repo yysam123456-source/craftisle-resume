@@ -213,6 +213,80 @@ function ensureItemIds(data: Record<string, unknown>): void {
 	}
 }
 
+// ---- Ensure all section items have required default fields ----
+// AI-generated resumes often omit optional fields like "keywords", "website",
+// "icon", "iconColor". The PDF renderer expects these to exist (not undefined).
+function ensureDefaults(data: Record<string, unknown>): void {
+	const sections = data.sections as SectionMap | undefined;
+	if (!sections) return;
+
+	for (const sec of Object.values(sections)) {
+		if (!sec || typeof sec !== "object" || !Array.isArray(sec.items)) continue;
+		for (const item of sec.items) {
+			if (!item || typeof item !== "object") continue;
+
+			// keywords (skills, interests)
+			if (item.keywords === undefined) {
+				item.keywords = [];
+			}
+
+			// website (experience, education, projects, awards, certifications, publications, volunteer, references)
+			if (item.website === undefined) {
+				item.website = { url: "", label: "", inlineLink: false };
+			}
+
+			// icon (skills, profiles, interests)
+			if (item.icon === undefined) {
+				item.icon = "";
+			}
+
+			// iconColor (skills, profiles, interests)
+			if (item.iconColor === undefined) {
+				item.iconColor = "";
+			}
+
+			// level (skills, languages)
+			if (item.level === undefined) {
+				item.level = 0;
+			}
+
+			// proficiency (skills)
+			if (item.proficiency === undefined) {
+				item.proficiency = "";
+			}
+
+			// description fallback for sections that expect HTML
+			if (item.description === undefined) {
+				item.description = "";
+			}
+
+			// roles (experience)
+			if (item.roles === undefined) {
+				item.roles = [];
+			}
+		}
+	}
+
+	// Also fix customSections
+	const customSections = data.customSections as Array<SectionMap[string]> | undefined;
+	if (Array.isArray(customSections)) {
+		for (const sec of customSections) {
+			if (!sec || typeof sec !== "object" || !Array.isArray(sec.items)) continue;
+			for (const item of sec.items) {
+				if (!item || typeof item !== "object") continue;
+				if (item.keywords === undefined) item.keywords = [];
+				if (item.website === undefined) item.website = { url: "", label: "", inlineLink: false };
+				if (item.icon === undefined) item.icon = "";
+				if (item.iconColor === undefined) item.iconColor = "";
+				if (item.level === undefined) item.level = 0;
+				if (item.proficiency === undefined) item.proficiency = "";
+				if (item.description === undefined) item.description = "";
+				if (item.roles === undefined) item.roles = [];
+			}
+		}
+	}
+}
+
 // ---- Deep merge helper ----
 // Recursively merges source into target.
 // For arrays: source overwrites target (items with missing ids are fixed by ensureItemIds).
@@ -382,6 +456,7 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 
 					// Ensure all section items have valid "id" fields (AI often omits them)
 					ensureItemIds(parsed);
+					ensureDefaults(parsed);
 
 					const basics = (parsed.basics || {}) as Record<string, unknown>;
 					resumeName =
@@ -399,8 +474,9 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 				const mergedData = structuredClone(defaultResumeData) as Record<string, unknown>;
 				deepMerge(mergedData, parsed);
 
-				// Ensure all items have valid ids after merge
+				// Ensure all items have valid ids and default fields after merge
 				ensureItemIds(mergedData);
+				ensureDefaults(mergedData);
 
 				// Create resume in localStorage
 				const created = createResume(resumeName, false);
