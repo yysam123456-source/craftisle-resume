@@ -184,7 +184,38 @@ function normalizeResumeParse(raw: unknown): Record<string, unknown> {
 	return obj;
 }
 
+// ---- Ensure all section items have a non-empty "id" field ----
+type SectionMap = Record<string, { items: Array<Record<string, unknown>> }>;
+
+function ensureItemIds(data: Record<string, unknown>): void {
+	const sections = data.sections as SectionMap | undefined;
+	if (!sections) return;
+
+	for (const sec of Object.values(sections)) {
+		if (!sec || typeof sec !== "object" || !Array.isArray(sec.items)) continue;
+		for (const item of sec.items) {
+			if (!item || typeof item !== "object") continue;
+			if (!item.id || typeof item.id !== "string" || item.id.trim() === "") {
+				item.id = crypto.randomUUID();
+			}
+		}
+	}
+
+	// Also fix basics.customFields items
+	const basics = data.basics as Record<string, unknown> | undefined;
+	if (basics && typeof basics === "object" && Array.isArray(basics.customFields)) {
+		for (const item of basics.customFields as Array<Record<string, unknown>>) {
+			if (!item || typeof item !== "object") continue;
+			if (!item.id || typeof item.id !== "string" || item.id.trim() === "") {
+				item.id = crypto.randomUUID();
+			}
+		}
+	}
+}
+
 // ---- Deep merge helper ----
+// Recursively merges source into target.
+// For arrays: source overwrites target (items with missing ids are fixed by ensureItemIds).
 function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): void {
 	for (const key of Object.keys(source)) {
 		const sv = source[key];
@@ -330,19 +361,27 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 						throw new Error("AI returned no content.");
 					}
 
-					// Parse AI response as JSON
+					// Parse AI response as JSON - handle markdown fences robustly
 					try {
-						const cleaned = content
-							.replace(/^```json\s*/i, "")
-							.replace(/^```\s*/i, "")
-							.replace(/\s*```$/, "")
-							.trim();
-						parsed = JSON.parse(cleaned);
+						// First try: parse content directly (AI might return raw JSON)
+						try {
+							parsed = JSON.parse(content);
+						} catch {
+							// Second try: strip all ``` blocks (json or plain)
+							const cleaned = content.replace(/```(?:json)?[\s\S]*?```/gi, "").trim();
+							parsed = JSON.parse(cleaned);
+						}
 					} catch {
-						throw new Error("AI returned invalid JSON. Please try again.");
+						// Third try: find JSON object by matching { and }
+						const match = content.match(/\{[\s\S]*\}/);
+						if (!match) throw new Error("No JSON found in AI response");
+						parsed = JSON.parse(match[0]);
 					}
 
 					parsed = normalizeResumeParse(parsed);
+
+					// Ensure all section items have valid "id" fields (AI often omits them)
+					ensureItemIds(parsed);
 
 					const basics = (parsed.basics || {}) as Record<string, unknown>;
 					resumeName =
@@ -359,6 +398,9 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 				const { defaultResumeData } = await import("@reactive-resume/schema/resume/default");
 				const mergedData = structuredClone(defaultResumeData) as Record<string, unknown>;
 				deepMerge(mergedData, parsed);
+
+				// Ensure all items have valid ids after merge
+				ensureItemIds(mergedData);
 
 				// Create resume in localStorage
 				const created = createResume(resumeName, false);
