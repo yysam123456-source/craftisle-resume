@@ -221,6 +221,170 @@ Craftisle Resume's templates are ATS-optimized and developer-friendly. Start bui
 Craftisle Resume的模板经过ATS优化且对开发者友好。免费开始构建。
     `.trim(),
 	},
+	"free-resume-checklist-2026": {
+		title: "Free Resume Checklist 2026 (Downloadable PDF)",
+		titleZh: "免费简历检查清单2026（可下载PDF）",
+		date: "2026-06-18",
+		body: `
+## Before You Hit "Submit" — Check These 25 Items
+
+### Contact Info
+- [ ] Name (prominent, top of page)
+- [ ] Phone (with country code)
+- [ ] Email (professional, not "partygirl@...")
+- [ ] LinkedIn URL
+- [ ] GitHub/Portfolio URL (for tech roles)
+
+### Formatting
+- [ ] Saved as PDF (not .docx for ATS)
+- [ ] Standard font (Arial, Calibri, Times New Roman)
+- [ ] 11-12pt font size
+- [ ] No headers/footers
+- [ ] No text boxes or tables
+- [ ] Margins: 0.5-1 inch
+- [ ] Consistent formatting (dates, bullets, spacing)
+
+### Content
+- [ ] Reverse-chronological order
+- [ ] No typos (run spell-check)
+- [ ] Quantified achievements ("Increased sales by 30%" not "Responsible for sales")
+- [ ] Action verbs (Managed, Built, Led — not "Responsible for")
+- [ ] Tailored to job description (80% keyword match)
+- [ ] No personal pronouns ("I", "me", "my")
+- [ ] No irrelevant info (hobbies, religion, age)
+
+### ATS Optimization
+- [ ] Standard section headings: "Work Experience", "Education", "Skills"
+- [ ] No images or icons (ATS can't read them)
+- [ ] No abbreviations without spelling out first ("Artificial Intelligence (AI)")
+- [ ] File name: "FirstName_LastName_Resume_2026.pdf"
+
+## Download Our Free Checklist
+
+Craftisle Resume users can export a pre-checked PDF. Build your resume now — it's free.
+    `.trim(),
+		bodyZh: `
+## 在点击"提交"之前——检查这25个项目
+
+### 联系信息
+- [ ] 姓名（醒目，页面顶部）
+- [ ] 电话（含国家代码）
+- [ ] 邮箱（专业的，不要用"partygirl@..."）
+- [ ] LinkedIn URL
+- [ ] GitHub/作品集 URL（技术岗位）
+
+### 格式
+- [ ] 保存为PDF（ATS不要用.docx）
+- [ ] 标准字体（Arial、Calibri、Times New Roman）
+- [ ] 11-12pt 字号
+- [ ] 无页眉/页脚
+- [ ] 无文本框或表格
+- [ ] 页边距：0.5-1英寸
+- [ ] 格式一致（日期、项目符号、间距）
+
+### 内容
+- [ ] 倒序时间顺序
+- [ ] 无错别字（运行拼写检查）
+- [ ] 量化成就（"销售额提高30%"而不是"负责销售"）
+- [ ] 行为动词（管理、构建、领导——不是"负责"）
+- [ ] 针对职位描述定制（80%关键词匹配）
+- [ ] 无个人代词（"我"、"我的"）
+- [ ] 无无关信息（爱好、宗教、年龄）
+
+### ATS优化
+- [ ] 标准章节标题："工作经验"、"教育背景"、"技能"
+- [ ] 无图片或图标（ATS无法读取）
+- [ ] 缩写首次使用时拼写完整（"人工智能（AI）"）
+- [ ] 文件名："姓_名_简历_2026.pdf"
+
+## 下载我们的免费检查清单
+
+Craftisle Resume 用户可以导出预检查的PDF。立即制作你的简历——完全免费。
+    `.trim(),
+	},
+	"how-to-download-resume-as-pdf-free": {
+		title: "How to Download Your Resume as PDF for Free",
+		titleZh: "如何免费将简历下载为PDF",
+		date: "2026-06-16",
+		body: `
+## Why PDF Is the Safe Choice
+
+- **Formatting stays intact** — Word docs can shift layout between computers
+- **ATS-friendly** — most parsers prefer PDF
+- **Professional** — recruiters expect PDF
+
+## Step-by-Step: Export from Craftisle Resume
+
+1. **Open your resume** in the [Craftisle Resume builder](/)
+2. **Click "Export"** or "Download PDF"
+3. **Choose "ATS-friendly" mode** (no text boxes, no headers)
+4. **Save with your name** — \`FirstName_LastName_Resume_2026.pdf\`
+5. **Test it** — open the PDF on your phone to check formatting
+
+## Common PDF Export Issues (and Fixes)
+
+### Issue 1: Formatting Looks Wrong
+**Fix**: Use a standard template (no fancy layouts). Craftisle's templates are ATS-optimized.
+
+### Issue 2: File Size Too Large
+**Fix**: Compress images before uploading. Aim for < 2MB.
+
+### Issue 3: Fonts Not Embedded
+**Fix**: Use standard fonts (Arial, Calibri). Craftisle handles this automatically.
+
+### Issue 4: Can't Click Hyperlinks
+**Fix**: Some ATS strip links — that's normal. Include the full URL in text too.
+
+## Pro Tips
+
+- **Always keep a .docx backup** (in case an employer asks)
+- **Name your file properly** — recruiters download 100+ resumes, make yours findable
+- **Test on mobile** — many recruiters review on phones
+
+## Start Building Now
+
+Craftisle Resume lets you export to PDF for free. No paywall, no watermark.
+    `.trim(),
+		bodyZh: `
+## 为什么PDF是安全的选择
+
+- **格式保持不变**——Word文档在不同电脑间可能布局错乱
+- **ATS友好**——大多数解析器更喜欢PDF
+- **专业**——招聘人员期望收到PDF
+
+## 分步指南：从Craftisle Resume导出
+
+1. **打开你的简历**在[Craftisle Resume制作器](/)中
+2. **点击"导出"**或"下载PDF"
+3. **选择"ATS友好"模式**（无文本框，无页眉）
+4. **用你的名字保存**——\`姓_名_简历_2026.pdf\`
+5. **测试它**——在手机上打开PDF检查格式
+
+## 常见PDF导出问题（及修复方法）
+
+### 问题1：格式看起来不对
+**修复**：使用标准模板（无花哨布局）。Craftisle的模板经过ATS优化。
+
+### 问题2：文件大小过大
+**修复**：上传前压缩图片。目标<2MB。
+
+### 问题3：字体未嵌入
+**修复**：使用标准字体（Arial、Calibri）。Craftisle自动处理这一点。
+
+### 问题4：无法点击超链接
+**修复**：有些ATS会去除链接——这很正常。同时在文本中包含完整URL。
+
+## 专业技巧
+
+- **始终保留.docx备份**（以防雇主要求）
+- **正确命名你的文件**——招聘人员下载100+份简历，让你的容易被找到
+- **在手机上测试**——许多招聘人员在手机上审阅
+
+## 立即开始制作
+
+Craftisle Resume让你免费导出PDF。无付费墙，无水印。
+    `.trim(),
+	},
 };
 
 export const Route = createFileRoute("/blog/$slug")({

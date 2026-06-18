@@ -30,6 +30,24 @@ const blogPosts = [
 		date: "2026-06-10",
 		tags: ["software engineer", "templates", "tech"],
 	},
+	{
+		slug: "free-resume-checklist-2026",
+		title: "Free Resume Checklist 2026 (Downloadable PDF)",
+		titleZh: "免费简历检查清单2026（可下载PDF）",
+		excerpt: "Don't submit your resume without checking these 25 critical items. Download our free checklist.",
+		excerptZh: "在提交简历之前，务必检查这25个关键项目。下载我们的免费检查清单。",
+		date: "2026-06-18",
+		tags: ["checklist", "free resource", "PDF"],
+	},
+	{
+		slug: "how-to-download-resume-as-pdf-free",
+		title: "How to Download Your Resume as PDF for Free",
+		titleZh: "如何免费将简历下载为PDF",
+		excerpt: "Step-by-step guide to exporting your resume as a PDF file, with tips for ATS-friendly formatting.",
+		excerptZh: "将简历导出为PDF文件的分步指南，以及ATS友好格式的技巧。",
+		date: "2026-06-16",
+		tags: ["PDF", "export", "free"],
+	},
 ];
 
 export const Route = createFileRoute("/blog")({
