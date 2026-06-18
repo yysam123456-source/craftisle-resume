@@ -14,12 +14,14 @@ import { Route as DashboardRouteRouteImport } from "./routes/dashboard/route";
 import { Route as AuthRouteRouteImport } from "./routes/auth/route";
 import { Route as AgentRouteRouteImport } from "./routes/agent/route";
 import { Route as HomeRouteRouteImport } from "./routes/_home/route";
+import { Route as ResourcesIndexRouteImport } from "./routes/resources/index";
 import { Route as DashboardIndexRouteImport } from "./routes/dashboard/index";
 import { Route as AuthIndexRouteImport } from "./routes/auth/index";
 import { Route as AgentIndexRouteImport } from "./routes/agent/index";
 import { Route as HomeIndexRouteImport } from "./routes/_home/index";
 import { Route as TemplatesProfessionRouteImport } from "./routes/templates/$profession";
 import { Route as TemplatesSplatRouteImport } from "./routes/templates/$";
+import { Route as ResourcesSalaryNegotiationRouteImport } from "./routes/resources/salary-negotiation";
 import { Route as ResourcesResumeChecklistRouteImport } from "./routes/resources/resume-checklist";
 import { Route as GuidesSlugRouteImport } from "./routes/guides/$slug";
 import { Route as BlogSlugRouteImport } from "./routes/blog/$slug";
@@ -68,6 +70,11 @@ const HomeRouteRoute = HomeRouteRouteImport.update({
   id: "/_home",
   getParentRoute: () => rootRouteImport,
 } as any);
+const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
+  id: "/resources/",
+  path: "/resources/",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -98,6 +105,12 @@ const TemplatesSplatRoute = TemplatesSplatRouteImport.update({
   path: "/templates/$",
   getParentRoute: () => rootRouteImport,
 } as any);
+const ResourcesSalaryNegotiationRoute =
+  ResourcesSalaryNegotiationRouteImport.update({
+    id: "/resources/salary-negotiation",
+    path: "/resources/salary-negotiation",
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const ResourcesResumeChecklistRoute =
   ResourcesResumeChecklistRouteImport.update({
     id: "/resources/resume-checklist",
@@ -242,11 +255,13 @@ export interface FileRoutesByFullPath {
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
+  "/resources/salary-negotiation": typeof ResourcesSalaryNegotiationRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/agent/": typeof AgentIndexRoute;
   "/auth/": typeof AuthIndexRoute;
   "/dashboard/": typeof DashboardIndexRoute;
+  "/resources/": typeof ResourcesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -272,12 +287,14 @@ export interface FileRoutesByTo {
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
+  "/resources/salary-negotiation": typeof ResourcesSalaryNegotiationRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/": typeof HomeIndexRoute;
   "/agent": typeof AgentIndexRoute;
   "/auth": typeof AuthIndexRoute;
   "/dashboard": typeof DashboardIndexRoute;
+  "/resources": typeof ResourcesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -309,12 +326,14 @@ export interface FileRoutesById {
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
+  "/resources/salary-negotiation": typeof ResourcesSalaryNegotiationRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/_home/": typeof HomeIndexRoute;
   "/agent/": typeof AgentIndexRoute;
   "/auth/": typeof AuthIndexRoute;
   "/dashboard/": typeof DashboardIndexRoute;
+  "/resources/": typeof ResourcesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -347,11 +366,13 @@ export interface FileRouteTypes {
     | "/blog/$slug"
     | "/guides/$slug"
     | "/resources/resume-checklist"
+    | "/resources/salary-negotiation"
     | "/templates/$"
     | "/templates/$profession"
     | "/agent/"
     | "/auth/"
     | "/dashboard/"
+    | "/resources/"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -377,12 +398,14 @@ export interface FileRouteTypes {
     | "/blog/$slug"
     | "/guides/$slug"
     | "/resources/resume-checklist"
+    | "/resources/salary-negotiation"
     | "/templates/$"
     | "/templates/$profession"
     | "/"
     | "/agent"
     | "/auth"
     | "/dashboard"
+    | "/resources"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -413,12 +436,14 @@ export interface FileRouteTypes {
     | "/blog/$slug"
     | "/guides/$slug"
     | "/resources/resume-checklist"
+    | "/resources/salary-negotiation"
     | "/templates/$"
     | "/templates/$profession"
     | "/_home/"
     | "/agent/"
     | "/auth/"
     | "/dashboard/"
+    | "/resources/"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -440,8 +465,10 @@ export interface RootRouteChildren {
   UsernameSlugRoute: typeof UsernameSlugRoute;
   GuidesSlugRoute: typeof GuidesSlugRoute;
   ResourcesResumeChecklistRoute: typeof ResourcesResumeChecklistRoute;
+  ResourcesSalaryNegotiationRoute: typeof ResourcesSalaryNegotiationRoute;
   TemplatesSplatRoute: typeof TemplatesSplatRoute;
   TemplatesProfessionRoute: typeof TemplatesProfessionRoute;
+  ResourcesIndexRoute: typeof ResourcesIndexRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -479,6 +506,13 @@ declare module "@tanstack/react-router" {
       path: "";
       fullPath: "/";
       preLoaderRoute: typeof HomeRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/resources/": {
+      id: "/resources/";
+      path: "/resources";
+      fullPath: "/resources/";
+      preLoaderRoute: typeof ResourcesIndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/dashboard/": {
@@ -521,6 +555,13 @@ declare module "@tanstack/react-router" {
       path: "/templates/$";
       fullPath: "/templates/$";
       preLoaderRoute: typeof TemplatesSplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/resources/salary-negotiation": {
+      id: "/resources/salary-negotiation";
+      path: "/resources/salary-negotiation";
+      fullPath: "/resources/salary-negotiation";
+      preLoaderRoute: typeof ResourcesSalaryNegotiationRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/resources/resume-checklist": {
@@ -802,8 +843,10 @@ const rootRouteChildren: RootRouteChildren = {
   UsernameSlugRoute: UsernameSlugRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   ResourcesResumeChecklistRoute: ResourcesResumeChecklistRoute,
+  ResourcesSalaryNegotiationRoute: ResourcesSalaryNegotiationRoute,
   TemplatesSplatRoute: TemplatesSplatRoute,
   TemplatesProfessionRoute: TemplatesProfessionRoute,
+  ResourcesIndexRoute: ResourcesIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

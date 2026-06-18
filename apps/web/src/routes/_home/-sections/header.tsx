@@ -54,7 +54,7 @@ export function Header() {
 
 				<div className="ml-auto flex items-center gap-x-2">
 					<Link
-						to="/resources/resume-checklist"
+						to="/resources"
 						className="px-2 py-1 font-medium text-sm transition hover:text-primary"
 						aria-label={t`Resources`}
 					>
