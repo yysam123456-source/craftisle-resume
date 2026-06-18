@@ -22,7 +22,7 @@ import { ThemeProvider } from "@/features/theme/provider";
 import { ConfirmDialogProvider } from "@/hooks/use-confirm";
 import { PromptDialogProvider } from "@/hooks/use-prompt";
 import { getSession } from "@/libs/auth/session";
-import { getLocale, isRTL, loadLocale } from "@/libs/locale";
+import { getLocale, isRTL, loadLocale, localeMap } from "@/libs/locale";
 import { client } from "@/libs/orpc/client";
 import { getTheme } from "@/libs/theme";
 
@@ -36,15 +36,67 @@ type RouterContext = {
 };
 
 const appName = "Craftisle Resume";
-const tagline = "A free and open-source resume builder";
+const tagline = "Free Resume Builder & CV Maker Online";
 const title = `${appName} — ${tagline}`;
 const description =
-	"Craftisle Resume is a free and open-source resume builder that simplifies the process of creating, updating, and sharing your resume.";
+	"Create a professional resume in minutes with our free resume builder. 12+ ATS-friendly templates, PDF export, and AI-powered suggestions. No sign-up required.";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: RootComponent,
 	head: () => {
 		const appUrl = typeof window !== "undefined" ? window.location.origin : "https://resume.craftisle.com";
+		const canonicalUrl = typeof window !== "undefined" ? window.location.href : "https://resume.craftisle.com";
+		const _pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+
+		const structuredData = {
+			"@context": "https://schema.org",
+			"@graph": [
+				{
+					"@type": "SoftwareApplication",
+					name: "Craftisle Resume",
+					applicationCategory: "BusinessApplication",
+					operatingSystem: "Web",
+					description,
+					offers: {
+						"@type": "Offer",
+						price: "0",
+						priceCurrency: "USD",
+					},
+					url: appUrl,
+					sameAs: ["https://github.com/craftisle/resume"],
+				},
+				{
+					"@type": "Organization",
+					name: "Craftisle",
+					url: "https://craftisle.com",
+					sameAs: ["https://github.com/craftisle"],
+				},
+				{
+					"@type": "WebSite",
+					url: appUrl,
+					name: appName,
+					potentialAction: {
+						"@type": "SearchAction",
+						target: `${appUrl}/?q={search_term_string}`,
+						"query-input": "required name=search_term_string",
+					},
+				},
+			],
+		};
+
+		// Generate hreflang links for all 55 supported locales
+		const hreflangLinks = (Object.keys(localeMap) as string[]).map((locale) => ({
+			rel: "alternate",
+			hreflang: locale,
+			href: appUrl,
+		}));
+
+		// x-default: fallback for unknown locales
+		hreflangLinks.push({
+			rel: "alternate",
+			hreflang: "x-default",
+			href: appUrl,
+		});
 
 		return {
 			links: [
@@ -54,6 +106,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				{ rel: "apple-touch-icon", href: "/apple-touch-icon-180x180.png", type: "image/png", sizes: "180x180 any" },
 				// Manifest
 				{ rel: "manifest", href: "/manifest.webmanifest", crossOrigin: "use-credentials" },
+				// Canonical
+				{ rel: "canonical", href: canonicalUrl },
 			],
 			meta: [
 				{ title },
@@ -78,6 +132,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				{ property: "og:title", content: title },
 				{ property: "og:description", content: description },
 				{ property: "og:url", content: appUrl },
+				{ property: "og:type", content: "website" },
+			],
+			scripts: [
+				{
+					type: "application/ld+json",
+					children: JSON.stringify(structuredData),
+				},
 			],
 		};
 	},
