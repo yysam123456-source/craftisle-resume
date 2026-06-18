@@ -53,6 +53,14 @@ export function Header() {
 				</Link>
 
 				<div className="ml-auto flex items-center gap-x-2">
+					<Link
+						to="/resources/resume-checklist"
+						className="px-2 py-1 font-medium text-sm transition hover:text-primary"
+						aria-label={t`Resources`}
+					>
+						{t`Resources`}
+					</Link>
+
 					<Link to="/blog" className="px-2 py-1 font-medium text-sm transition hover:text-primary" aria-label={t`Blog`}>
 						{t`Blog`}
 					</Link>

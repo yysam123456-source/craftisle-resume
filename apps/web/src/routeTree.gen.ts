@@ -20,6 +20,7 @@ import { Route as AgentIndexRouteImport } from "./routes/agent/index";
 import { Route as HomeIndexRouteImport } from "./routes/_home/index";
 import { Route as TemplatesProfessionRouteImport } from "./routes/templates/$profession";
 import { Route as TemplatesSplatRouteImport } from "./routes/templates/$";
+import { Route as ResourcesResumeChecklistRouteImport } from "./routes/resources/resume-checklist";
 import { Route as GuidesSlugRouteImport } from "./routes/guides/$slug";
 import { Route as BlogSlugRouteImport } from "./routes/blog/$slug";
 import { Route as AuthVerify2faBackupRouteImport } from "./routes/auth/verify-2fa-backup";
@@ -97,6 +98,12 @@ const TemplatesSplatRoute = TemplatesSplatRouteImport.update({
   path: "/templates/$",
   getParentRoute: () => rootRouteImport,
 } as any);
+const ResourcesResumeChecklistRoute =
+  ResourcesResumeChecklistRouteImport.update({
+    id: "/resources/resume-checklist",
+    path: "/resources/resume-checklist",
+    getParentRoute: () => rootRouteImport,
+  } as any);
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: "/guides/$slug",
   path: "/guides/$slug",
@@ -234,6 +241,7 @@ export interface FileRoutesByFullPath {
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
+  "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/agent/": typeof AgentIndexRoute;
@@ -263,6 +271,7 @@ export interface FileRoutesByTo {
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
+  "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/": typeof HomeIndexRoute;
@@ -299,6 +308,7 @@ export interface FileRoutesById {
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
   "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
+  "/resources/resume-checklist": typeof ResourcesResumeChecklistRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
   "/_home/": typeof HomeIndexRoute;
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | "/auth/verify-2fa-backup"
     | "/blog/$slug"
     | "/guides/$slug"
+    | "/resources/resume-checklist"
     | "/templates/$"
     | "/templates/$profession"
     | "/agent/"
@@ -365,6 +376,7 @@ export interface FileRouteTypes {
     | "/auth/verify-2fa-backup"
     | "/blog/$slug"
     | "/guides/$slug"
+    | "/resources/resume-checklist"
     | "/templates/$"
     | "/templates/$profession"
     | "/"
@@ -400,6 +412,7 @@ export interface FileRouteTypes {
     | "/auth/verify-2fa-backup"
     | "/blog/$slug"
     | "/guides/$slug"
+    | "/resources/resume-checklist"
     | "/templates/$"
     | "/templates/$profession"
     | "/_home/"
@@ -426,6 +439,7 @@ export interface RootRouteChildren {
   BuilderResumeIdRouteRoute: typeof BuilderResumeIdRouteRouteWithChildren;
   UsernameSlugRoute: typeof UsernameSlugRoute;
   GuidesSlugRoute: typeof GuidesSlugRoute;
+  ResourcesResumeChecklistRoute: typeof ResourcesResumeChecklistRoute;
   TemplatesSplatRoute: typeof TemplatesSplatRoute;
   TemplatesProfessionRoute: typeof TemplatesProfessionRoute;
 }
@@ -507,6 +521,13 @@ declare module "@tanstack/react-router" {
       path: "/templates/$";
       fullPath: "/templates/$";
       preLoaderRoute: typeof TemplatesSplatRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/resources/resume-checklist": {
+      id: "/resources/resume-checklist";
+      path: "/resources/resume-checklist";
+      fullPath: "/resources/resume-checklist";
+      preLoaderRoute: typeof ResourcesResumeChecklistRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/guides/$slug": {
@@ -780,6 +801,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuilderResumeIdRouteRoute: BuilderResumeIdRouteRouteWithChildren,
   UsernameSlugRoute: UsernameSlugRoute,
   GuidesSlugRoute: GuidesSlugRoute,
+  ResourcesResumeChecklistRoute: ResourcesResumeChecklistRoute,
   TemplatesSplatRoute: TemplatesSplatRoute,
   TemplatesProfessionRoute: TemplatesProfessionRoute,
 };
