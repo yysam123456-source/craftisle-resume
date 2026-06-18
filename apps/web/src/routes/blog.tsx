@@ -48,6 +48,52 @@ const blogPosts = [
 		date: "2026-06-16",
 		tags: ["PDF", "export", "free"],
 	},
+	{
+		slug: "100-action-verbs-for-resume",
+		title: "100+ Action Verbs for Your Resume (By Category)",
+		titleZh: "100+ 简历行动动词（按类别）",
+		excerpt:
+			"Replace 'responsible for' with these power verbs that recruiters actually notice. Sorted by job function.",
+		excerptZh: "用这些招聘人员真正注意到的强力动词替换'负责'。按职位职能分类。",
+		date: "2026-06-18",
+		tags: ["action verbs", "writing tips", "vocabulary"],
+	},
+	{
+		slug: "resume-length-guide-2026",
+		title: "How Long Should a Resume Be? (2026 Guide)",
+		titleZh: "简历应该多长？（2026指南）",
+		excerpt: "One page or two? The answer depends on your experience level. Here's the data-backed answer.",
+		excerptZh: "一页还是两页？答案取决于你的经验水平。这是有数据支持的答案。",
+		date: "2026-06-17",
+		tags: ["resume length", "formatting", "2026"],
+	},
+	{
+		slug: "how-to-write-a-cover-letter",
+		title: "How to Write a Cover Letter That Gets Noticed",
+		titleZh: "如何写一封引人注目的求职信",
+		excerpt: "Most cover letters get skimmed in 6 seconds. Here's how to make yours impossible to ignore.",
+		excerptZh: "大多数求职信在6秒内被浏览。这里教你如何让您的求职信无法被忽视。",
+		date: "2026-06-16",
+		tags: ["cover letter", "application", "writing tips"],
+	},
+	{
+		slug: "linkedin-profile-optimization-2026",
+		title: "LinkedIn Profile Optimization Guide (2026)",
+		titleZh: "LinkedIn资料优化指南（2026）",
+		excerpt: "75% of recruiters check LinkedIn before interviewing. Optimize your profile with these 10 tactics.",
+		excerptZh: "75%的招聘人员会在面试前查看LinkedIn。用这10种策略优化你的个人资料。",
+		date: "2026-06-15",
+		tags: ["LinkedIn", "personal branding", "networking"],
+	},
+	{
+		slug: "job-search-timeline-how-long",
+		title: "Job Search Timeline: How Long Does It Take?",
+		titleZh: "求职时间表：需要多长时间？",
+		excerpt: "The average job search takes 3-6 months. Here's a realistic timeline plus how to speed it up.",
+		excerptZh: "平均求职需要3-6个月。这是现实的时间表，以及如何加速的方法。",
+		date: "2026-06-14",
+		tags: ["job search", "timeline", "career advice"],
+	},
 ];
 
 export const Route = createFileRoute("/blog")({
