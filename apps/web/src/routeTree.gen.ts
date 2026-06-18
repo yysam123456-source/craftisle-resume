@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
+import { Route as BlogRouteImport } from "./routes/blog";
 import { Route as DashboardRouteRouteImport } from "./routes/dashboard/route";
 import { Route as AuthRouteRouteImport } from "./routes/auth/route";
 import { Route as AgentRouteRouteImport } from "./routes/agent/route";
@@ -20,6 +21,7 @@ import { Route as HomeIndexRouteImport } from "./routes/_home/index";
 import { Route as TemplatesProfessionRouteImport } from "./routes/templates/$profession";
 import { Route as TemplatesSplatRouteImport } from "./routes/templates/$";
 import { Route as GuidesSlugRouteImport } from "./routes/guides/$slug";
+import { Route as BlogSlugRouteImport } from "./routes/blog/$slug";
 import { Route as AuthVerify2faBackupRouteImport } from "./routes/auth/verify-2fa-backup";
 import { Route as AuthVerify2faRouteImport } from "./routes/auth/verify-2fa";
 import { Route as AuthResumePasswordRouteImport } from "./routes/auth/resume-password";
@@ -41,6 +43,11 @@ import { Route as DashboardSettingsApiKeysRouteImport } from "./routes/dashboard
 import { Route as DashboardSettingsIntegrationsRouteRouteImport } from "./routes/dashboard/settings/integrations/route";
 import { Route as DashboardSettingsAuthenticationIndexRouteImport } from "./routes/dashboard/settings/authentication/index";
 
+const BlogRoute = BlogRouteImport.update({
+  id: "/blog",
+  path: "/blog",
+  getParentRoute: () => rootRouteImport,
+} as any);
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: "/dashboard",
   path: "/dashboard",
@@ -94,6 +101,11 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: "/guides/$slug",
   path: "/guides/$slug",
   getParentRoute: () => rootRouteImport,
+} as any);
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: "/$slug",
+  path: "/$slug",
+  getParentRoute: () => BlogRoute,
 } as any);
 const AuthVerify2faBackupRoute = AuthVerify2faBackupRouteImport.update({
   id: "/verify-2fa-backup",
@@ -208,6 +220,7 @@ export interface FileRoutesByFullPath {
   "/agent": typeof AgentRouteRouteWithChildren;
   "/auth": typeof AuthRouteRouteWithChildren;
   "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/blog": typeof BlogRouteWithChildren;
   "/builder/$resumeId": typeof BuilderResumeIdRouteRouteWithChildren;
   "/$username/$slug": typeof UsernameSlugRoute;
   "/agent/$threadId": typeof AgentThreadIdRoute;
@@ -219,6 +232,7 @@ export interface FileRoutesByFullPath {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
@@ -236,6 +250,7 @@ export interface FileRoutesByFullPath {
   "/dashboard/settings/authentication/": typeof DashboardSettingsAuthenticationIndexRoute;
 }
 export interface FileRoutesByTo {
+  "/blog": typeof BlogRouteWithChildren;
   "/$username/$slug": typeof UsernameSlugRoute;
   "/agent/$threadId": typeof AgentThreadIdRoute;
   "/agent/new": typeof AgentNewRoute;
@@ -246,6 +261,7 @@ export interface FileRoutesByTo {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
@@ -269,6 +285,7 @@ export interface FileRoutesById {
   "/agent": typeof AgentRouteRouteWithChildren;
   "/auth": typeof AuthRouteRouteWithChildren;
   "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/blog": typeof BlogRouteWithChildren;
   "/builder/$resumeId": typeof BuilderResumeIdRouteRouteWithChildren;
   "/$username/$slug": typeof UsernameSlugRoute;
   "/agent/$threadId": typeof AgentThreadIdRoute;
@@ -280,6 +297,7 @@ export interface FileRoutesById {
   "/auth/resume-password": typeof AuthResumePasswordRoute;
   "/auth/verify-2fa": typeof AuthVerify2faRoute;
   "/auth/verify-2fa-backup": typeof AuthVerify2faBackupRoute;
+  "/blog/$slug": typeof BlogSlugRoute;
   "/guides/$slug": typeof GuidesSlugRoute;
   "/templates/$": typeof TemplatesSplatRoute;
   "/templates/$profession": typeof TemplatesProfessionRoute;
@@ -304,6 +322,7 @@ export interface FileRouteTypes {
     | "/agent"
     | "/auth"
     | "/dashboard"
+    | "/blog"
     | "/builder/$resumeId"
     | "/$username/$slug"
     | "/agent/$threadId"
@@ -315,6 +334,7 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/blog/$slug"
     | "/guides/$slug"
     | "/templates/$"
     | "/templates/$profession"
@@ -332,6 +352,7 @@ export interface FileRouteTypes {
     | "/dashboard/settings/authentication/";
   fileRoutesByTo: FileRoutesByTo;
   to:
+    | "/blog"
     | "/$username/$slug"
     | "/agent/$threadId"
     | "/agent/new"
@@ -342,6 +363,7 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/blog/$slug"
     | "/guides/$slug"
     | "/templates/$"
     | "/templates/$profession"
@@ -364,6 +386,7 @@ export interface FileRouteTypes {
     | "/agent"
     | "/auth"
     | "/dashboard"
+    | "/blog"
     | "/builder/$resumeId"
     | "/$username/$slug"
     | "/agent/$threadId"
@@ -375,6 +398,7 @@ export interface FileRouteTypes {
     | "/auth/resume-password"
     | "/auth/verify-2fa"
     | "/auth/verify-2fa-backup"
+    | "/blog/$slug"
     | "/guides/$slug"
     | "/templates/$"
     | "/templates/$profession"
@@ -398,6 +422,7 @@ export interface RootRouteChildren {
   AgentRouteRoute: typeof AgentRouteRouteWithChildren;
   AuthRouteRoute: typeof AuthRouteRouteWithChildren;
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren;
+  BlogRoute: typeof BlogRouteWithChildren;
   BuilderResumeIdRouteRoute: typeof BuilderResumeIdRouteRouteWithChildren;
   UsernameSlugRoute: typeof UsernameSlugRoute;
   GuidesSlugRoute: typeof GuidesSlugRoute;
@@ -407,6 +432,13 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/blog": {
+      id: "/blog";
+      path: "/blog";
+      fullPath: "/blog";
+      preLoaderRoute: typeof BlogRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     "/dashboard": {
       id: "/dashboard";
       path: "/dashboard";
@@ -483,6 +515,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/guides/$slug";
       preLoaderRoute: typeof GuidesSlugRouteImport;
       parentRoute: typeof rootRouteImport;
+    };
+    "/blog/$slug": {
+      id: "/blog/$slug";
+      path: "/$slug";
+      fullPath: "/blog/$slug";
+      preLoaderRoute: typeof BlogSlugRouteImport;
+      parentRoute: typeof BlogRoute;
     };
     "/auth/verify-2fa-backup": {
       id: "/auth/verify-2fa-backup";
@@ -711,6 +750,16 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
   DashboardRouteRouteChildren,
 );
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute;
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+};
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren);
+
 interface BuilderResumeIdRouteRouteChildren {
   BuilderResumeIdIndexRoute: typeof BuilderResumeIdIndexRoute;
 }
@@ -727,6 +776,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgentRouteRoute: AgentRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  BlogRoute: BlogRouteWithChildren,
   BuilderResumeIdRouteRoute: BuilderResumeIdRouteRouteWithChildren,
   UsernameSlugRoute: UsernameSlugRoute,
   GuidesSlugRoute: GuidesSlugRoute,

@@ -53,6 +53,10 @@ export function Header() {
 				</Link>
 
 				<div className="ml-auto flex items-center gap-x-2">
+					<Link to="/blog" className="px-2 py-1 font-medium text-sm transition hover:text-primary" aria-label={t`Blog`}>
+						{t`Blog`}
+					</Link>
+
 					<LocaleCombobox
 						render={
 							<Button size="icon" variant="ghost" aria-label={t`Change language`}>
