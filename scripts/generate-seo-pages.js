@@ -367,6 +367,77 @@ const guides = [
 	},
 ];
 
+// ── Blog post list ──
+const blogPosts = [
+	{
+		slug: "how-to-write-a-resume-in-2026",
+		title: "How to Write a Resume in 2026 (Step-by-Step Guide)",
+		description:
+			"Learn the latest resume writing trends, ATS optimization tips, and formatting best practices for 2026.",
+	},
+	{
+		slug: "10-ats-friendly-resume-tips",
+		title: "10 ATS-Friendly Resume Tips That Will Get You Hired",
+		description: "Applicant Tracking Systems reject 75% of resumes. Make sure yours passes with these proven tips.",
+	},
+	{
+		slug: "resume-templates-for-software-engineers",
+		title: "Best Resume Templates for Software Engineers (2026)",
+		description: "Stand out to tech recruiters with these developer-focused resume templates and examples.",
+	},
+	{
+		slug: "free-resume-checklist-2026",
+		title: "Free Resume Checklist 2026 (Downloadable PDF)",
+		description: "Don't submit your resume without checking these 25 critical items. Download our free checklist.",
+	},
+	{
+		slug: "how-to-download-resume-as-pdf-free",
+		title: "How to Download Your Resume as PDF for Free",
+		description: "Step-by-step guide to exporting your resume as a PDF file, with tips for ATS-friendly formatting.",
+	},
+	{
+		slug: "100-action-verbs-for-resume",
+		title: "100+ Action Verbs for Your Resume (By Category)",
+		description:
+			"Replace 'responsible for' with these power verbs that recruiters actually notice. Sorted by job function.",
+	},
+	{
+		slug: "resume-length-guide-2026",
+		title: "How Long Should a Resume Be? (2026 Guide)",
+		description: "One page or two? The answer depends on your experience level. Here's the data-backed answer.",
+	},
+	{
+		slug: "how-to-write-a-cover-letter",
+		title: "How to Write a Cover Letter That Gets Noticed",
+		description: "Most cover letters get skimmed in 6 seconds. Here's how to make yours impossible to ignore.",
+	},
+	{
+		slug: "linkedin-profile-optimization-2026",
+		title: "LinkedIn Profile Optimization Guide (2026)",
+		description: "75% of recruiters check LinkedIn before interviewing. Optimize your profile with these 10 tactics.",
+	},
+	{
+		slug: "job-search-timeline-how-long",
+		title: "Job Search Timeline: How Long Does It Take?",
+		description: "The average job search takes 3-6 months. Here's a realistic timeline plus how to speed it up.",
+	},
+];
+
+// ── Resources list ──
+const resources = [
+	{
+		slug: "resume-checklist",
+		title: "2026 Resume Checklist (25-Point Audit)",
+		description:
+			"Tick every box before you hit 'Apply'. A free interactive checklist to ensure your resume is ATS-ready and recruiter-approved.",
+	},
+	{
+		slug: "salary-negotiation",
+		title: "Salary Negotiation Guide 2026",
+		description: "Make sure your compensation matches market rate before signing. Includes scripts & tactics.",
+	},
+];
+
 function main() {
 	const indexPath = path.resolve(distDir, "index.html");
 	let indexHtml;
@@ -453,9 +524,105 @@ function main() {
 		generated++;
 	}
 
+	// ── Generate /blog/index.html ──
+	{
+		const title = "Resume Writing Blog — Craftisle Resume";
+		const desc = "Expert resume writing tips and career advice.";
+		const blogListing = blogPosts
+			.map((p) => `<li><a href="/blog/${p.slug}">${p.title}</a> — ${p.description}</li>`)
+			.join("\n            ");
+
+		const html = buildHtml(indexHtml, {
+			title,
+			description: desc,
+			ogTitle: title,
+			ogDescription: desc,
+			staticContent: `
+        <header><h1>Resume Writing Blog</h1><p>${desc}</p></header>
+        <main><ul>${blogListing}</ul><p><a href="/">Build your free resume now →</a></p></main>`,
+		});
+
+		const outPath = path.resolve(distDir, "blog", "index.html");
+		fs.mkdirSync(path.dirname(outPath), { recursive: true });
+		fs.writeFileSync(outPath, html, "utf-8");
+		generated++;
+	}
+
+	// ── Generate /blog/[slug].html ──
+	for (const p of blogPosts) {
+		const title = p.title;
+		const desc = p.description;
+
+		const html = buildHtml(indexHtml, {
+			title: `${title} — Craftisle Resume Blog`,
+			description: desc,
+			ogTitle: title,
+			ogDescription: desc,
+			staticContent: `
+        <article>
+          <header><h1>${title}</h1></header>
+          <main><p>${desc}</p><p><a href="/">Build your free resume now →</a></p></main>
+        </article>`,
+		});
+
+		const outPath = path.resolve(distDir, "blog", `${p.slug}.html`);
+		fs.mkdirSync(path.dirname(outPath), { recursive: true });
+		fs.writeFileSync(outPath, html, "utf-8");
+		generated++;
+	}
+
+	// ── Generate /resources/index.html ──
+	{
+		const title = "Free Resume Resources — Craftisle Resume";
+		const desc = "Download checklists, read guides, and boost your job search — for free.";
+		const resListing = resources
+			.map((r) => `<li><a href="/resources/${r.slug}">${r.title}</a> — ${r.description}</li>`)
+			.join("\n            ");
+
+		const html = buildHtml(indexHtml, {
+			title,
+			description: desc,
+			ogTitle: title,
+			ogDescription: desc,
+			staticContent: `
+        <header><h1>Free Resume Resources</h1><p>${desc}</p></header>
+        <main><ul>${resListing}</ul><p><a href="/">Build your free resume now →</a></p></main>`,
+		});
+
+		const outPath = path.resolve(distDir, "resources", "index.html");
+		fs.mkdirSync(path.dirname(outPath), { recursive: true });
+		fs.writeFileSync(outPath, html, "utf-8");
+		generated++;
+	}
+
+	// ── Generate /resources/[slug].html ──
+	for (const r of resources) {
+		const title = r.title;
+		const desc = r.description;
+
+		const html = buildHtml(indexHtml, {
+			title: `${title} — Craftisle Resume Resources`,
+			description: desc,
+			ogTitle: title,
+			ogDescription: desc,
+			staticContent: `
+        <article>
+          <header><h1>${title}</h1></header>
+          <main><p>${desc}</p><p><a href="/">Build your free resume now →</a></p></main>
+        </article>`,
+		});
+
+		const outPath = path.resolve(distDir, "resources", `${r.slug}.html`);
+		fs.mkdirSync(path.dirname(outPath), { recursive: true });
+		fs.writeFileSync(outPath, html, "utf-8");
+		generated++;
+	}
+
 	console.log(`✅ Generated ${generated} static SEO pages in dist/`);
 	console.log(`   Templates: dist/templates/[profession].html (${professions.length} pages)`);
 	console.log(`   Guides:    dist/guides/[slug].html (${guides.length} pages)`);
+	console.log(`   Blog:      dist/blog/[slug].html (${blogPosts.length} pages)`);
+	console.log(`   Resources: dist/resources/[slug].html (${resources.length} pages)`);
 }
 
 /**
