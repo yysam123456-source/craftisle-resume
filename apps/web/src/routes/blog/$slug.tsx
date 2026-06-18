@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { blogPosts } from "@/libs/blog-data";
 import { getLocale } from "@/libs/locale";
 
 // Blog post full content
@@ -96,7 +97,7 @@ Most recent job first. It's what recruiters expect.
 
 ## 7. No Abreviations (Unless Standard)
 
-"Manageer" not "Mgr". "January" not "Jan".
+"Manager" not "Mgr". "January" not "Jan".
 
 ## 8. Spell Out Acronyms on First Use
 
@@ -166,11 +167,11 @@ ATS解析器难以处理定位元素。使用标准段落。
 ## Template Recommendations
 
 ### 1. Clean & Minimal
-Best for: Senir engineers, architect roles
+Best for: Senior engineers, architect roles
 Features: Two-column layout, skills sidebar
 
 ### 2. Modern Developer
-Best for: Full-stack, frontend engineers  
+Best for: Full-stack, frontend engineers
 Features: Project showcase, GitHub activity chart
 
 ### 3. ATS-Optimized
@@ -1060,6 +1061,8 @@ function BlogPostPage() {
 
 	const title = isZh ? post.titleZh : post.title;
 	const body = isZh ? post.bodyZh : post.body;
+	const currentPost = blogPosts.find((p) => p.slug === slug);
+	const relatedPosts = currentPost ? blogPosts.filter((p) => p.slug !== slug).slice(0, 3) : [];
 
 	// Simple markdown-like renderer for body content
 	const renderBody = (text: string) =>
@@ -1095,9 +1098,23 @@ function BlogPostPage() {
 
 	return (
 		<article className="mx-auto max-w-3xl px-4 py-12">
-			<a href="/blog" className="mb-6 inline-block text-blue-600 text-sm hover:underline">
+			{/* Breadcrumb */}
+			<nav aria-label="breadcrumb" className="mb-6 flex items-center gap-2 text-gray-500 text-sm">
+				<a href="/" className="hover:text-blue-600">
+					Home
+				</a>
+				<span>→</span>
+				<a href="/blog" className="hover:text-blue-600">
+					Blog
+				</a>
+				<span>→</span>
+				<span className="text-gray-900 dark:text-gray-100">{title}</span>
+			</nav>
+
+			<a href="/blog" className="mb-4 inline-block text-blue-600 text-sm hover:underline">
 				← {isZh ? "返回博客列表" : "Back to Blog"}
 			</a>
+
 			<header className="mb-8">
 				<time className="text-gray-500 text-sm">
 					{new Date(post.date).toLocaleDateString(isZh ? "zh-CN" : "en-US", {
@@ -1108,7 +1125,29 @@ function BlogPostPage() {
 				</time>
 				<h1 className="mt-2 mb-4 font-bold text-4xl">{title}</h1>
 			</header>
+
 			<div className="prose prose-lg dark:prose-invert max-w-none">{renderBody(body)}</div>
+
+			{/* Related Posts */}
+			{relatedPosts.length > 0 && (
+				<section className="mt-12 border-gray-200 border-t pt-8 dark:border-gray-700">
+					<h2 className="mb-6 font-bold text-2xl">{isZh ? "相关文章" : "Related Posts"}</h2>
+					<div className="grid gap-4 md:grid-cols-3">
+						{relatedPosts.map((p) => (
+							<Link
+								key={p.slug}
+								to="/blog/$slug"
+								params={{ slug: p.slug }}
+								className="rounded-lg border border-gray-200 p-4 transition hover:border-blue-600 dark:border-gray-700"
+							>
+								<h3 className="mb-2 font-semibold">{isZh ? p.titleZh : p.title}</h3>
+								<p className="text-gray-600 text-sm dark:text-gray-300">{isZh ? p.excerptZh : p.excerpt}</p>
+							</Link>
+						))}
+					</div>
+				</section>
+			)}
+
 			<footer className="mt-12 border-gray-200 border-t pt-8 dark:border-gray-700">
 				<p className="text-gray-500 text-sm">
 					{isZh ? "使用" : "Start building your resume with "}
