@@ -6,6 +6,11 @@
 
 ---
 
+
+> **🌐 Live Site**: 👉 [resume.craftisle.com](https://resume.craftisle.com) — free online resume builder, 100% browser-based, no signup.
+>
+Part of the [Craftisle](https://www.craftisle.com) tool ecosystem.
+
 ## 目录
 
 - [项目概述](#项目概述)
