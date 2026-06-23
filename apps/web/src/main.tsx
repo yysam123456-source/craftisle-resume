@@ -3,6 +3,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import { getRouter } from "./router";
 import "./index.css";
+import { AdLoader } from "./components/common/AdLoader";
 
 const rootElement = document.getElementById("app");
 if (!rootElement) throw new Error("Root element not found");
@@ -15,4 +16,9 @@ if (typeof window !== "undefined") {
 const router = await getRouter();
 
 const root = ReactDOM.createRoot(rootElement);
-root.render(<RouterProvider router={router} />);
+root.render(
+	<>
+		<AdLoader />
+		<RouterProvider router={router} />
+	</>
+);
