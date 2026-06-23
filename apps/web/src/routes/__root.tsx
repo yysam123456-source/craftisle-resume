@@ -25,6 +25,7 @@ import { getSession } from "@/libs/auth/session";
 import { getLocale, isRTL, loadLocale, localeMap } from "@/libs/locale";
 import { client } from "@/libs/orpc/client";
 import { getTheme } from "@/libs/theme";
+import { getAdConfig } from "@/lib/config/ads";
 
 type RouterContext = {
 	theme: Theme;
@@ -174,28 +175,32 @@ function RootComponent() {
 		document.documentElement.classList.toggle("dark", theme === "dark");
 	}, [dir, locale, theme]);
 
-	// Load ads - VITE_PUBLIC_ADVER_ENABLE: "true"=show ads, "false"=hide ads
+	// Load ads - controlled by centralized config (craftisle-configs repo)
 	useEffect(() => {
-		const adEnable = (import.meta.env.VITE_PUBLIC_ADVER_ENABLE || "true") === "true";
+		getAdConfig().then((config) => {
+			if (!config.enabled) return;
 
-		if (!adEnable) return;
+			// Load Monetag Vignette Banner
+			if (config.monetag !== false) {
+				const script = document.createElement("script");
+				script.id = "monetag-vignette";
+				script.src = "https://n6wxm.com/vignette.min.js";
+				script.dataset.zone = "11117037";
+				script.async = true;
+				document.body.appendChild(script);
+			}
 
-		// Load Monetag Vignette Banner
-		const script = document.createElement("script");
-		script.id = "monetag-vignette";
-		script.src = "https://n6wxm.com/vignette.min.js";
-		script.dataset.zone = "11117037";
-		script.async = true;
-		document.body.appendChild(script);
-
-		// Load Google AdSense
-		if (import.meta.env.VITE_ADSENSE_CLIENT_ID) {
-			const adsense = document.createElement("script");
-			adsense.async = true;
-			adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`;
-			adsense.crossOrigin = "anonymous";
-			document.head.appendChild(adsense);
-		}
+			// Load Google AdSense (if configured)
+			if (config.adsense && import.meta.env.VITE_ADSENSE_CLIENT_ID) {
+				const adsense = document.createElement("script");
+				adsense.async = true;
+				adsense.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`;
+				adsense.crossOrigin = "anonymous";
+				document.head.appendChild(adsense);
+			}
+		}).catch((err) => {
+			console.warn('[ads] failed to load config:', err);
+		});
 	}, []);
 
 	return (

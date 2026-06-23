@@ -7,6 +7,16 @@
 // Used when remote config is unavailable
 export const ADS_ENABLED = true;
 
+// ========== Monetag config ==========
+export const MONETAG_ENABLED = true;
+export const MONETAG_ZONE_ID = '11117037';
+export const MONETAG_SCRIPT_URL = 'https://n6wxm.com/vignette.min.js';
+
+// ========== AdSense config ==========
+// TODO: fill in your real AdSense client ID
+export const ADSENSE_CLIENT_ID = import.meta.env.VITE_ADSENSE_CLIENT_ID || '';
+export const ADSENSE_ENABLED = !!import.meta.env.VITE_ADSENSE_CLIENT_ID;
+
 // ========== Remote unified control ==========
 // Set to true to fetch ad config from craftisle-configs repo
 export const USE_REMOTE_CONFIG = true;
@@ -15,19 +25,9 @@ export const USE_REMOTE_CONFIG = true;
 export const ADS_REMOTE_URL =
   'https://raw.githubusercontent.com/yysam123456-source/craftisle-configs/main/configs/ads-config.json';
 
-// ========== AdSense config (for this project) ==========
-// These will be overridden by remote config if USE_REMOTE_CONFIG = true
-// TODO: move these to remote config or env vars
-export const ADSENSE_CLIENT_ID = 'ca-pub-xxxxxxxxxxxxx'; // TODO: fill in your AdSense client ID
-export const ADSENSE_SLOTS = {
-  leaderboard: '1234567890',
-  rectangle: '1234567891',
-  skyscraper: '1234567892',
-};
-
 // ========== Runtime control ==========
 // Fetches remote config and merges with local settings
-export async function loadAdConfig(): Promise<{ enabled: boolean }> {
+export async function loadAdConfig(): Promise<{ enabled: boolean; monetag?: boolean; adsense?: boolean }> {
   // Check localStorage override first (for local testing)
   if (typeof window !== 'undefined') {
     const override = localStorage.getItem('ads_override');
@@ -37,7 +37,11 @@ export async function loadAdConfig(): Promise<{ enabled: boolean }> {
 
   // Use hardcoded value if remote is disabled
   if (!USE_REMOTE_CONFIG) {
-    return { enabled: ADS_ENABLED };
+    return {
+      enabled: ADS_ENABLED,
+      monetag: MONETAG_ENABLED,
+      adsense: ADSENSE_ENABLED,
+    };
   }
 
   // Fetch remote config
@@ -47,23 +51,29 @@ export async function loadAdConfig(): Promise<{ enabled: boolean }> {
     const remote = await res.json();
     return {
       enabled: remote.enabled ?? ADS_ENABLED,
+      monetag: remote.monetag ?? MONETAG_ENABLED,
+      adsense: remote.adsense ?? ADSENSE_ENABLED,
     };
   } catch (err) {
     console.warn('[ads] failed to load remote config, using hardcoded:', err);
-    return { enabled: ADS_ENABLED };
+    return {
+      enabled: ADS_ENABLED,
+      monetag: MONETAG_ENABLED,
+      adsense: ADSENSE_ENABLED,
+    };
   }
 }
 
 // ========== Cache ==========
-let cachedConfig: { enabled: boolean; fetchedAt: number } | null = null;
+let cachedConfig: { enabled: boolean; monetag?: boolean; adsense?: boolean; fetchedAt: number } | null = null;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-export async function getAdConfig(): Promise<{ enabled: boolean }> {
+export async function getAdConfig(): Promise<{ enabled: boolean; monetag?: boolean; adsense?: boolean }> {
   if (
     cachedConfig &&
     Date.now() - cachedConfig.fetchedAt < CACHE_TTL
   ) {
-    return { enabled: cachedConfig.enabled };
+    return { enabled: cachedConfig.enabled, monetag: cachedConfig.monetag, adsense: cachedConfig.adsense };
   }
   const config = await loadAdConfig();
   cachedConfig = { ...config, fetchedAt: Date.now() };
