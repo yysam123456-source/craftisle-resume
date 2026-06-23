@@ -1,16 +1,10 @@
 import { Trans } from "@lingui/react/macro";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { getAdConfig } from "@/lib/config/ads";
 
 /**
- * AdSense env vars (set in Cloudflare Pages build env):
- *  VITE_ADSENSE_CLIENT_ID=ca-pub-xxxxxxxxxxxxx
- *  VITE_ADSENSE_SLOT_LEADERBOARD=1234567890   (728x90)
- *  VITE_ADSENSE_SLOT_RECTANGLE=1234567891       (300x250)
- *  VITE_ADSENSE_SLOT_SKYSCRAPER=1234567892    (160x600)
- *
- * Local dev: add to .env.local
+ * AdSize types and props
  */
-
 type AdSize = "leaderboard" | "rectangle" | "skyscraper" | "responsive";
 
 type AdProps = {
@@ -25,36 +19,60 @@ const sizeMap = {
 	responsive: { width: "100%", height: "auto" },
 } as const;
 
-/** Check if AdSense is configured (client ID present) */
-function isAdsenseConfigured(): boolean {
+/** Get AdSense config from centralized config or env vars */
+function getAdsenseConfig(): { clientId?: string; slots?: Record<string, string> } {
+	// Priority: centralized config > env vars
+	const win = window as unknown as { __ADS_CONFIG__?: { clientId?: string; slots?: Record<string, string> } };
+	if (win.__ADS_CONFIG__) {
+		return win.__ADS_CONFIG__;
+	}
+	// Fallback to env vars (for backward compatibility)
 	const env = (import.meta as { env?: Record<string, string> }).env;
-	return !!env?.VITE_ADSENSE_CLIENT_ID;
+	return {
+		clientId: env?.VITE_ADSENSE_CLIENT_ID,
+		slots: {
+			leaderboard: env?.VITE_ADSENSE_SLOT_LEADERBOARD ?? '',
+			rectangle: env?.VITE_ADSENSE_SLOT_RECTANGLE ?? '',
+			skyscraper: env?.VITE_ADSENSE_SLOT_SKYSCRAPER ?? '',
+		},
+	};
 }
 
-/** Get the ad slot ID for a given size */
-function getSlotId(size: AdSize): string | undefined {
-	const env = (import.meta as { env?: Record<string, string> }).env;
-	if (!env) return undefined;
-	switch (size) {
-		case "leaderboard":
-			return env.VITE_ADSENSE_SLOT_LEADERBOARD;
-		case "rectangle":
-			return env.VITE_ADSENSE_SLOT_RECTANGLE;
-		case "skyscraper":
-			return env.VITE_ADSENSE_SLOT_SKYSCRAPER;
-		default:
-			return env.VITE_ADSENSE_SLOT_RECTANGLE ?? env.VITE_ADSENSE_SLOT_LEADERBOARD;
-	}
+/** Check if AdSense is configured and enabled */
+function useAdsEnabled(): boolean {
+	const [enabled, setEnabled] = useState<boolean>(() => {
+		// Check centralized config first
+		const win = window as unknown as { __ADS_ENABLED__?: boolean };
+		if (typeof win.__ADS_ENABLED__ === 'boolean') return win.__ADS_ENABLED__;
+		// Fallback: check if AdSense is configured
+		const config = getAdsenseConfig();
+		return !!config.clientId;
+	});
+
+	useEffect(() => {
+		// Load centralized config
+		getAdConfig().then((config) => {
+			const win = window as unknown as { __ADS_ENABLED__?: boolean };
+			win.__ADS_ENABLED__ = config.enabled;
+			setEnabled(config.enabled);
+		}).catch(() => {
+			// If remote config fails, check local config
+			const config = getAdsenseConfig();
+			setEnabled(!!config.clientId);
+		});
+	}, []);
+
+	return enabled;
 }
 
 /**
  * Load AdSense script once.
- * Pushes the ad unit to adsbygoogle queue after script loads.
+ * Reads config from centralized config or env vars.
  */
 function useAdsenseScript(): boolean {
 	const loaded = useRef(false);
-	const env = (import.meta as { env?: Record<string, string> }).env;
-	const clientId = env?.VITE_ADSENSE_CLIENT_ID;
+	const config = getAdsenseConfig();
+	const clientId = config.clientId;
 
 	useEffect(() => {
 		if (!clientId || loaded.current) return;
@@ -74,19 +92,19 @@ function useAdsenseScript(): boolean {
 }
 
 /**
- * AdBanner — renders a real AdSense ad unit when configured.
- * When VITE_ADSENSE_CLIENT_ID is not set, renders nothing in prod
- * or a placeholder in dev (localhost).
+ * AdBanner — renders a real AdSense ad unit when configured and enabled.
+ * Reads centralized config for on/off control.
  */
 export function AdBanner({ size = "responsive", className }: AdProps) {
 	const dims = useMemo(() => sizeMap[size], [size]);
-	const configured = isAdsenseConfigured();
-	const slotId = getSlotId(size);
+	const enabled = useAdsEnabled();
+	const config = getAdsenseConfig();
+	const slotId = config.slots?.[size] ?? '';
 	const scriptReady = useAdsenseScript();
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		if (!configured || !scriptReady || !containerRef.current) return;
+		if (!enabled || !scriptReady || !containerRef.current) return;
 		// Push ad to adsbygoogle queue (idempotent)
 		try {
 			const win = window as unknown as { adsbygoogle?: { push: (el: HTMLElement) => void }[] };
@@ -97,10 +115,10 @@ export function AdBanner({ size = "responsive", className }: AdProps) {
 		} catch {
 			// AdSense not ready yet — will retry on next render
 		}
-	}, [configured, scriptReady]);
+	}, [enabled, scriptReady]);
 
-	// Not configured: render nothing in production, placeholder in dev
-	if (!configured) {
+	// Not enabled or not configured: render nothing in production, placeholder in dev
+	if (!enabled || !config.clientId) {
 		const isDev =
 			typeof window !== "undefined" && (window as { location?: Location }).location?.hostname === "localhost";
 		if (!isDev) return null;
@@ -116,13 +134,11 @@ export function AdBanner({ size = "responsive", className }: AdProps) {
 				}}
 			>
 				<span className="select-none">
-					<Trans>Advertisement</Trans> · {size}
+					<Trans>Advertisement</Trans> · {size} {!enabled && "(disabled)"}
 				</span>
 			</div>
 		);
 	}
-
-	const clientId = (import.meta as { env: Record<string, string> }).env.VITE_ADSENSE_CLIENT_ID;
 
 	return (
 		<div ref={containerRef} className={className}>
@@ -135,7 +151,7 @@ export function AdBanner({ size = "responsive", className }: AdProps) {
 					minHeight: size === "responsive" ? "90px" : undefined,
 					maxWidth: "100%",
 				}}
-				data-ad-client={clientId}
+				data-ad-client={config.clientId}
 				data-ad-slot={slotId}
 				data-ad-format={size === "responsive" ? "auto" : undefined}
 				data-full-width-responsive={size === "responsive" ? "true" : undefined}
@@ -146,10 +162,13 @@ export function AdBanner({ size = "responsive", className }: AdProps) {
 
 /**
  * In-feed / native-style ad card placeholder.
- * Only renders when AdSense is configured.
+ * Only renders when AdSense is configured and enabled.
  */
 export function AdCard({ className }: { className?: string }) {
-	if (!isAdsenseConfigured()) return null;
+	const enabled = useAdsEnabled();
+	const config = getAdsenseConfig();
+
+	if (!enabled || !config.clientId) return null;
 
 	return (
 		<div
