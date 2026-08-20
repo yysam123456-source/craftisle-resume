@@ -1042,10 +1042,63 @@ function BlogPostPage() {
 	const post = blogContent[slug];
 
 	useEffect(() => {
-		document.title = post
+		const pageTitle = post
 			? `${post[isZh ? "titleZh" : "title"]} — Craftisle Resume Blog`
 			: "Post Not Found — Craftisle Resume";
-	}, [post, isZh]);
+		document.title = pageTitle;
+
+		// Per-post meta description (localized excerpt) for richer SERP snippets
+		const meta = blogPosts.find((p) => p.slug === slug);
+		const excerpt = post
+			? isZh
+				? (meta?.excerptZh ?? "")
+				: (meta?.excerpt ?? "")
+			: "This blog post could not be found.";
+		if (excerpt) {
+			const descEl = document.querySelector('meta[name="description"]');
+			if (descEl) {
+				descEl.setAttribute("content", excerpt);
+			} else {
+				const m = document.createElement("meta");
+				m.name = "description";
+				m.content = excerpt;
+				document.head.appendChild(m);
+			}
+		}
+
+		// Article structured data (JSON-LD) so Google can show rich results
+		const existingLd = document.getElementById("blog-article-jsonld");
+		if (existingLd) existingLd.remove();
+		if (post) {
+			const jsonLd = {
+				"@context": "https://schema.org",
+				"@type": "Article",
+				headline: isZh ? post.titleZh : post.title,
+				datePublished: post.date,
+				dateModified: post.date,
+				author: { "@type": "Organization", name: "Craftisle Resume" },
+				publisher: {
+					"@type": "Organization",
+					name: "Craftisle Resume",
+					logo: {
+						"@type": "ImageObject",
+						url: "https://resume.craftisle.com/logo/logo.svg",
+					},
+				},
+				mainEntityOfPage: {
+					"@type": "WebPage",
+					"@id": `https://resume.craftisle.com/blog/${slug}`,
+				},
+				description: excerpt,
+				inLanguage: isZh ? "zh-CN" : "en-US",
+			};
+			const script = document.createElement("script");
+			script.type = "application/ld+json";
+			script.id = "blog-article-jsonld";
+			script.textContent = JSON.stringify(jsonLd);
+			document.head.appendChild(script);
+		}
+	}, [post, isZh, slug]);
 
 	if (!post) {
 		return (
