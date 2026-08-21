@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getCanonicalRootUrl } from "@/libs/seo";
 
-interface GuideData {
+export interface GuideData {
 	slug: string;
 	title: string;
 	description: string;
 	headings: string[];
 }
 
-const guides: GuideData[] = [
+export const guides: GuideData[] = [
 	{
 		slug: "how-to-write-a-resume",
 		title: "How to Write a Resume (2025) — Step-by-Step Guide",

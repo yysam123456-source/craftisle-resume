@@ -24,6 +24,8 @@ import { Route as TemplatesSplatRouteImport } from "./routes/templates/$";
 import { Route as ResourcesSalaryNegotiationRouteImport } from "./routes/resources/salary-negotiation";
 import { Route as ResourcesResumeChecklistRouteImport } from "./routes/resources/resume-checklist";
 import { Route as GuidesSlugRouteImport } from "./routes/guides/$slug";
+import { Route as GuidesIndexRouteImport } from "./routes/guides/index";
+import { Route as TemplatesIndexRouteImport } from "./routes/templates/index";
 import { Route as BlogSlugRouteImport } from "./routes/blog/$slug";
 import { Route as AuthVerify2faBackupRouteImport } from "./routes/auth/verify-2fa-backup";
 import { Route as AuthVerify2faRouteImport } from "./routes/auth/verify-2fa";
@@ -103,6 +105,16 @@ const TemplatesProfessionRoute = TemplatesProfessionRouteImport.update({
 const TemplatesSplatRoute = TemplatesSplatRouteImport.update({
   id: "/templates/$",
   path: "/templates/$",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: "/guides/",
+  path: "/guides/",
+  getParentRoute: () => rootRouteImport,
+} as any);
+const TemplatesIndexRoute = TemplatesIndexRouteImport.update({
+  id: "/templates/",
+  path: "/templates/",
   getParentRoute: () => rootRouteImport,
 } as any);
 const ResourcesSalaryNegotiationRoute =
@@ -262,6 +274,8 @@ export interface FileRoutesByFullPath {
   "/auth/": typeof AuthIndexRoute;
   "/dashboard/": typeof DashboardIndexRoute;
   "/resources/": typeof ResourcesIndexRoute;
+  "/guides/": typeof GuidesIndexRoute;
+  "/templates/": typeof TemplatesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -295,6 +309,8 @@ export interface FileRoutesByTo {
   "/auth": typeof AuthIndexRoute;
   "/dashboard": typeof DashboardIndexRoute;
   "/resources": typeof ResourcesIndexRoute;
+  "/guides": typeof GuidesIndexRoute;
+  "/templates": typeof TemplatesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -334,6 +350,8 @@ export interface FileRoutesById {
   "/auth/": typeof AuthIndexRoute;
   "/dashboard/": typeof DashboardIndexRoute;
   "/resources/": typeof ResourcesIndexRoute;
+  "/guides/": typeof GuidesIndexRoute;
+  "/templates/": typeof TemplatesIndexRoute;
   "/dashboard/settings/integrations": typeof DashboardSettingsIntegrationsRouteRoute;
   "/dashboard/settings/api-keys": typeof DashboardSettingsApiKeysRoute;
   "/dashboard/settings/danger-zone": typeof DashboardSettingsDangerZoneRoute;
@@ -373,6 +391,8 @@ export interface FileRouteTypes {
     | "/auth/"
     | "/dashboard/"
     | "/resources/"
+    | "/guides/"
+    | "/templates/"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -406,6 +426,8 @@ export interface FileRouteTypes {
     | "/auth"
     | "/dashboard"
     | "/resources"
+    | "/guides"
+    | "/templates"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -444,6 +466,8 @@ export interface FileRouteTypes {
     | "/auth/"
     | "/dashboard/"
     | "/resources/"
+    | "/guides/"
+    | "/templates/"
     | "/dashboard/settings/integrations"
     | "/dashboard/settings/api-keys"
     | "/dashboard/settings/danger-zone"
@@ -469,6 +493,8 @@ export interface RootRouteChildren {
   TemplatesSplatRoute: typeof TemplatesSplatRoute;
   TemplatesProfessionRoute: typeof TemplatesProfessionRoute;
   ResourcesIndexRoute: typeof ResourcesIndexRoute;
+  GuidesIndexRoute: typeof GuidesIndexRoute;
+  TemplatesIndexRoute: typeof TemplatesIndexRoute;
 }
 
 declare module "@tanstack/react-router" {
@@ -513,6 +539,20 @@ declare module "@tanstack/react-router" {
       path: "/resources";
       fullPath: "/resources/";
       preLoaderRoute: typeof ResourcesIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/guides/": {
+      id: "/guides/";
+      path: "/guides";
+      fullPath: "/guides/";
+      preLoaderRoute: typeof GuidesIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/templates/": {
+      id: "/templates/";
+      path: "/templates";
+      fullPath: "/templates/";
+      preLoaderRoute: typeof TemplatesIndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
     "/dashboard/": {
@@ -847,6 +887,8 @@ const rootRouteChildren: RootRouteChildren = {
   TemplatesSplatRoute: TemplatesSplatRoute,
   TemplatesProfessionRoute: TemplatesProfessionRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
+  TemplatesIndexRoute: TemplatesIndexRoute,
 };
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
