@@ -17,7 +17,31 @@ export const Route = createFileRoute("/_home/")({
 
 		return {
 			links: [{ rel: "canonical", href: canonicalUrl }],
-			scripts: [createRootStructuredDataScript(canonicalUrl)],
+			scripts: [
+				createRootStructuredDataScript(canonicalUrl),
+				{
+					id: "craftisle-hub-json-ld",
+					type: "application/ld+json",
+					children: JSON.stringify({
+						"@context": "https://schema.org",
+						"@graph": [
+							{
+								"@type": "Organization",
+								"@id": "https://craftisle.com/#organization",
+								name: "Craftisle",
+								url: "https://craftisle.com",
+							},
+							{
+								"@type": "WebSite",
+								"@id": "https://resume.craftisle.com/#website",
+								url: "https://resume.craftisle.com",
+								name: "Craftisle Resume",
+								publisher: { "@id": "https://craftisle.com/#organization" },
+							},
+						],
+					}),
+				},
+			],
 		};
 	},
 });
