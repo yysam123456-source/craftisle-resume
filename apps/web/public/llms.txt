@@ -4,7 +4,7 @@
 
 # Site Info
 Title: Craftisle Resume
-Description: Free and open-source resume builder for creating, updating, and sharing professional resumes.
+Description: Free and open-source resume builder for creating, updating, and sharing professional resumes. Includes a library of ATS-friendly templates by profession, resume writing guides, and a career advice blog.
 URL: https://resume.craftisle.com
 
 # Permissions
@@ -21,12 +21,39 @@ Allow: /
 Sitemap: https://resume.craftisle.com/sitemap.xml
 
 # Content Structure
-## Main Pages
-- / : Home page - introduction and features
-- /builder/: Resume builder interface
-- /dashboard/resumes: User resume dashboard
+#
+# The four hubs below are the public, search-facing content of this site.
+# Everything under /auth, /dashboard, /builder and /agent is a private,
+# logged-in application view and is deliberately excluded from the sitemap.
 
-## Key Content
+## Resume templates by profession
+- /templates : index of every profession
+- /templates/{profession} : one page per profession (e.g. /templates/software-engineer,
+  /templates/nurse, /templates/product-manager). Each page covers what to put on that
+  profession's resume, ATS-friendly formatting, tips, and a set of FAQs.
+
+## Resume writing guides
+- /guides : guide index
+- /guides/{slug} : step-by-step guides, including how to write a resume, what to put
+  on a resume, making a resume ATS-friendly, and writing with no experience.
+
+## Blog
+- /blog : article index
+- /blog/{slug} : resume and job-search articles (ATS tips, action verbs, resume length,
+  cover letters, LinkedIn optimization, job search timelines).
+
+## Free resources
+- /resources : resource index
+- /resources/resume-checklist : 25-point pre-submission resume audit
+- /resources/salary-negotiation : salary negotiation guide with scripts and tactics
+
+## App entry points (private, not for indexing)
+- /builder/{resumeId} : the resume editor
+- /dashboard : the signed-in dashboard
+
+# Key Product Facts
 - Open source project: https://github.com/craftisle/resume
-- Free to use, no registration required for basic features
-- Supports PDF export, multiple templates, real-time preview
+- Free to use; no subscription, no watermark, no account required for basic features
+- Exports to PDF, DOCX and plain text
+- Your data stays in your browser
+- Supports multiple languages and locales

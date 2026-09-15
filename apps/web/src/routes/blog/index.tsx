@@ -1,9 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { blogPosts } from "@/libs/blog-data";
 import { getLocale } from "@/libs/locale";
+import { getCanonicalRootUrl } from "@/libs/seo";
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
 	component: BlogListPage,
+	head: () => {
+		const canonicalUrl = getCanonicalRootUrl(typeof window !== "undefined" ? window.location.origin : undefined);
+		return {
+			meta: [
+				{
+					title: "Resume Writing Blog — Expert Tips & Career Advice | Craftisle Resume",
+				},
+				{
+					name: "description",
+					content:
+						"Free resume writing guides and career advice: ATS tips, action verbs, resume length, cover letters, LinkedIn optimization and more. Read, then build your resume free.",
+				},
+				{
+					name: "keywords",
+					content: "resume blog, resume tips, career advice, ATS resume, cover letter, job search",
+				},
+				{
+					name: "robots",
+					content: "index, follow, max-image-preview:large",
+				},
+			],
+			links: [{ rel: "canonical", href: `${canonicalUrl}blog` }],
+		};
+	},
 });
 
 function BlogListPage() {

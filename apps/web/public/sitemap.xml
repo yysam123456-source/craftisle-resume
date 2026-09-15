@@ -2,304 +2,248 @@
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://resume.craftisle.com/</loc>
-    <lastmod>2026-01-17</lastmod>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/software-engineer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/forgot-password</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/frontend-developer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/login</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/backend-developer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/register</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/full-stack-developer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/reset-password</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/data-scientist</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/resume-password</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/devops-engineer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/verify-2fa</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/product-manager</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/auth/verify-2fa-backup</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/ui-ux-designer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/ai</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/qa-engineer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/api-keys</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/security-engineer</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/danger-zone</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/project-manager</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/preferences</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/business-analyst</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/profile</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/data-analyst</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/resumes</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/marketing-manager</loc>
   </url>
   <url>
-    <loc>https://resume.craftisle.com/dashboard/settings/authentication</loc>
-    <lastmod>2026-01-17</lastmod>
+    <loc>https://resume.craftisle.com/templates/sales-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/authentication/delete-user-account</loc>
-    <lastmod>2026-01-20T00:22:13.883Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/accountant</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/authentication/list-all-auth-providers</loc>
-    <lastmod>2026-01-20T00:22:13.612Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/financial-analyst</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/authentication/verify-resume-password</loc>
-    <lastmod>2026-01-20T00:22:13.861Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/hr-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/create-a-new-resume</loc>
-    <lastmod>2026-01-20T00:22:14.092Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/operations-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/delete-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.033Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/nurse</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/duplicate-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.211Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/doctor</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/export-resume-as-pdf</loc>
-    <lastmod>2026-01-20T00:22:14.246Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/medical-assistant</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/get-resume-by-id</loc>
-    <lastmod>2026-01-20T00:22:13.986Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/pharmacist</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/get-resume-by-username-and-slug</loc>
-    <lastmod>2026-01-20T00:22:14.060Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/teacher</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/get-resume-screenshot</loc>
-    <lastmod>2026-01-20T00:22:14.269Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/professor</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/get-resume-statistics</loc>
-    <lastmod>2026-01-20T00:22:13.940Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/tutor</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/import-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.117Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/graphic-designer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/list-all-resume-tags</loc>
-    <lastmod>2026-01-20T00:22:13.911Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/video-editor</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/list-all-resumes</loc>
-    <lastmod>2026-01-20T00:22:13.961Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/content-writer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/remove-password-from-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.189Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/recent-graduate</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/set-password-on-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.164Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/intern</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/set-resume-locked-status</loc>
-    <lastmod>2026-01-20T00:22:14.139Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/career-changer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/resume/update-a-resume</loc>
-    <lastmod>2026-01-20T00:22:14.013Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/mechanical-engineer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/statistics/get-github-repository-stargazers-count</loc>
-    <lastmod>2026-01-20T00:22:14.317Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/civil-engineer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/statistics/get-total-number-of-resumes</loc>
-    <lastmod>2026-01-20T00:22:14.305Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/electrical-engineer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/api-reference/statistics/get-total-number-of-users</loc>
-    <lastmod>2026-01-20T00:22:14.288Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/chemical-engineer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/contributing/architecture</loc>
-    <lastmod>2026-01-20T00:22:20.721Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/lawyer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/contributing/development</loc>
-    <lastmod>2026-01-20T00:22:20.724Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/paralegal</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/contributing/translations</loc>
-    <lastmod>2026-01-20T00:22:20.719Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/mobile-developer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/getting-started/changelog</loc>
-    <lastmod>2026-01-19T11:58:41.676Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/game-developer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/getting-started</loc>
-    <lastmod>2026-01-20T00:22:20.716Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/ai-engineer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/getting-started/quickstart</loc>
-    <lastmod>2026-01-20T00:22:20.727Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/cloud-architect</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/accessing-the-previous-version</loc>
-    <lastmod>2026-01-20T00:22:20.729Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/freelancer</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/choosing-a-template</loc>
-    <lastmod>2026-01-19T14:39:30.213Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/remote-worker</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/creating-an-account</loc>
+    <loc>https://resume.craftisle.com/templates/high-school-student</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/creating-your-first-resume</loc>
+    <loc>https://resume.craftisle.com/templates/college-student</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/deleting-your-account</loc>
+    <loc>https://resume.craftisle.com/templates/ceo</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/exporting-your-resume</loc>
+    <loc>https://resume.craftisle.com/templates/cto</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/json-resume-schema</loc>
-    <lastmod>2026-01-19T22:38:27.455Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/director</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/linking-social-accounts</loc>
+    <loc>https://resume.craftisle.com/templates/chef</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/setting-up-passkeys</loc>
+    <loc>https://resume.craftisle.com/templates/hotel-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/setting-up-two-factor-authentication</loc>
+    <loc>https://resume.craftisle.com/templates/retail-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/sharing-your-resume-publicly</loc>
+    <loc>https://resume.craftisle.com/templates/cashier</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/updating-your-profile</loc>
+    <loc>https://resume.craftisle.com/templates/customer-support</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/using-ai</loc>
+    <loc>https://resume.craftisle.com/templates/warehouse-worker</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/using-custom-css</loc>
+    <loc>https://resume.craftisle.com/templates/driver</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/using-private-notes</loc>
+    <loc>https://resume.craftisle.com/templates/admin-assistant</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/guides/using-the-api</loc>
+    <loc>https://resume.craftisle.com/templates/receptionist</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/legal/license</loc>
-    <lastmod>2026-01-20T00:22:22.323Z</lastmod>
+    <loc>https://resume.craftisle.com/templates/real-estate-agent</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/legal/privacy-policy</loc>
+    <loc>https://resume.craftisle.com/templates/social-media-manager</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/legal/terms-of-service</loc>
+    <loc>https://resume.craftisle.com/guides</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/self-hosting/docker</loc>
+    <loc>https://resume.craftisle.com/guides/how-to-write-a-resume</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/self-hosting/examples</loc>
+    <loc>https://resume.craftisle.com/guides/what-to-put-on-a-resume</loc>
   </url>
   <url>
-    <loc>https://docs.resume.craftisle.com/self-hosting/migration</loc>
+    <loc>https://resume.craftisle.com/guides/how-to-make-a-resume-ats-friendly</loc>
+  </url>
+  <url>
+    <loc>https://resume.craftisle.com/guides/how-to-write-a-resume-with-no-experience</loc>
+  </url>
+  <url>
+    <loc>https://resume.craftisle.com/guides/best-resume-format-2025</loc>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/how-to-write-a-resume-in-2026</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/10-ats-friendly-resume-tips</loc>
-    <lastmod>2026-06-15</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/resume-templates-for-software-engineers</loc>
-    <lastmod>2026-06-10</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/free-resume-checklist-2026</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/how-to-download-resume-as-pdf-free</loc>
-    <lastmod>2026-06-16</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/100-action-verbs-for-resume</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/resume-length-guide-2026</loc>
-    <lastmod>2026-06-17</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/how-to-write-a-cover-letter</loc>
-    <lastmod>2026-06-16</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/linkedin-profile-optimization-2026</loc>
-    <lastmod>2026-06-15</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/blog/job-search-timeline-how-long</loc>
-    <lastmod>2026-06-14</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/resources</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/resources/resume-checklist</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
   <url>
     <loc>https://resume.craftisle.com/resources/salary-negotiation</loc>
-    <lastmod>2026-06-18</lastmod>
   </url>
 </urlset>

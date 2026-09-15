@@ -1033,6 +1033,27 @@ A strong resume is the foundation of every job search. Build yours with Craftisl
 
 export const Route = createFileRoute("/blog/$slug")({
 	component: BlogPostPage,
+	head: ({ params }) => {
+		const post = blogContent[params.slug];
+		const meta = blogPosts.find((p) => p.slug === params.slug);
+		return {
+			meta: [
+				{
+					title: post ? `${post.title} — Craftisle Resume Blog` : "Post Not Found — Craftisle Resume",
+				},
+				{
+					name: "description",
+					content:
+						meta?.excerpt ?? "Resume writing tips and career advice from Craftisle Resume.",
+				},
+				{
+					name: "robots",
+					content: post ? "index, follow, max-image-preview:large" : "noindex, follow",
+				},
+			],
+			links: [{ rel: "canonical", href: `https://resume.craftisle.com/blog/${params.slug}` }],
+		};
+	},
 });
 
 function BlogPostPage() {
