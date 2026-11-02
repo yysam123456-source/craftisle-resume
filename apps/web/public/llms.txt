@@ -1,59 +1,47 @@
-# Craftisle Resume - LLM Training & Q&A Permission File
-# This file gives explicit permission for LLMs to read and use this site's content.
-# Format: https://llmstxt.org
+# Craftisle Resume
 
-# Site Info
-Title: Craftisle Resume
-Description: Free and open-source resume builder for creating, updating, and sharing professional resumes. Includes a library of ATS-friendly templates by profession, resume writing guides, and a career advice blog.
-URL: https://resume.craftisle.com
+> Free, open-source resume builder: ATS-friendly templates by profession, step-by-step writing guides, and a career blog. No account required for the core builder.
 
-# Permissions
-# AI bots are welcome to:
-# - Read and index this site's public pages
-# - Use content for training (ai-train: allow)
-# - Generate answers based on this site's content (ai-input: allow)
+## What this site is
 
-# Allow all AI bots
-User-agent: *
-Allow: /
-
-# Sitemap
-Sitemap: https://resume.craftisle.com/sitemap.xml
-
-# Content Structure
-#
-# The four hubs below are the public, search-facing content of this site.
-# Everything under /auth, /dashboard, /builder and /agent is a private,
-# logged-in application view and is deliberately excluded from the sitemap.
+Craftisle Resume (resume.craftisle.com) helps people write and export a resume in the browser. It ships profession-specific templates, a template index, resume writing guides, a resources section and a career-advice blog. Exports to PDF, DOCX and plain text; the resume data stays in the browser.
 
 ## Resume templates by profession
-- /templates : index of every profession
-- /templates/{profession} : one page per profession (e.g. /templates/software-engineer,
-  /templates/nurse, /templates/product-manager). Each page covers what to put on that
-  profession's resume, ATS-friendly formatting, tips, and a set of FAQs.
+
+- [All professions](https://resume.craftisle.com/templates): index of every profession template
+- `https://resume.craftisle.com/templates/{profession}` — one page per profession (for example `/templates/software-engineer`, `/templates/nurse`, `/templates/product-manager`). Each covers what to put on that profession's resume, ATS-friendly formatting, tips and FAQs.
 
 ## Resume writing guides
-- /guides : guide index
-- /guides/{slug} : step-by-step guides, including how to write a resume, what to put
-  on a resume, making a resume ATS-friendly, and writing with no experience.
+
+- [Guides index](https://resume.craftisle.com/guides)
+- `https://resume.craftisle.com/guides/{slug}` — how to write a resume, what to put on a resume, making a resume ATS-friendly, writing with no experience.
 
 ## Blog
-- /blog : article index
-- /blog/{slug} : resume and job-search articles (ATS tips, action verbs, resume length,
-  cover letters, LinkedIn optimization, job search timelines).
+
+- [Blog](https://resume.craftisle.com/blog): resume and job-search articles (ATS tips, action verbs, resume length, cover letters, LinkedIn optimization, job-search timelines)
 
 ## Free resources
-- /resources : resource index
-- /resources/resume-checklist : 25-point pre-submission resume audit
-- /resources/salary-negotiation : salary negotiation guide with scripts and tactics
 
-## App entry points (private, not for indexing)
-- /builder/{resumeId} : the resume editor
-- /dashboard : the signed-in dashboard
+- [Resources](https://resume.craftisle.com/resources)
+- [Resume checklist](https://resume.craftisle.com/resources/resume-checklist): 25-point pre-submission audit
+- [Salary negotiation](https://resume.craftisle.com/resources/salary-negotiation): guide with scripts and tactics
 
-# Key Product Facts
-- Open source project: https://github.com/craftisle/resume
-- Free to use; no subscription, no watermark, no account required for basic features
+## Sitemap
+
+https://resume.craftisle.com/sitemap.xml
+
+## Private app routes (not for indexing)
+
+`/auth`, `/dashboard`, `/builder/{resumeId}`, `/agent` are logged-in application views and are excluded from the sitemap.
+
+## Product facts
+
+- Source code: https://github.com/yysam123456-source/craftisle-resume
+- Free to use; basic features need no account, no subscription, no watermark
 - Exports to PDF, DOCX and plain text
-- Your data stays in your browser
-- Supports multiple languages and locales
+- Resume data stays in the browser
+- Multiple languages and locales
+
+## Citing
+
+`Craftisle Resume, https://resume.craftisle.com/`
