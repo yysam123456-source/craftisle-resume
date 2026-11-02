@@ -56,78 +56,78 @@
 	</head>
 	<body>
 		<div id="app">
-			<style>
-				.craftisle-loading {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					justify-content: center;
-					min-height: 100vh;
-					background: #09090B;
-					color: #FAFAFA;
-					font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-				}
-				.craftisle-loading .spinner {
-					width: 40px;
-					height: 40px;
-					border: 3px solid rgba(250, 250, 250, 0.15);
-					border-top-color: #FAFAFA;
-					border-radius: 50%;
-					animation: craftisle-spin 0.8s linear infinite;
-				}
-				@keyframes craftisle-spin {
-					to { transform: rotate(360deg); }
-				}
-				.craftisle-loading h1 {
-					margin-top: 20px;
-					font-size: 18px;
-					font-weight: 500;
-					letter-spacing: 0.02em;
-					opacity: 0.8;
-				}
-			</style>
 			<div class="craftisle-loading">
 				<div class="spinner"></div>
-				<h1>Craftisle Resume</h1>
+				<div class="craftisle-loading-title" style="font-size:2em;font-weight:bold;margin:0.67em 0;">Craftisle Resume</div>
+			</div>
+			<div class="seo-static">
+				<h1>Build a resume in the browser with Craftisle Resume</h1>
+				<p>
+					Craftisle Resume is a resume builder that runs as a single-page web app. It offers thirteen
+					section types — summary, experience, education, projects, skills, languages, awards,
+					certifications, publications, volunteer work, interests, references and custom sections — and
+					fifteen visual templates to pour them into. When the document is ready it exports to PDF or
+					DOCX. There is no account to create and no upload step: your drafts live in the browser.
+				</p>
+
+				<h2>What you can build</h2>
+				<ul>
+					<li>
+						<strong>Fifteen resume templates</strong> — Onyx, Pikachu, Gengar, Bronzor, Chikorita,
+						Ditto, Kakuna, Leafish, Nosepass, Rhyhorn, Eevee, Rhine, Azurill, Rocky and Happy. Each
+						template is a layout over the same content, so switching design never means retyping a
+						section.
+					</li>
+					<li>
+						<strong>Thirteen section types</strong> from summary and experience through awards,
+						publications and volunteer work, plus custom sections for anything the standard set
+						misses.
+					</li>
+					<li>
+						<strong>Live preview</strong> — edit a section and the page re-renders in place, showing
+						what the exported document will contain.
+					</li>
+					<li>
+						<strong>PDF and DOCX export</strong> — the PDF is generated in the browser from the same
+						layout you were editing; DOCX suits application portals that insist on Word files. A JSON
+						export holds the raw resume data.
+					</li>
+				</ul>
+
+				<h2>How it works</h2>
+				<p>
+					Resumes are stored in your browser's local storage under the key <code>craftisle-resumes</code>,
+					not on a server. Exporting builds the file on your machine: nothing is uploaded, and there is
+					no account, sign-in or share link. This also means a resume belongs to one browser — export the
+					JSON before clearing site data if you want to move it elsewhere.
+				</p>
+
+				<h2>What it does not do</h2>
+				<p>
+					It is a document tool, not a job service: it does not apply to jobs, match you with employers
+					or score your resume against an applicant-tracking system. AI assistance, public share links
+					and built-in statistics are not available in this deployment, and there is no spell checker, so
+					proofread before you export.
+				</p>
+
+				<h2>Questions</h2>
+				<h3>Is Craftisle Resume free?</h3>
+				<p>
+					Yes. Every template and every export is available without a paid plan, and no feature is
+					locked behind an account.
+				</p>
+				<h3>Where is my resume stored?</h3>
+				<p>
+					In your browser's local storage, under the key <code>craftisle-resumes</code>. It is not sent to
+					a server, which is also why it does not follow you to another device.
+				</p>
+				<h3>Can I export to Word?</h3>
+				<p>
+					Yes. The export panel produces a DOCX file as well as a PDF, so a resume can be submitted to
+					portals that only accept Word documents.
+				</p>
 			</div>
 		</div>
-		<noscript>
-			<!-- Static fallback for AI crawlers and social previews (GEO / SEO) -->
-			<header>
-				<h1>Craftisle Resume – Free Open-Source Resume Builder</h1>
-				<p>
-					Craftisle Resume is a free and open-source resume builder that simplifies
-					the process of creating, updating, and sharing your professional resume.
-					Supports PDF export, multiple templates, real-time preview, and AI-powered content suggestions.
-				</p>
-			</header>
-			<main>
-				<section>
-					<h2>Features</h2>
-					<ul>
-						<li>Free and open-source – no subscription required</li>
-						<li>Multiple professional templates</li>
-						<li>Real-time PDF preview and export</li>
-						<li>AI-powered resume suggestions</li>
-						<li>Privacy-friendly – your data stays with you</li>
-						<li>Supports multiple languages and locales</li>
-					</ul>
-				</section>
-				<section>
-					<h2>Get Started</h2>
-					<p>
-						Create your professional resume in minutes. No registration required for basic features.
-						Visit <a href="https://resume.craftisle.com">resume.craftisle.com</a> to start building.
-					</p>
-				</section>
-			</main>
-			<footer>
-				<p>
-					Craftisle Resume is open-source on <a href="https://github.com/craftisle/resume">GitHub</a>.
-					Contact: <a href="mailto:admin@craftisle.com">admin@craftisle.com</a>
-				</p>
-			</footer>
-		</noscript>
 		<script type="module" src="/src/main.tsx"></script>
 	</body>
 </html>
