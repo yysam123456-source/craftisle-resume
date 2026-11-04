@@ -1,9 +1,18 @@
 # https://www.robotstxt.org/robotstxt.html
+#
+# AI crawlers declared per user-agent so crawls are auditable in server logs.
+# 🔴 OAI-SearchBot is the bot OpenAI uses for ChatGPT Search inclusion/opt-out;
+#    it was missing on all 8 Craftisle sites (2026-11-04 audit).
+# This site has no disallow rules, so all groups are identical `Allow: /`.
+# If a disallow is ever added to `*` below, it MUST be repeated in every group:
+# a bot matching its own group ignores the wildcard group entirely (Google spec).
 User-agent: *
 Allow: /
 
-# ── AI crawlers: explicitly allowed (generative engine optimization) ──
 User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: ChatGPT-User
@@ -12,13 +21,22 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-SearchBot
+Allow: /
+
 User-agent: anthropic-ai
 Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
 User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://resume.craftisle.com/sitemap.xml
